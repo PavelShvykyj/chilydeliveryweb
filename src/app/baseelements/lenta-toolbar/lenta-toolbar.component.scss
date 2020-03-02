@@ -1,0 +1,87 @@
+@import '~@angular/material/theming';
+
+$dark : map-get($mat-light-blue, 700);
+$light : map-get($mat-grey, 400);
+$non : transparent;
+
+@mixin lable($back, $bord) {
+  width: 0px !important;
+  max-width: 20px;
+  height: 0px !important;
+  border-top: 25px solid transparent;
+  border-bottom: 25px solid transparent;
+  border-right: none;
+  border-left: 25px solid $bord;
+  background: $back !important;
+}
+
+@mixin main($back) {
+  min-width: 100px;
+  min-height: 50px;
+  height: 50px;
+  padding-left: 5px !important;
+  line-height: 50px;
+  background: $back !important;
+  color: white;
+  border: none;
+}
+
+.lablefirst {
+  @include lable($light, $dark)
+}
+
+.lablesecond {
+  @include lable($dark, $light)
+}
+
+.lablesecondlast {
+  @include lable($non, $dark)
+}
+
+.lablefirstlast {
+  @include lable($non, $light)
+}
+
+.mainfirst {
+  @include main($dark)
+}
+
+.mainsecond {
+  @include main($light)
+}
+
+.maintext {
+  position: relative;
+  left: 10px;
+}
+
+.lentaelementcontainer {
+  text-transform: none;
+  
+  &:hover {
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+}
+
+.lentacontainer {
+  overflow-x: auto ;
+  overflow-y: hidden;
+}
+
+.maincontainer {
+  margin-top: 10px;
+  height: 60px;
+}
+
+.spacer {
+  margin-left: auto !important;
+}
+
+.command {
+  margin-right: 4px;
+  min-width: 146px;
+  &:hover {
+    background: $light;
+  }
+}

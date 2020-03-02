@@ -1,0 +1,23 @@
+@import '~@angular/material/theming';
+
+mat-card-subtitle {
+    margin-top: 18px;
+}
+
+mat-list {
+    height: 400px;
+    overflow-y: scroll;
+}
+
+.externalidexists {
+    color : map-get($mat-grey, 400);
+    font-style : italic;
+}
+
+.currentblock {
+    color: red;
+}
+
+mat-card-footer {
+    background-color : map-get($mat-grey, 100);
+}

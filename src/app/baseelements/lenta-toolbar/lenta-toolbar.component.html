@@ -1,0 +1,31 @@
+<mat-toolbar fxLayout="row" class="maincontainer">
+
+  <!-- <button  mat-raised-button class="command" *ngFor="let command of toolbarcommands"  >
+      <mat-icon>{{command.iconeName }}</mat-icon>
+      {{command.buttonName}}
+    </button> -->
+
+  <mat-button-toggle-group class="command">
+    <mat-button-toggle *ngFor="let command of toolbarcommands" [value]="command.commandName"
+      (click)="ToolbarCommandClicked(command.commandName)">
+      <mat-icon>{{command.iconeName }}</mat-icon>
+      {{command.buttonName}}
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+
+
+  <div fxLayout="row" class="lentacontainer">
+    <div class="lentaelementcontainer" (click)="ElementClicked(undefined)">
+      <span fxFlex="1 1 auto" class="mainfirst"  >Root</span>
+      <span fxFlex="1 1 auto" [ngClass]="{lablesecondlast: lenta.length == 0 , lablefirst: lenta.length != 0}"></span>
+    </div>
+    <div  *ngFor="let item of lenta"  class="lentaelementcontainer" (click)="ElementClicked(item)">
+      <span fxFlex="1 1 auto" [ngClass]="{mainfirst: item.parity, mainsecond: !item.parity}"  >
+        <span fxFlex="1 1 auto" class="maintext"  >{{item.name}}</span> 
+      </span>
+      <span fxFlex="1 1 auto" [ngClass]="{lablefirstlast: item.last && !item.parity, lablesecondlast: item.last && item.parity ,
+        lablefirst: !item.last && item.parity, lablesecond: !item.last && !item.parity}"  ></span>
+    </div>
+    <div class="spacer"></div>
+  </div>
+</mat-toolbar>

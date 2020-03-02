@@ -1,5 +1,34 @@
 <mat-toolbar color='primary'>
   <span>Simple delivery (one c) </span>
+
+  <span class="spacer"> </span>
+  <mat-nav-list  fxLayout="row">
+    <mat-list-item fxFlex="1 1 auto"  *ngIf="!(isLoggedIn$ | async)">
+      <a matLine routerLink="/login" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><mat-icon>info</mat-icon> Login  </a>
+    </mat-list-item>
+    
+
+    <mat-list-item *ngIf="(isLoggedIn$ | async)" fxFlex="1 1 auto">
+      <a matLine routerLink="/goods" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><mat-icon>info</mat-icon> Goods  </a>
+    </mat-list-item>
+
+    <mat-list-item *ngIf="(isLoggedIn$ | async)" fxFlex="1 1 auto">
+      <a matLine routerLink="/orders" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><mat-icon>info</mat-icon> Orders </a>
+    </mat-list-item>
+  </mat-nav-list>
+
+
+  
+  <button *ngIf="(isLoggedIn$ | async)" color='accent' mat-raised-button (click)="LogOut()"> Logout </button>
+
+  <ng-container *ngIf="(pictureUrl$ | async) as pictureUrl" >
+    <img [src]="pictureUrl" class="avatar" >
+  </ng-container>
+
+
 </mat-toolbar>
 
+
 <router-outlet></router-outlet>
+
+<input #el hidden=true type="text" id="options" value="options"  (click)="OnExternal1CValueChange(el)">
