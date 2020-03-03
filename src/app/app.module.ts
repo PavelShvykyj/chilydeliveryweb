@@ -18,7 +18,6 @@ import {RouterState, StoreRouterConnectingModule, routerReducer} from '@ngrx/rou
 /////////////////   OWN CREATED
 import { AppComponent } from './app.component';
 import { FireService } from './services/fire.service';
-import { OnecModule } from './onec/onec.module';
 import { WebModule } from './web/web.module';
 import { AuthModule } from './auth/auth.module';
 import { ExchangeModule } from './exchange/exchange.module';
@@ -57,7 +56,7 @@ import { IsLoggedInGuard } from './isloged.guard';
     }),
     
     /////////////////   OWN CREATED
-    OnecModule,
+    
     WebModule,
     AuthModule,
     ExchangeModule

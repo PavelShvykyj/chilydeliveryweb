@@ -13,6 +13,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { Update } from '@ngrx/entity';
 import { statusWebSelectedGanged } from '../web.actions';
 import { map } from 'rxjs/operators';
+import { CubToolbarComponent } from 'src/app/baseelements/cub-toolbar/cub-toolbar.component';
 
 
 
@@ -23,8 +24,8 @@ import { map } from 'rxjs/operators';
 })
 export class WebGoodListComponent implements OnInit {
 
-  @ViewChild(LentaToolbarComponent, {static: false})
-  toolbar: LentaToolbarComponent;
+  @ViewChild(CubToolbarComponent, {static: false})
+  toolbar: CubToolbarComponent;
 
   
   elements$ : Observable<IWEBGoodWithFilials[]>; 

@@ -1,5 +1,5 @@
-<lenta-toolbar [dataSourse]="ds" [toolbarcommands]="toolbarcommands" (OnElementClicked)="OnLentaElementClicked($event)"
-  (OnToolbarCommandClicked)="OnToolbarCommandClicked($event)"></lenta-toolbar>
+<cub-toolbar [dataSourse]="ds" [toolbarcommands]="toolbarcommands" (OnElementClicked)="OnLentaElementClicked($event)"
+  (OnToolbarCommandClicked)="OnToolbarCommandClicked($event)"></cub-toolbar>
 
 <mat-card>
   <mat-card-header>
@@ -17,18 +17,21 @@
   </mat-card-header>
   <mat-card-content>
     <mat-list>
-      <mat-list-item *ngFor="let item of (elements$ | async)">
+      <ng-container *ngFor="let item of (elements$ | async)">
+      <mat-list-item >
         <!-- <mat-icon *ngIf="item.isFolder"  mat-list-icon (click)="OnGoodClicked(item)">folder</mat-icon> -->
-        <mat-checkbox color='warn' [checked]="item.isSelected"  mat-list-icon *ngIf="!item.isFolder" (change)="OnGoodCheked($event,item)">
+        <mat-checkbox color='warn' [checked]="item.isSelected"   *ngIf="!item.isFolder" (change)="OnGoodCheked($event,item)">
         </mat-checkbox>
         
         <button  mat-icon-button *ngIf="item.isFolder" (click)="OnGoodClicked(item)">
           <mat-icon>folder</mat-icon>
         </button>
         
-        <h4 mat-line>{{item.name}}</h4>
-        <p mat-line  ><span *ngFor="let filial of item.filialNames"> {{ filial }} </span>  </p>
+        <h4 class="title-sub" mat-line>{{item.name}}</h4>
+        <p mat-line  ><small *ngFor="let filial of item.filialNames"> {{ filial }} </small>  </p>
       </mat-list-item>
+      <mat-divider></mat-divider>
+      </ng-container>
     </mat-list>
   </mat-card-content>
   <mat-card-footer >

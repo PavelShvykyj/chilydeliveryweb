@@ -33,11 +33,7 @@ export class AppComponent implements OnInit {
     this.store.dispatch(LoadOptions());
   }
 
-  OnExternal1CValueChange(el){
-    if(el.value=="options") {
-      this.store.dispatch(LoadOptions());
-    }
-  }
+ 
 
 
 }

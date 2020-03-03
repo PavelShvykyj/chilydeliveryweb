@@ -10,23 +10,41 @@ $config: mat-typography-config($title: mat-typography-level(12px, 12px, 400),
 
 @include mat-core();
 
-$app-primary: mat-palette($mat-grey,200,400,600);
-$app-accent:  mat-palette($mat-light-blue, 700, 700, 700);
-$app-warn:    mat-palette($mat-red);
+$app-primary: mat-palette($mat-grey, 200, 400, 600);
+$app-accent: mat-palette($mat-light-blue, 700, 700, 700);
+$app-warn: mat-palette($mat-red);
 
 $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 
 @include angular-material-theme($app-theme);
 
 .spacer {
-    margin: auto;
+  margin: auto;
 }
 
 .externalidexists {
-    color : map-get($mat-grey, 400);
-    font-style : italic;
+  color: map-get($mat-grey, 400);
+  font-style: italic;
 }
 
-mat-icon{
-    font-family: 'Material Icons' !important;
+mat-icon {
+  font-family: 'Material Icons' !important;
+}
+
+mat-card {
+  border-radius: 0px !important;
+}
+
+///// do button toggle group responsive
+.mat-button-toggle-label {
+  flex: 1 1 100%;
+  box-sizing: border-box;
+  align-items: center;
+  flex-direction: row;
+  display: flex;
+
+  .mat-button-toggle-label-content {
+    text-align: center;
+    flex: 1 1 100%;
   }
+}

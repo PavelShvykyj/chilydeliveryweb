@@ -1,0 +1,31 @@
+<mat-toolbar   class="mat-toolbar">
+  <mat-button-toggle-group fxLayout="row" class="toolbar-element mat-button-toggle-label">
+    <mat-button-toggle fxFlex *ngFor="let command of toolbarcommands" [value]="command.commandName"
+      (click)="ToolbarCommandClicked(command.commandName)" >
+      <mat-icon>{{command.iconeName }}</mat-icon>
+      {{command.buttonName}}
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+</mat-toolbar>
+
+<mat-card>
+  <mat-card-content>
+    <mat-grid-list [cols]="GetColumsQuont()" gutterSize="2px" rowHeight="35px" class="lentacontainer">
+      <mat-grid-tile>
+        <button color='accent' class="secondary" mat-stroked-button (click)="ElementClicked(undefined)">
+          <mat-list-item class="title-small lentacontainer">
+            Root
+          </mat-list-item>
+        </button>
+      </mat-grid-tile>
+
+      <mat-grid-tile  *ngFor="let item of lenta">
+        <button color='accent' class="secondary" mat-stroked-button>
+          <mat-list-item class="title-small lentacontainer">
+            {{item.name}}
+          </mat-list-item>
+        </button>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </mat-card-content>
+</mat-card>

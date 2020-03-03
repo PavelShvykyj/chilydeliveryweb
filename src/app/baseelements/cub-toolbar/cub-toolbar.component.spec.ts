@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Onec.Goods.ListComponent } from './onec.goods.list.component';
+import { CubToolbarComponent } from './cub-toolbar.component';
 
-describe('Onec.Goods.ListComponent', () => {
-  let component: Onec.Goods.ListComponent;
-  let fixture: ComponentFixture<Onec.Goods.ListComponent>;
+describe('CubToolbarComponent', () => {
+  let component: CubToolbarComponent;
+  let fixture: ComponentFixture<CubToolbarComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ Onec.Goods.ListComponent ]
+      declarations: [ CubToolbarComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(Onec.Goods.ListComponent);
+    fixture = TestBed.createComponent(CubToolbarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,23 +1,17 @@
+
 import { ITolbarCommandsList } from './../../models/toolbar.commandslist';
 import { IGoodsListDatasourse } from '../../models/goods.list.datasourse';
 import { IWEBGood } from '../../models/web.good';
 import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { IBaseGood } from '../../models/base.good';
-
-
-
-export interface ILentaElement extends IBaseGood {
-  last: boolean,
-  parity: boolean
-}
-
+import { ILentaElement } from '../lenta-toolbar/lenta-toolbar.component';
 
 @Component({
-  selector: 'lenta-toolbar',
-  templateUrl: './lenta-toolbar.component.html',
-  styleUrls: ['./lenta-toolbar.component.scss']
+  selector: 'cub-toolbar',
+  templateUrl: './cub-toolbar.component.html',
+  styleUrls: ['./cub-toolbar.component.scss']
 })
-export class LentaToolbarComponent implements OnInit {
+export class CubToolbarComponent implements OnInit {
 
   lenta: ILentaElement[] = [];
   @Input('dataSourse') dataSourse: IGoodsListDatasourse;
@@ -27,14 +21,15 @@ export class LentaToolbarComponent implements OnInit {
   @Output('OnToolbarCommandClicked') OnToolbarCommandClicked = new EventEmitter<string>();
 
 
-  @ViewChild(LentaToolbarComponent, {static: false})
-  toolbar: LentaToolbarComponent;
+  @ViewChild(CubToolbarComponent, {static: false})
+  toolbar: CubToolbarComponent;
 
   constructor() { }
 
   ngOnInit() {
     this.lenta = [];
   }
+
 
   AddElement(item: IBaseGood): void {
     if(item == undefined) {
@@ -75,9 +70,21 @@ export class LentaToolbarComponent implements OnInit {
   }
 
   ToolbarCommandClicked(commandName:string) {
-    
     this.OnToolbarCommandClicked.emit(commandName);
   } 
 
+  GetColumsQuont() {
+    const LentaLenth = this.lenta.length;
+
+    if (LentaLenth <= 1) {
+      return 1
+    } else if(LentaLenth == 2) {
+      return 2
+    } else if(LentaLenth >= 3 && LentaLenth <= 6) {
+      return 3
+    } else {
+      return 4
+    }
+  }
 
 }

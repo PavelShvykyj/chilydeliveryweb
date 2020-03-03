@@ -1,0 +1,57 @@
+@import '~@angular/material/theming';
+
+// Create a config with the default typography levels.
+$config: mat-typography-config(
+    $title: mat-typography-level(12px, 12px, 400),
+    $button: mat-typography-level(12px, 12px, 400),
+    $subheading-1: mat-typography-level(14px, 14px, 500)
+);
+
+.title-small {
+  font-size: mat-font-size($config, title);
+  line-height: mat-line-height($config, title);
+}
+
+
+
+.primary {
+  background-color: map-get($mat-light-blue, 700);
+  color: map-get($mat-light-blue, 100);
+}
+
+.secondary {
+  background-color: map-get($mat-grey, 200);
+}
+
+.lentacontainer {
+  text-transform: none;
+
+  &:hover {
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+}
+
+mat-card {
+  padding: 2px;
+}
+
+.mat-toolbar {
+    height: 30px;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.toolbar-element {
+    height: 90%;
+}
+
+button {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden !important;
+  white-space: pre-wrap !important;
+  padding-left: 2px;
+  padding-right: 2px;
+  overflow-y: hidden !important;
+}
