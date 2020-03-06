@@ -2,7 +2,7 @@ import { IONECGood } from './../models/onec.good';
 import { IWEBGood, IWEBGoodWithFilials } from './../models/web.good';
 import { WebState } from './reducers/index';
 import * as fromWeb from './reducers/index';
-import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { createFeatureSelector, createSelector, props } from '@ngrx/store';
 import { Dictionary } from '@ngrx/entity';
 import { selectOptionState } from '../option.selectors';
 
@@ -57,6 +57,12 @@ export const selectGoodsByParent = createSelector(
 
 )
 
+export const selectDirtyGoodsByParent = createSelector(
+    selectAllDirtyWebGoods,
+    (goods:IONECGood[], props) => goods.filter(element => (element.filial == props.filialname) && ((element.parentid == props.parentid) || (props.parentid == undefined && element.parentid == "")))
+)
+
+
 export const selectGoodById = createSelector(
     selectAllWebGoods,
     (goods, props) => goods.filter(element => element.id == props.id)
@@ -94,6 +100,16 @@ export const selectGoodByName = createSelector(
     (dirtygoods,goods,props) => GetByname(dirtygoods,goods,props)
 )
 
+export const selectDirtyGoodByName = createSelector(
+    selectAllDirtyWebGoods,
+    (goods,props)=>goods.filter(element => { return (element.filial==props.filialname && !element.isFolder && element.name.search(props.name)!=-1)})
+
+)
+
+export const selectDirtyGoodBySelection = createSelector(
+    selectAllDirtyWebGoods,
+    (goods,props) => goods.filter(element => element.isSelected && element.filial==props.filialname)
+)
 
 export const selectGoodBySelection = createSelector(
     selectAllWebGoods,

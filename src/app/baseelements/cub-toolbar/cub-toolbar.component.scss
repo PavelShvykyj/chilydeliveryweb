@@ -14,14 +14,7 @@ $config: mat-typography-config(
 
 
 
-.primary {
-  background-color: map-get($mat-light-blue, 700);
-  color: map-get($mat-light-blue, 100);
-}
 
-.secondary {
-  background-color: map-get($mat-grey, 200);
-}
 
 .lentacontainer {
   text-transform: none;

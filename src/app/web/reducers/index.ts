@@ -57,6 +57,15 @@ export const initialState = {
 
 }
 
+function StatusDirtyWebSelectedGanged(state,action)  : WebState {
+  return {
+    ...state,
+    dirtywebGoods: DirtyWebAdapter.updateOne(action.update ,state.dirtywebGoods)
+  }
+
+}
+
+
 function OneCGoodUploded(state:WebState,action) : WebState {
   return {
     ...state,
@@ -69,6 +78,7 @@ export const WebReducer = createReducer(
   initialState,
   on(WebActions.allWebGoodsLoaded ,(state,action)=> LoadAllGoods(state,action)),
   on(WebActions.statusWebSelectedGanged,  (state,action)=> StatusWebSelectedGanged(state,action)),
+  on(WebActions.statusDirtyWebSelectedGanged,  (state,action)=> StatusDirtyWebSelectedGanged(state,action)),
   on(WebActions.onecSelectedUploaded,  (state,action)=> OneCGoodUploded(state,action)),
 )
 

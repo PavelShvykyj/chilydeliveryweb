@@ -10,12 +10,14 @@ import { MaterialsModule } from '../materials/materials.module';
 import { WebGoodsDatasourseService } from './web.goods.datasourse.service';
 import { WebEffects } from './web.effects';
 import { FormsModule } from '@angular/forms';
+import { WebDirtyGoodListComponent } from './web.dirty.good.list/web.dirty.good.list.component';
+import { WebGoodEditComponent } from './web-good-edit/web-good-edit.component';
 
 
 
 
 @NgModule({
-  declarations: [WebGoodListComponent],
+  declarations: [WebGoodListComponent, WebDirtyGoodListComponent, WebGoodEditComponent],
   imports: [
     CommonModule,
     BaseelementsModule,
@@ -25,6 +27,6 @@ import { FormsModule } from '@angular/forms';
     StoreModule.forFeature(fromWeb.webFeatureKey, reducer , { metaReducers: fromWeb.metaReducers })
   ],
   providers: [WebGoodsDatasourseService],
-  exports: [WebGoodListComponent]
+  exports: [WebGoodListComponent,WebDirtyGoodListComponent]
 })
 export class WebModule { }

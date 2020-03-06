@@ -1,0 +1,24 @@
+<h6 mat-dialog-title> Заполните карточку товара </h6>
+
+
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+ 
+    <mat-checkbox  [formControl]="isFolder"  > Это группа</mat-checkbox>
+
+    <mat-form-field>
+        <input  matInput placeholder="Описание" formControlName="name">
+        <mat-hint> Отредактировать описание  </mat-hint>
+    </mat-form-field>
+    
+    <!-- тут список филиалов  -->
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button (click)="Save()"> Save </button>
+  <button mat-button (click)="Cancel()"> Cancel </button>
+</mat-dialog-actions>

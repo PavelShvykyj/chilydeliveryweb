@@ -1,0 +1,51 @@
+<cub-toolbar [dataSourse]="ds" [toolbarcommands]="toolbarcommands" (OnElementClicked)="OnLentaElementClicked($event)"
+  (OnToolbarCommandClicked)="OnToolbarCommandClicked($event)"></cub-toolbar>
+
+  <ng-container *ngFor="let item of (selectedelements$ | async)">
+    <mat-card class="primary">{{ item.name }}</mat-card> 
+  </ng-container>
+
+<mat-card>
+   <mat-card-header>
+    <mat-card-subtitle>Список товаров {{ filialname }}</mat-card-subtitle>
+    <mat-form-field color='accent' >
+      <input matInput type="text" placeholder="Поиск по имени" (input)="OnNameFilterInput()"
+        [(ngModel)]="NameFilterValue">
+      <button mat-button *ngIf="NameFilterValue" matSuffix mat-icon-button aria-label="Clear"
+        (click)="OnNameFilterCleared()">
+        <mat-icon>close</mat-icon>
+      </button>
+      <button mat-button *ngIf="NameFilterValue" matSuffix mat-icon-button aria-label="Refresh"
+        (click)="OnNameFilterInput()">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </mat-form-field>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-list>
+      <ng-container *ngFor="let item of (elements$ | async)">
+        <mat-list-item>
+          <!-- <mat-icon *ngIf="item.isFolder"  mat-list-icon (click)="OnGoodClicked(item)">folder</mat-icon> -->
+          <mat-checkbox color='warn' [checked]="item.isSelected" *ngIf="!item.isFolder"
+            (change)="OnGoodCheked($event,item)">
+          </mat-checkbox>
+
+          <button mat-icon-button *ngIf="item.isFolder" (click)="OnGoodClicked(item)">
+            <mat-icon>folder</mat-icon>
+          </button>
+
+          <h4 class="title-sub" mat-line>{{item.name}}</h4>
+
+        </mat-list-item>
+        <mat-divider></mat-divider>
+      </ng-container>
+    </mat-list>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-button-toggle-group>
+      <mat-button-toggle [ngClass]="{'currentblock': block==startindex}" *ngFor="let block of blocks" [value]="block"
+        (click)="OnBlockClick(block)"> {{block }} </mat-button-toggle>
+    </mat-button-toggle-group>
+  </mat-card-footer>
+
+</mat-card>

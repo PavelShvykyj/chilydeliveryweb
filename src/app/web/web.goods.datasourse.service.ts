@@ -87,7 +87,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
 
   GetAllGoods() : Observable<{goods: IWEBGood[], dirtygoods:IONECGood[]}> {
 
-    const webgoods$ = this.db.collection('web.goods', ref => ref.orderBy("name"))
+    const webgoods$ = this.db.collection('web.goods', ref => ref.orderBy("isFolder", 'desc').orderBy("name"))
     .snapshotChanges()
     .pipe(map(res =>
       {  
@@ -96,7 +96,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
                    isSelected:false, 
                    id:element.payload.doc.id}} ) as IWEBGood[];}),first());
 
-    const dirtywebgoods$ = this.db.collection('onec.goods', ref => ref.orderBy("name"))
+    const dirtywebgoods$ = this.db.collection('onec.goods', ref => ref.orderBy("isFolder" , 'desc').orderBy("name"))
     .snapshotChanges()
     .pipe(map(res =>
       { 

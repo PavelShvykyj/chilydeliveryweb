@@ -20,7 +20,7 @@
       </mat-grid-tile>
 
       <mat-grid-tile  *ngFor="let item of lenta">
-        <button color='accent' class="secondary" mat-stroked-button>
+        <button color='accent' class="secondary" mat-stroked-button (click)="ElementClicked(item)">
           <mat-list-item class="title-small lentacontainer">
             {{item.name}}
           </mat-list-item>

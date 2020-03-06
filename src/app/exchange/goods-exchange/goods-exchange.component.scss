@@ -13,8 +13,13 @@ $light : map-get($mat-grey, 400);
     width: 100%;
 }
 
-webgoodlist {
-    
+webgoodlist  {
+    padding-top: 3px;    
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+webdirtygoodlist {
     padding-top: 3px;    
     margin-left: 3px;
     margin-right: 3px;
@@ -22,4 +27,8 @@ webgoodlist {
 
 mat-grid-list {
     background-color: map-get($mat-grey, 400);
+}
+
+.grid-container {
+    height: 90vh;
 }

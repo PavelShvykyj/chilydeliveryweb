@@ -1,7 +1,7 @@
 import { IONECGood } from './../../models/onec.good';
-import { selectGoodsByParent,  selectDirtyGoodFilialById, selectNotInONEC, selectGoodByName } from './../web.selectors';
+import { selectGoodsByParent,  selectDirtyGoodFilialById, selectNotInONEC, selectGoodByName, selectDirtyGoodsByParent, selectDirtyGoodByName, selectDirtyGoodBySelection } from './../web.selectors';
 import { IWEBGood, IWEBGoodWithFilials } from './../../models/web.good';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { WebGoodsDatasourseService } from '../web.goods.datasourse.service';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
@@ -11,25 +11,30 @@ import { ITolbarCommandsList } from 'src/app/models/toolbar.commandslist';
 import { IBaseGood } from 'src/app/models/base.good';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { Update } from '@ngrx/entity';
-import { statusWebSelectedGanged } from '../web.actions';
-import { map } from 'rxjs/operators';
+import { statusWebSelectedGanged, statusDirtyWebSelectedGanged } from '../web.actions';
+import { map, first, tap } from 'rxjs/operators';
 import { CubToolbarComponent } from 'src/app/baseelements/cub-toolbar/cub-toolbar.component';
 
 
 
+
+
 @Component({
-  selector: 'webgoodlist',
-  templateUrl: './web.good.list.component.html',
-  styleUrls: ['./web.good.list.component.scss']
+  selector: 'webdirtygoodlist',
+  templateUrl: './web.dirty.good.list.component.html',
+  styleUrls: ['./web.dirty.good.list.component.scss']
 })
-export class WebGoodListComponent implements OnInit {
+export class WebDirtyGoodListComponent implements OnInit {
 
   @ViewChild(CubToolbarComponent, {static: false})
   toolbar: CubToolbarComponent;
 
-  
-  elements$ : Observable<IWEBGoodWithFilials[]>; 
-  allelements$ : Observable<IWEBGoodWithFilials[]>; 
+  @Input('filialname')
+  filialname : string = ""
+
+  elements$ : Observable<IONECGood[]>; 
+  allelements$ : Observable<IONECGood[]>; 
+  selectedelements$ : Observable<IONECGood[]>; 
   blocklenth:number = 20;
   startindex:number = 0;
   blocks:number[] = [0];
@@ -58,17 +63,20 @@ export class WebGoodListComponent implements OnInit {
 
   NameFilterValue:string="";
 
+
   constructor(public ds : WebGoodsDatasourseService, private store: Store<AppState>) { }
 
   ngOnInit() {
-    this.allelements$ = this.store.pipe(select(selectGoodsByParent,{parentid:undefined}));
+    console.log(this.filialname);
+    this.allelements$ = this.store.pipe(select(selectDirtyGoodsByParent,{parentid:undefined,filialname:this.filialname}));
+    this.selectedelements$ = this.store.pipe(select(selectDirtyGoodBySelection,{filialname:this.filialname})); 
     this.UpdateGoodsview();
   }
 
-  OnGoodClicked(item: IWEBGood) {
+  OnGoodClicked(item: IONECGood) {
     if(item.isFolder) {
       //this.ds.GetList(item.id);
-      this.allelements$ = this.store.pipe(select(selectGoodsByParent,{parentid:item.id})); 
+      this.allelements$ = this.store.pipe(select(selectDirtyGoodsByParent,{parentid:item.id,filialname:this.filialname})); 
       this.toolbar.AddElement(item);
       this.UpdateGoodsview();
     } else {
@@ -77,23 +85,32 @@ export class WebGoodListComponent implements OnInit {
 
   }
 
-  OnGoodCheked(event:MatCheckboxChange,item: IWEBGood) {
-    const update : Update<IWEBGood> = {
-      id:item.id,
-      changes:{isSelected:event.checked}
+  AskForChangeSelection(id:string,status:boolean) {
+    const update : Update<IONECGood> = {
+      id:id,
+      changes:{isSelected:status}
     }
-    this.store.dispatch(statusWebSelectedGanged({update}));
+    this.store.dispatch(statusDirtyWebSelectedGanged({update}));
+  }
 
+  OnGoodCheked(event:MatCheckboxChange,item: IONECGood) {
+    console.log('fl-change',item.name,event.checked);
+    this.store.pipe(select(selectDirtyGoodBySelection,{filialname:this.filialname}),
+    first(),
+    tap(goods => {goods.forEach(good => this.AskForChangeSelection(good.id,false));}),
+    tap(()=>this.AskForChangeSelection(item.id,event.checked))).subscribe();
+    this.AskForChangeSelection(item.id,event.checked);
     //alert(item.name+" "+event.checked);
   }
 
   OnLentaElementClicked(event : IBaseGood) {
     if(event == undefined) {
       //this.ds.GetList(undefined);
-      this.allelements$ = this.store.pipe(select(selectGoodsByParent,{parentid:undefined})); 
+      
+      this.allelements$ = this.store.pipe(select(selectDirtyGoodsByParent,{parentid:undefined,filialname:this.filialname}));  
     } else {
       //this.ds.GetList(event.id);
-      this.allelements$ = this.store.pipe(select(selectGoodsByParent,{parentid:event.id})); 
+      this.allelements$ = this.store.pipe(select(selectDirtyGoodsByParent,{parentid:event.id,filialname:this.filialname}));  
     }
     this.UpdateGoodsview();
   }
@@ -102,13 +119,13 @@ export class WebGoodListComponent implements OnInit {
     switch (event) {
       case "refresh":
         //this.ds.GetList(undefined);
-        this.allelements$ = this.store.pipe(select(selectGoodsByParent,{parentid: this.GetCurrentParent()})); 
+        this.allelements$ = this.store.pipe(select(selectDirtyGoodsByParent,{parentid:this.GetCurrentParent(),filialname:this.filialname}));  
         this.NameFilterValue='';
         this.UpdateGoodsview();
         break;
       case "difference":
         //alert("Команда upload");
-        this.allelements$ = this.store.pipe(select(selectNotInONEC));
+        //this.allelements$ = this.store.pipe(select(selectNotInONEC));
         this.UpdateGoodsview();
         break;
       case "download":
@@ -124,12 +141,11 @@ export class WebGoodListComponent implements OnInit {
 
   OnNameFilterInput() {
     if(this.NameFilterValue.length == 0 ){
-      
-      this.allelements$ = this.store.pipe(select(selectGoodsByParent,{parentid:this.GetCurrentParent()})); 
+      this.allelements$ = this.store.pipe(select(selectDirtyGoodsByParent,{parentid:this.GetCurrentParent(),filialname:this.filialname}));  
     } else {
       // заменям пробелы \s* на любое количество любых сиволов (".*")
       const reg = this.NameFilterValue.replace( /\s*/g, ".*");
-      this.allelements$ = this.store.pipe(select(selectGoodByName,reg));
+      this.allelements$ = this.store.pipe(select(selectDirtyGoodByName,{name:reg,filialname:this.filialname}));
     }
     this.UpdateGoodsview();
   }
