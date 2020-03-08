@@ -1,17 +1,15 @@
 import { IONECGood } from './../../models/onec.good';
-import { selectGoodsByParent,  selectDirtyGoodFilialById, selectNotInONEC, selectGoodByName, selectDirtyGoodsByParent, selectDirtyGoodByName, selectDirtyGoodBySelection } from './../web.selectors';
-import { IWEBGood, IWEBGoodWithFilials } from './../../models/web.good';
+import { selectDirtyGoodsByParent, selectDirtyGoodByName, selectDirtyGoodBySelection } from './../web.selectors';
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { WebGoodsDatasourseService } from '../web.goods.datasourse.service';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
-import { LentaToolbarComponent } from 'src/app/baseelements/lenta-toolbar/lenta-toolbar.component';
 import { Observable } from 'rxjs';
 import { ITolbarCommandsList } from 'src/app/models/toolbar.commandslist';
 import { IBaseGood } from 'src/app/models/base.good';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { Update } from '@ngrx/entity';
-import { statusWebSelectedGanged, statusDirtyWebSelectedGanged } from '../web.actions';
+import {  statusDirtyWebSelectedGanged } from '../web.actions';
 import { map, first, tap } from 'rxjs/operators';
 import { CubToolbarComponent } from 'src/app/baseelements/cub-toolbar/cub-toolbar.component';
 
@@ -51,14 +49,7 @@ export class WebDirtyGoodListComponent implements OnInit {
       commandName: "difference",
       buttonName:"",
       iconeName:'call_split'
-    },
-
-    {
-      commandName: "download",
-      buttonName:"",
-      iconeName:'cloud_download'
     }
-
   ]
 
   NameFilterValue:string="";

@@ -1,4 +1,4 @@
-import { IWEBGood } from './../models/web.good';
+import { IWEBGood, IWEBGoodWithFilials } from './../models/web.good';
 import { IFireBaseDirtyGood } from './../models/firebase.dirtygood';
 
 import { Injectable } from '@angular/core';
@@ -143,6 +143,23 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
    }
    
    
+  }
+
+  UpsertWebGood(webgood:IWEBGood): Observable<IWEBGood> {
+   
+   
+    if(webgood.id==undefined|| webgood.id=="") {
+      return from(this.db.collection('web.goods').add({
+        name:webgood.name,
+        parentid:webgood.parentid,
+        isFolder:webgood.isFolder,
+        filials:webgood.filials
+        })).pipe(map(docref => { const newgood : IWEBGood = {...webgood, id:docref.id, isSelected:false}; return  newgood}))
+    } else {
+      return from(this.db.collection('web.goods').doc(webgood.id).update(webgood)).pipe(map(() => webgood))
+    }
+
+
   }
 
 

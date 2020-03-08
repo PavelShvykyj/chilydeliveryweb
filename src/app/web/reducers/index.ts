@@ -74,13 +74,21 @@ function OneCGoodUploded(state:WebState,action) : WebState {
 
 }
 
+function WebGoodUploded(state,action)  : WebState {
+  return {
+    ...state,
+    webGoods: WebAdapter.upsertOne(action.good ,state.webGoods)
+  }
+}
+
 export const WebReducer = createReducer(
   initialState,
   on(WebActions.allWebGoodsLoaded ,(state,action)=> LoadAllGoods(state,action)),
   on(WebActions.statusWebSelectedGanged,  (state,action)=> StatusWebSelectedGanged(state,action)),
   on(WebActions.statusDirtyWebSelectedGanged,  (state,action)=> StatusDirtyWebSelectedGanged(state,action)),
   on(WebActions.onecSelectedUploaded,  (state,action)=> OneCGoodUploded(state,action)),
-)
+  on(WebActions.webgoodUpdated,  (state,action)=> WebGoodUploded(state,action))
+  )
 
 export const {selectAll, selectEntities} = WebAdapter.getSelectors();
 export const selectDirtyAll = DirtyWebAdapter.getSelectors().selectAll;

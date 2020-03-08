@@ -51,11 +51,26 @@ export const selectAllDirtyWebGoods = createSelector(
 export const selectGoodsByParent = createSelector(
     selectAllWebGoods,
     selectAllDirtyWebEntities,
-    (goods:IWEBGood[] , dirtygoods:Dictionary<IONECGood>,  props) => goods
-    .filter(element => (element.parentid == props.parentid) || (props.parentid == undefined && element.parentid == ""))
-    .map(el  => {return {...el, filialNames:el.filials.map(felement => {return dirtygoods[felement].filial})}})
+    (goods:IWEBGood[] , dirtygoods:Dictionary<IONECGood>,  props) =>
+    
+    {
+        
+        if (props.onlyfolders) {
+            goods = goods.filter(el=> el.isFolder)
+        }
 
-)
+        return  goods
+        .filter(element => (element.parentid == props.parentid) || (props.parentid == undefined && element.parentid == ""))
+        .map(el  => {return {...el,
+            filialNames:el.filials.map(felement => {return dirtygoods[felement].filial}),
+            filialElements:el.filials.map(felement => {return dirtygoods[felement]})}   
+           })
+    
+    }
+    
+);
+
+
 
 export const selectDirtyGoodsByParent = createSelector(
     selectAllDirtyWebGoods,
@@ -75,14 +90,24 @@ export const selectDirtyGoodFilialById = createSelector(
 
 function GetNotInOnC(dirtygoods:Dictionary<IONECGood>,goods:IWEBGood[],props:string) : IWEBGoodWithFilials[] {
     return goods
-    .map(el  => {return {...el, filialNames:el.filials.map(felement => {return dirtygoods[felement].filial})}})
+    .map(el  => {return {...el,
+         filialNames:el.filials.map(felement => {return dirtygoods[felement].filial}),
+         filialElements:el.filials.map(felement => {return dirtygoods[felement]})}   
+        })
     .filter(element => {return (!element.isFolder && element.filialNames.indexOf(props)==-1)})
 }
 
-function GetByname(dirtygoods:Dictionary<IONECGood>,goods:IWEBGood[],props:string) : IWEBGoodWithFilials[] {
+function GetByname(dirtygoods:Dictionary<IONECGood>,goods:IWEBGood[],props:{onlyfolders:boolean,filter:string}) : IWEBGoodWithFilials[] {
+    if (props.onlyfolders) {
+        goods = goods.filter(el=>el.isFolder)  
+    }    
+    
     return goods
-    .map(el  => {return {...el, filialNames:el.filials.map(felement => {return dirtygoods[felement].filial})}})
-    .filter(element => {return (!element.isFolder && element.name.search(props)!=-1)})
+    .map(el  => {return {...el,
+        filialNames:el.filials.map(felement => {return dirtygoods[felement].filial}),
+        filialElements:el.filials.map(felement => {return dirtygoods[felement]})}   
+       })
+   .filter(element => {return ((!element.isFolder || props.onlyfolders) && element.name.search(props.filter)!=-1)})
 }
 
 

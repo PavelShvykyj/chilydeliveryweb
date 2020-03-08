@@ -1,0 +1,11 @@
+<h6 mat-dialog-title> Выбрать группу  </h6>
+
+<mat-dialog-content>
+    <webfolderlist [toolbarcommands]="[]" onlyfolders=true></webfolderlist>
+</mat-dialog-content>
+
+
+<mat-dialog-actions>
+    <button mat-button (click)="Save()"> Select </button>
+    <button mat-button (click)="Cancel()"> Cancel </button>
+</mat-dialog-actions>

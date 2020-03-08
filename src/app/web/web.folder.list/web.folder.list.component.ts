@@ -1,70 +1,41 @@
-import { IONECGood } from './../../models/onec.good';
-import { selectGoodsByParent, selectNotInONEC, selectGoodByName } from './../web.selectors';
-import { IWEBGood, IWEBGoodWithFilials } from './../../models/web.good';
+import { IONECGood } from '../../models/onec.good';
+import { selectGoodsByParent, selectNotInONEC, selectGoodByName } from '../web.selectors';
+import { IWEBGood, IWEBGoodWithFilials } from '../../models/web.good';
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { WebGoodsDatasourseService } from '../web.goods.datasourse.service';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
-
 import { Observable } from 'rxjs';
 import { ITolbarCommandsList } from 'src/app/models/toolbar.commandslist';
 import { IBaseGood } from 'src/app/models/base.good';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { Update } from '@ngrx/entity';
-import { statusWebSelectedGanged, updateWebgood } from '../web.actions';
+import { statusWebSelectedGanged } from '../web.actions';
 import { map } from 'rxjs/operators';
 import { CubToolbarComponent } from 'src/app/baseelements/cub-toolbar/cub-toolbar.component';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
-import { WebGoodEditComponent } from '../web-good-edit/web-good-edit.component';
+
 
 
 
 @Component({
-  selector: 'webgoodlist',
-  templateUrl: './web.good.list.component.html',
-  styleUrls: ['./web.good.list.component.scss']
+  selector: 'webfolderlist',
+  templateUrl: './web.folder.list.component.html',
+  styleUrls: ['./web.folder.list.component.scss']
 })
-export class WebGoodListComponent implements OnInit {
+export class WebFolderListComponent implements OnInit {
 
   @ViewChild(CubToolbarComponent, {static: false})
   toolbar: CubToolbarComponent;
 
   @Input('toolbarcommands')
-  toolbarcommands : ITolbarCommandsList[] = [
-    {
-      commandName: "refresh",
-      buttonName:"",
-      iconeName:'refresh'
-    },
-
-    {
-      commandName: "add",
-      buttonName:"",
-      iconeName:'add_circle'
-    },
-  
-    {
-      commandName: "delete",
-      buttonName:"",
-      iconeName:'delete'
-    },
-  
-    
-    {
-      commandName: "chain",
-      buttonName:"",
-      iconeName:'attachment'
-    },
-
-
-  ]
+  toolbarcommands : ITolbarCommandsList[] = [  ]
   
   @Input('onlyfolders')
-  onlyfolders: boolean = false
+  onlyfolders: boolean = true
 
   elements$ : Observable<IWEBGoodWithFilials[]>; 
   allelements$ : Observable<IWEBGoodWithFilials[]>; 
-  blocklenth:number = 20;
+  blocklenth:number = 200;
   startindex:number = 0;
   blocks:number[] = [0];
 
@@ -73,8 +44,7 @@ export class WebGoodListComponent implements OnInit {
   NameFilterValue:string="";
 
   constructor(public ds : WebGoodsDatasourseService, 
-              private store: Store<AppState>,
-              private dialog: MatDialog) { }
+              private store: Store<AppState>) { }
 
   ngOnInit() {
     this.allelements$ = this.store.pipe(select(selectGoodsByParent,{onlyfolders:this.onlyfolders,parentid:undefined}));
@@ -123,37 +93,9 @@ export class WebGoodListComponent implements OnInit {
         this.UpdateGoodsview();
         break;
       case "difference":
-        //alert("Команда upload");
-        this.allelements$ = this.store.pipe(select(selectNotInONEC));
-        this.UpdateGoodsview();
         break;
-      case "chain":
-        
+      case "download":
         break;
-      case "delete":
-        break;
-      case "add":
-        if (this.NameFilterValue.length!=0) {
-          return;   
-        }   
-        
-        const empty :IWEBGoodWithFilials = {
-          id:"",
-          externalid:"",
-          parentid:"",
-          name:"",
-          isFolder:false,
-          isSelected:false,
-          filials:[],
-          filialNames:[],
-          filialElements:[]
-        }
-        
-        this.EditItem(empty);
-           
-      
-        break;
-        
       default:
         break;
     }
@@ -168,7 +110,7 @@ export class WebGoodListComponent implements OnInit {
     } else {
       // заменям пробелы \s* на любое количество любых сиволов (".*")
       const reg = this.NameFilterValue.replace( /\s*/g, ".*");
-      this.allelements$ = this.store.pipe(select(selectGoodByName,{onlyfolders:this.onlyfolders,filter:reg}));
+      this.allelements$ = this.store.pipe(select(selectGoodByName, {onlyfolders:this.onlyfolders,filter: reg}));
     }
     this.UpdateGoodsview();
   }
@@ -211,33 +153,7 @@ export class WebGoodListComponent implements OnInit {
     this.elements$ = this.allelements$.pipe(map(goods => goods.slice(this.startindex,this.startindex+ this.blocklenth)))
   }
 
-  OnGoodEdit(item:IWEBGoodWithFilials) {
-    if (this.NameFilterValue.length!=0) {
-      return;   
-    }   
-    this.EditItem(item);
-
-  }
-
-  EditItem(item:IWEBGoodWithFilials) {
-    const parentel : IBaseGood | undefined = this.GetCurrentParent();
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.disableClose = true;
-    dialogConfig.minHeight="400px";
-    dialogConfig.minWidth="30vw"
-
-    dialogConfig.data = {item , parentel}
-    const DialogRef : MatDialogRef<WebGoodEditComponent>  = this.dialog.open(WebGoodEditComponent,dialogConfig);
-    DialogRef.afterClosed().subscribe(res =>{
-      if(res.answer != 'save') {
-        return;
-      }
-      console.log(res);
-
-      this.store.dispatch(updateWebgood({good:res.data} ));
-    });
-
-  }
+  
 
   UpdateGoodsview() {
     this.elements$ = this.allelements$.pipe(map(goods => {this.UpdateBlocks(goods.length);  return goods.slice(this.startindex,Math.min(this.startindex+this.blocklenth, goods.length))}));
