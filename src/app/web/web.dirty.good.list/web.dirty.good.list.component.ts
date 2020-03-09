@@ -58,7 +58,6 @@ export class WebDirtyGoodListComponent implements OnInit {
   constructor(public ds : WebGoodsDatasourseService, private store: Store<AppState>) { }
 
   ngOnInit() {
-    console.log(this.filialname);
     this.allelements$ = this.store.pipe(select(selectDirtyGoodsByParent,{parentid:undefined,filialname:this.filialname}));
     this.selectedelements$ = this.store.pipe(select(selectDirtyGoodBySelection,{filialname:this.filialname})); 
     this.UpdateGoodsview();
@@ -86,7 +85,6 @@ export class WebDirtyGoodListComponent implements OnInit {
   }
 
   OnGoodCheked(event:MatCheckboxChange,item: IONECGood) {
-    console.log('fl-change',item.name,event.checked);
     this.store.pipe(select(selectDirtyGoodBySelection,{filialname:this.filialname}),
     first(),
     tap(goods => {goods.forEach(good => this.AskForChangeSelection(good.id,false));}),
