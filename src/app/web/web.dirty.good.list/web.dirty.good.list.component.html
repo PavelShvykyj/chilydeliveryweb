@@ -34,8 +34,8 @@
             <mat-icon>folder</mat-icon>
           </button>
 
-          <h4 class="title-sub" mat-line>{{item.name}}</h4>
-
+          <h4 class="title-sub" [ngClass]="{'text-notimportant':item.owner.length>0}" mat-line>{{item.name}}</h4>
+          <p mat-line  ><small *ngFor="let ownerel of item.owner"> {{ ownerel.name }} </small>  </p>
         </mat-list-item>
         <mat-divider></mat-divider>
       </ng-container>

@@ -1,5 +1,5 @@
 import { IONECGood } from './../../models/onec.good';
-import { selectGoodsByParent, selectNotInONEC, selectGoodByName } from './../web.selectors';
+import { selectGoodsByParent,  selectGoodByName } from './../web.selectors';
 import { IWEBGood, IWEBGoodWithFilials } from './../../models/web.good';
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { WebGoodsDatasourseService } from '../web.goods.datasourse.service';
@@ -124,8 +124,8 @@ export class WebGoodListComponent implements OnInit {
         break;
       case "difference":
         //alert("Команда upload");
-        this.allelements$ = this.store.pipe(select(selectNotInONEC));
-        this.UpdateGoodsview();
+        
+        
         break;
       case "chain":
         

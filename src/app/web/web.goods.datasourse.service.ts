@@ -75,7 +75,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
   constructor(private db: AngularFirestore, private store: Store<AppState>) { }
 
   GetList(parentID: string | undefined) {
-    
+
     // this.store.pipe(
     //   select(areAllWebGoodsLoaded),
     //   filter(WebGoodsLoaded => {console.log("WebGoodsLoaded",WebGoodsLoaded);  return !WebGoodsLoaded} ),
@@ -85,76 +85,82 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
     //   ).subscribe();
   }
 
-  GetAllGoods() : Observable<{goods: IWEBGood[], dirtygoods:IONECGood[]}> {
+  GetAllGoods(): Observable<{ goods: IWEBGood[], dirtygoods: IONECGood[] }> {
 
     const webgoods$ = this.db.collection('web.goods', ref => ref.orderBy("isFolder", 'desc').orderBy("name"))
-    .snapshotChanges()
-    .pipe(map(res =>
-      {  
-        return res.map(element  => { 
-          return {...(element.payload.doc.data() as object),
-                   isSelected:false, 
-                   id:element.payload.doc.id}} ) as IWEBGood[];}),first());
+      .snapshotChanges()
+      .pipe(map(res => {
+        return res.map(element => {
+          return {
+            ...(element.payload.doc.data() as object),
+            isSelected: false,
+            id: element.payload.doc.id
+          }
+        }) as IWEBGood[];
+      }), first());
 
-    const dirtywebgoods$ = this.db.collection('onec.goods', ref => ref.orderBy("isFolder" , 'desc').orderBy("name"))
-    .snapshotChanges()
-    .pipe(map(res =>
-      { 
-        return res.map(element  => { 
-          return {...(element.payload.doc.data() as object),
-                  isSelected:false, 
-                  id:element.payload.doc.id}} ) as IONECGood[];}),first());
-                           
+    const dirtywebgoods$ = this.db.collection('onec.goods', ref => ref.orderBy("isFolder", 'desc').orderBy("name"))
+      .snapshotChanges()
+      .pipe(map(res => {
+        return res.map(element => {
+          return {
+            ...(element.payload.doc.data() as object),
+            isSelected: false,
+            id: element.payload.doc.id
+          }
+        }) as IONECGood[];
+      }), first());
 
-    return combineLatest(webgoods$,dirtywebgoods$)
-    .pipe(map(element=> {return { goods: element[0], dirtygoods:element[1]}}),first())
+
+    return combineLatest(webgoods$, dirtywebgoods$)
+      .pipe(map(element => { return { goods: element[0], dirtygoods: element[1] } }), first())
 
   }
 
-  UpdateByONEC(data: IONECGood) : Observable<IONECGood> {
-   
-
-   if(data.externalid=="" || data.externalid == undefined) {
-    
-    /// внешний код для фиребасе = внутренний от 1С  
-    const dataToUpdate: IFireBaseDirtyGood = {
-      externalid:data.id,
-      parentid: data.parentid == undefined ? "" : data.parentid,
-      isFolder:data.isFolder,
-      name:data.name,
-      filial:data.filial
-    } 
-
-    return from(this.db.collection('onec.goods').add(dataToUpdate)).pipe(map(docref => {return {...data,id:docref.id,externalid:data.id,isSelected:false}   } ));
-   } else {
-
-    const dataToUpdate: IFireBaseDirtyGood = {
-      externalid:data.id,
-      parentid:data.parentid == undefined ? "" : data.parentid,
-      isFolder:data.isFolder,
-      name:data.name,
-      filial:data.filial
-    } 
-
-    
-    return from(this.db.collection('onec.goods').doc(data.externalid).update(dataToUpdate)).pipe(map(() => {return {...data,id:data.externalid,externalid:data.id,isSelected:false}   } ));
+  UpdateByONEC(data: IONECGood): Observable<IONECGood> {
 
 
-   }
-   
-   
+    if (data.externalid == "" || data.externalid == undefined) {
+
+      /// внешний код для фиребасе = внутренний от 1С  
+      const dataToUpdate: IFireBaseDirtyGood = {
+        externalid: data.id,
+        parentid: data.parentid == undefined ? "" : data.parentid,
+        isFolder: data.isFolder,
+        name: data.name,
+        filial: data.filial
+      }
+
+      return from(this.db.collection('onec.goods').add(dataToUpdate)).pipe(map(docref => { return { ...data, id: docref.id, externalid: data.id, isSelected: false } }));
+    } else {
+
+      const dataToUpdate: IFireBaseDirtyGood = {
+        externalid: data.id,
+        parentid: data.parentid == undefined ? "" : data.parentid,
+        isFolder: data.isFolder,
+        name: data.name,
+        filial: data.filial
+      }
+
+
+      return from(this.db.collection('onec.goods').doc(data.externalid).update(dataToUpdate)).pipe(map(() => { return { ...data, id: data.externalid, externalid: data.id, isSelected: false } }));
+
+
+    }
+
+
   }
 
-  UpsertWebGood(webgood:IWEBGood): Observable<IWEBGood> {
-   
-   
-    if(webgood.id==undefined|| webgood.id=="") {
+  UpsertWebGood(webgood: IWEBGood): Observable<IWEBGood> {
+
+
+    if (webgood.id == undefined || webgood.id == "") {
       return from(this.db.collection('web.goods').add({
-        name:webgood.name,
-        parentid:webgood.parentid,
-        isFolder:webgood.isFolder,
-        filials:webgood.filials
-        })).pipe(map(docref => { const newgood : IWEBGood = {...webgood, id:docref.id, isSelected:false}; return  newgood}))
+        name: webgood.name,
+        parentid: webgood.parentid,
+        isFolder: webgood.isFolder,
+        filials: webgood.filials
+      })).pipe(map(docref => { const newgood: IWEBGood = { ...webgood, id: docref.id, isSelected: false }; return newgood }))
     } else {
       return from(this.db.collection('web.goods').doc(webgood.id).update(webgood)).pipe(map(() => webgood))
     }

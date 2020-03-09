@@ -1,5 +1,5 @@
-import { IONECGood } from './../../models/onec.good';
-import { selectDirtyGoodsByParent, selectDirtyGoodByName, selectDirtyGoodBySelection } from './../web.selectors';
+import { IONECGood, IONECGoodWithOwner } from './../../models/onec.good';
+import { selectDirtyGoodsByParent, selectDirtyGoodByName, selectDirtyGoodBySelection, selectUnattached } from './../web.selectors';
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { WebGoodsDatasourseService } from '../web.goods.datasourse.service';
 import { Store, select } from '@ngrx/store';
@@ -30,9 +30,9 @@ export class WebDirtyGoodListComponent implements OnInit {
   @Input('filialname')
   filialname : string = ""
 
-  elements$ : Observable<IONECGood[]>; 
-  allelements$ : Observable<IONECGood[]>; 
-  selectedelements$ : Observable<IONECGood[]>; 
+  elements$ : Observable<IONECGoodWithOwner[]>; 
+  allelements$ : Observable<IONECGoodWithOwner[]>; 
+  selectedelements$ : Observable<IONECGoodWithOwner[]>; 
   blocklenth:number = 20;
   startindex:number = 0;
   blocks:number[] = [0];
@@ -64,7 +64,8 @@ export class WebDirtyGoodListComponent implements OnInit {
     this.UpdateGoodsview();
   }
 
-  OnGoodClicked(item: IONECGood) {
+  OnGoodClicked(item: IONECGoodWithOwner) {
+    
     if(item.isFolder) {
       //this.ds.GetList(item.id);
       this.allelements$ = this.store.pipe(select(selectDirtyGoodsByParent,{parentid:item.id,filialname:this.filialname})); 
@@ -115,8 +116,8 @@ export class WebDirtyGoodListComponent implements OnInit {
         this.UpdateGoodsview();
         break;
       case "difference":
-        //alert("Команда upload");
-        //this.allelements$ = this.store.pipe(select(selectNotInONEC));
+        
+        this.allelements$ = this.store.pipe(select(selectUnattached,{parentid:undefined,filialname:this.filialname}));
         this.UpdateGoodsview();
         break;
       case "download":

@@ -19,7 +19,9 @@ $config: mat-typography-config($title: mat-typography-level(12px, 12px, 400),
   color: red;
 }
 
-
+.text-notimportant {
+  color: map-get($mat-grey, 400) !important;
+}
 
 mat-card-subtitle {
   margin-top: 18px;
