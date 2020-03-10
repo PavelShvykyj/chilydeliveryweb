@@ -66,7 +66,7 @@ export class WebGoodListComponent implements OnInit {
   elements$: Observable<IWEBGoodWithFilials[]>;
   allelements$: Observable<IWEBGoodWithFilials[]>;
   selectedelements$: Observable<IWEBGoodWithFilials[]>;
-  blocklenth: number = 20;
+  blocklenth: number = 15;
   startindex: number = 0;
   blocks: number[] = [0];
 
@@ -193,7 +193,7 @@ export class WebGoodListComponent implements OnInit {
   GetCurrentParentID(): string | undefined {
     const parent = this.GetCurrentParent();
     if (parent == undefined) {
-      return undefined
+      return ""
     } else {
       return parent.id
     }

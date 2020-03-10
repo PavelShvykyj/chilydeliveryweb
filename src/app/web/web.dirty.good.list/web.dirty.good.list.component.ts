@@ -33,7 +33,7 @@ export class WebDirtyGoodListComponent implements OnInit {
   elements$ : Observable<IONECGoodWithOwner[]>; 
   allelements$ : Observable<IONECGoodWithOwner[]>; 
   selectedelements$ : Observable<IONECGoodWithOwner[]>; 
-  blocklenth:number = 20;
+  blocklenth:number = 15;
   startindex:number = 0;
   blocks:number[] = [0];
 
