@@ -72,7 +72,7 @@ export class WebGoodEditComponent implements OnInit {
       ...this.data.item,
       isFolder:this.form.get("isFolder").value,
       name: this.form.get("name").value,
-      parentid:this.data.parentel.id,
+      parentid: this.data.parentel==undefined? "" : this.data.parentel.id,
       filials:this.data.item.filialElements.map(el => el.id)
     }
     this.dialogRef.close({answer: 'save', data : newversion });

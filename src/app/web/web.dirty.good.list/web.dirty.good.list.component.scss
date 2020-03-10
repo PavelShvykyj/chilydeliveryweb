@@ -19,8 +19,11 @@ $config: mat-typography-config($title: mat-typography-level(12px, 12px, 400),
   color: red;
 }
 
-.text-notimportant {
+.text-notimportant  {
+  font-size: mat-font-size($config, title) !important;
+  line-height: mat-line-height($config, title) !important;
   color: map-get($mat-grey, 400) !important;
+  
 }
 
 mat-card-subtitle {
@@ -42,4 +45,9 @@ mat-card {
 
 mat-card-footer {
   background-color: map-get($mat-grey, 100);
+}
+
+
+mat-list-item {
+  padding-top: 5px !important;
 }

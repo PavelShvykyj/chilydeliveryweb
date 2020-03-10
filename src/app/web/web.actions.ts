@@ -11,3 +11,5 @@ export const onecSelectedUploaded = createAction("[UPLOAD ONEC GOODS EFFECT]  se
 export const uploadOnecSelected = createAction("[ONEC GOODS LIST COMPONENT] Upload selected goods",props<{good: IONECGood}>());
 export const updateWebgood  = createAction("[WEB GOOD EDIT COMPONENT] add or edit web good",props<{good: IWEBGood}>());
 export const webgoodUpdated = createAction("[UPDATE WEB GOOD EFFECT web good added or updated]",props<{good:IWEBGood}>());
+export const chainWebgood  = createAction("[WEB GOOD LIST COMPONENT] add or edit web good",props<{good: IWEBGood}>());
+export const webgoodChained = createAction("[CHAIN WEB GOOD EFFECT web good added or updated]",props<{good:IWEBGood}>());

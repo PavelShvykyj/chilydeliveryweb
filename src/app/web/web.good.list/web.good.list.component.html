@@ -1,5 +1,11 @@
 <cub-toolbar [dataSourse]="ds" [toolbarcommands]="toolbarcommands" (OnElementClicked)="OnLentaElementClicked($event)"
-  (OnToolbarCommandClicked)="OnToolbarCommandClicked($event)"></cub-toolbar>
+  (OnToolbarCommandClicked)="OnToolbarCommandClicked($event)">
+</cub-toolbar>
+
+<ng-container *ngFor="let item of (selectedelements$ | async)">
+  <mat-card class="primary">{{ item.name }}</mat-card> 
+</ng-container>
+
 
 <mat-card>
   <mat-card-header>

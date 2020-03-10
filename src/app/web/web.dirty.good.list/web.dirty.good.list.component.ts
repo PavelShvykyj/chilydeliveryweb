@@ -90,7 +90,6 @@ export class WebDirtyGoodListComponent implements OnInit {
     tap(goods => {goods.forEach(good => this.AskForChangeSelection(good.id,false));}),
     tap(()=>this.AskForChangeSelection(item.id,event.checked))).subscribe();
     this.AskForChangeSelection(item.id,event.checked);
-    //alert(item.name+" "+event.checked);
   }
 
   OnLentaElementClicked(event : IBaseGood) {

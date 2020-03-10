@@ -46,26 +46,15 @@ export const selectAllDirtyWebGoods = createSelector(
 )
 
 /////////////// ФУНКЦИИ
-function GetNotInOnC(dirtygoods:Dictionary<IONECGood>,goods:IWEBGood[],props:string) : IWEBGoodWithFilials[] {
-    return goods
-    .map(el  => {return {...el,
-         filialNames:el.filials.map(felement => {return dirtygoods[felement].filial}),
-         filialElements:el.filials.map(felement => {return dirtygoods[felement]})}   
-        })
-    .filter(element => {return (!element.isFolder && element.filialNames.indexOf(props)==-1)})
-}
+
 
 function GetByname(dirtygoods:Dictionary<IONECGood>,goods:IWEBGood[],props:{onlyfolders:boolean,filter:string}) : IWEBGoodWithFilials[] {
     if (props.onlyfolders) {
         goods = goods.filter(el=>el.isFolder)  
     }    
     
-    return goods
-    .map(el  => {return {...el,
-        filialNames:el.filials.map(felement => {return dirtygoods[felement].filial}),
-        filialElements:el.filials.map(felement => {return dirtygoods[felement]})}   
-       })
-   .filter(element => {return ((!element.isFolder || props.onlyfolders) && element.name.search(props.filter)!=-1)})
+    goods = goods.filter(element => {return ((!element.isFolder || props.onlyfolders) && element.name.search(props.filter)!=-1)})
+    return GoodsWithFilials(goods,dirtygoods);
 }
 
 function DirtyGoodsWithOwner(goods,webgoods) : IONECGoodWithOwner[] {
@@ -73,6 +62,13 @@ function DirtyGoodsWithOwner(goods,webgoods) : IONECGoodWithOwner[] {
         const owner : IWEBGood[] = webgoods.filter(elwebgood => elwebgood.filials.indexOf(elgood.id)!=-1);
         return {...elgood, owner}
         })
+}
+
+function GoodsWithFilials(goods , dirtygoods) : IWEBGoodWithFilials[] {
+    return goods.map(el  => {return {...el,
+        filialNames:el.filials.map(felement => {return dirtygoods[felement].filial}),
+        filialElements:el.filials.map(felement => {return dirtygoods[felement]})}   
+       })
 }
 
 /// ФИЛЬТРы
@@ -85,12 +81,11 @@ export const selectGoodsByParent = createSelector(
         if (props.onlyfolders) {
             goods = goods.filter(el=> el.isFolder)
         }
-        return  goods
-        .filter(element => (element.parentid == props.parentid) || (props.parentid == undefined && element.parentid == ""))
-        .map(el  => {return {...el,
-            filialNames:el.filials.map(felement => {return dirtygoods[felement].filial}),
-            filialElements:el.filials.map(felement => {return dirtygoods[felement]})}   
-           })
+        
+        goods = goods.filter(element => (element.parentid == props.parentid) || (props.parentid == undefined && element.parentid == ""));
+
+        return GoodsWithFilials(goods,dirtygoods);
+        
     }
 );
 
@@ -126,7 +121,11 @@ export const selectDirtyGoodByName = createSelector(
 
 export const selectGoodBySelection = createSelector(
     selectAllWebGoods,
-    goods => goods.filter(element => element.isSelected)
+    selectAllDirtyWebEntities,
+    (goods:IWEBGood[] , dirtygoods:Dictionary<IONECGood>) => {
+        goods = goods.filter(element => element.isSelected);
+        return GoodsWithFilials(goods,dirtygoods);
+    }
 )
 
 export const selectDirtyGoodBySelection = createSelector(
@@ -138,7 +137,19 @@ export const selectDirtyGoodBySelection = createSelector(
     } 
 )
 
-
+export const selectAllBySelection = createSelector(
+    selectAllDirtyWebGoods,
+    selectAllWebGoods,
+    selectAllDirtyWebEntities,
+    (goods:IONECGood[], webgoods:IWEBGood[], goodsentyties ) => {
+        let sdirtygoods = goods.filter(element => element.isSelected);
+        let swebgoods = webgoods.filter(element => element.isSelected);
+        return {
+            dirty:DirtyGoodsWithOwner(sdirtygoods,webgoods),
+            web:GoodsWithFilials(swebgoods,goodsentyties)
+        }
+    } 
+)
 
 
 

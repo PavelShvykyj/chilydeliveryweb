@@ -87,7 +87,8 @@ export const WebReducer = createReducer(
   on(WebActions.statusWebSelectedGanged,  (state,action)=> StatusWebSelectedGanged(state,action)),
   on(WebActions.statusDirtyWebSelectedGanged,  (state,action)=> StatusDirtyWebSelectedGanged(state,action)),
   on(WebActions.onecSelectedUploaded,  (state,action)=> OneCGoodUploded(state,action)),
-  on(WebActions.webgoodUpdated,  (state,action)=> WebGoodUploded(state,action))
+  on(WebActions.webgoodUpdated,  (state,action)=> WebGoodUploded(state,action)),
+  on(WebActions.webgoodChained,  (state,action)=> WebGoodUploded(state,action))
   )
 
 export const {selectAll, selectEntities} = WebAdapter.getSelectors();

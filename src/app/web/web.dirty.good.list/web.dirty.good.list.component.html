@@ -1,9 +1,10 @@
 <cub-toolbar [dataSourse]="ds" [toolbarcommands]="toolbarcommands" (OnElementClicked)="OnLentaElementClicked($event)"
-  (OnToolbarCommandClicked)="OnToolbarCommandClicked($event)"></cub-toolbar>
+  (OnToolbarCommandClicked)="OnToolbarCommandClicked($event)">
+</cub-toolbar>
 
-  <ng-container *ngFor="let item of (selectedelements$ | async)">
-    <mat-card class="primary">{{ item.name }}</mat-card> 
-  </ng-container>
+<ng-container *ngFor="let item of (selectedelements$ | async)">
+  <mat-card class="primary">{{ item.name }}</mat-card> 
+</ng-container>
 
 <mat-card>
    <mat-card-header>
@@ -34,7 +35,11 @@
             <mat-icon>folder</mat-icon>
           </button>
 
-          <h4 class="title-sub" [ngClass]="{'text-notimportant':item.owner.length>0}" mat-line>{{item.name}}</h4>
+          <p  [ngClass]="{
+            'text-notimportant':item.owner.length>0,
+            'title-sub':item.owner.length==0,
+            'mat-small':item.owner.length>0}"
+             mat-line> {{item.name}} </p>
           <p mat-line  ><small *ngFor="let ownerel of item.owner"> {{ ownerel.name }} </small>  </p>
         </mat-list-item>
         <mat-divider></mat-divider>

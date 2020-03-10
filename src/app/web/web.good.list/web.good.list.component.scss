@@ -11,8 +11,8 @@ $config: mat-typography-config($title: mat-typography-level(12px, 12px, 400),
 }
 
 .title-sub {
-  font-size: mat-font-size($config, subheading-1);
-  line-height: mat-line-height($config, subheading-1);
+  font-size: mat-font-size($config, subheading-1) !important;
+  line-height: mat-line-height($config, subheading-1) !important;
 }
 
 .currentblock {
@@ -40,4 +40,9 @@ mat-card {
 
 mat-card-footer {
   background-color: map-get($mat-grey, 100);
+}
+
+
+mat-list-item {
+  padding-top: 5px !important;
 }

@@ -2,7 +2,7 @@ import { IONECGood } from './../models/onec.good';
 import { Store } from '@ngrx/store';
 import { WebGoodsDatasourseService } from './web.goods.datasourse.service';
 
-import { allWebGoodsLoaded, onecSelectedUploaded, webgoodUpdated } from './web.actions';
+import { allWebGoodsLoaded, onecSelectedUploaded, webgoodUpdated, webgoodChained } from './web.actions';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { WebActions } from './wtb.action.types';
@@ -34,6 +34,11 @@ export class WebEffects {
         map(good => webgoodUpdated({good})))
     );
     
+    chainWebGood$ = createEffect(() => this.actions$.pipe(
+        ofType(WebActions.chainWebgood),
+        concatMap(action => this.WebServise.UpsertWebGood(action.good)),
+        map(good => webgoodChained({good})))
+    );    
 
     constructor(private actions$: Actions, private WebServise: WebGoodsDatasourseService, private store : Store<AppState>) {
     }
