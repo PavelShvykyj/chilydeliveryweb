@@ -162,7 +162,12 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
         filials: webgood.filials
       })).pipe(map(docref => { const newgood: IWEBGood = { ...webgood, id: docref.id, isSelected: false }; return newgood }))
     } else {
-      return from(this.db.collection('web.goods').doc(webgood.id).update(webgood)).pipe(map(() => webgood))
+      return from(this.db.collection('web.goods').doc(webgood.id).update({
+        name: webgood.name,
+        parentid: webgood.parentid,
+        isFolder: webgood.isFolder,
+        filials: webgood.filials
+      })).pipe(map(() => webgood))
     }
 
 
