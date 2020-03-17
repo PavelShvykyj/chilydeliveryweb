@@ -6,6 +6,7 @@ import { tap, first, finalize, filter } from 'rxjs/operators';
 import { AppState } from 'src/app/reducers';
 import { areAllWebGoodsLoaded } from 'src/app/web/web.selectors';
 import { loadAllWebGoods } from 'src/app/web/web.actions';
+import { LocalDBService } from 'src/app/idb/local-db.service';
 
 @Injectable()
 export class GoodsResolver implements Resolve<any> {

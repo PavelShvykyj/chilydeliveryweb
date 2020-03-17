@@ -22,6 +22,7 @@ const routes: Routes = [
   {
     path: 'orders',
     component: OrdersExchangeComponent,
+    resolve : {goods : GoodsResolver},
     canActivate:[IsLoggedInGuard]
   },
   

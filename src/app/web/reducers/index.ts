@@ -13,7 +13,7 @@ import {
 import { environment } from '../../../environments/environment';
 import { EntityState, createEntityAdapter, Dictionary } from '@ngrx/entity';
 import { WebActions } from '../wtb.action.types';
-import { allWebGoodsLoaded } from '../web.actions';
+import { allWebGoodsLoaded, webgoodDeleted } from '../web.actions';
 import { state } from '@angular/animations';
 
 
@@ -81,6 +81,13 @@ function WebGoodUploded(state,action)  : WebState {
   }
 }
 
+function WebgoodDeleted(state,action) : WebState {
+  return {
+    ...state,
+    webGoods: WebAdapter.removeOne(action.id ,state.webGoods)
+  }
+}
+
 export const WebReducer = createReducer(
   initialState,
   on(WebActions.allWebGoodsLoaded ,(state,action)=> LoadAllGoods(state,action)),
@@ -88,6 +95,7 @@ export const WebReducer = createReducer(
   on(WebActions.statusDirtyWebSelectedGanged,  (state,action)=> StatusDirtyWebSelectedGanged(state,action)),
   on(WebActions.onecSelectedUploaded,  (state,action)=> OneCGoodUploded(state,action)),
   on(WebActions.webgoodUpdated,  (state,action)=> WebGoodUploded(state,action)),
+  on(WebActions.webgoodDeleted, (state,action)=> WebgoodDeleted(state,action) ),
   on(WebActions.webgoodChained,  (state,action)=> WebGoodUploded(state,action))
   )
 

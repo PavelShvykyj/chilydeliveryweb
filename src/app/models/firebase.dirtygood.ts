@@ -3,5 +3,6 @@ export interface IFireBaseDirtyGood {
     parentid:string | undefined,
     isFolder:boolean,
     externalid:string | undefined,
-    filial:string
+    filial:string,
+    lastmodified:Date
 }

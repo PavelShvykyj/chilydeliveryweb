@@ -11,7 +11,7 @@ import { ITolbarCommandsList } from 'src/app/models/toolbar.commandslist';
 import { IBaseGood } from 'src/app/models/base.good';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { Update } from '@ngrx/entity';
-import { statusWebSelectedGanged, updateWebgood, chainWebgood } from '../web.actions';
+import { statusWebSelectedGanged, updateWebgood, chainWebgood, deleteWebgood } from '../web.actions';
 import { map, first, tap } from 'rxjs/operators';
 import { CubToolbarComponent } from 'src/app/baseelements/cub-toolbar/cub-toolbar.component';
 import { MatDialog, MatDialogConfig, MatDialogRef, MatSnackBar } from '@angular/material';
@@ -114,6 +114,21 @@ export class WebGoodListComponent implements OnInit {
     this.AskForChangeSelection(item.id, event.checked);
   }
 
+  DeleteSelected() {
+    this.store.pipe(select(selectGoodBySelection),
+      first(),
+      tap(goods => { 
+        
+        goods.forEach(good => {
+          if(good.filials.length==0) {
+            this.store.dispatch(deleteWebgood({id:good.id}))
+          }
+        }); 
+      }),
+      ).subscribe();
+  }
+
+
   OnLentaElementClicked(event: IBaseGood) {
     if (event == undefined) {
       //this.ds.GetList(undefined);
@@ -126,6 +141,7 @@ export class WebGoodListComponent implements OnInit {
   }
 
   OnToolbarCommandClicked(event: string) {
+    
     switch (event) {
       case "refresh":
         //this.ds.GetList(undefined);
@@ -143,6 +159,7 @@ export class WebGoodListComponent implements OnInit {
 
         break;
       case "delete":
+        this.DeleteSelected();
         break;
       case "add":
         if (this.NameFilterValue.length != 0) {

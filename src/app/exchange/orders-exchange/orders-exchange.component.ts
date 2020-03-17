@@ -1,4 +1,7 @@
+import { AngularFirestore } from '@angular/fire/firestore';
 import { Component, OnInit } from '@angular/core';
+import { LocalDBService } from 'src/app/idb/local-db.service';
+import { WebGoodsDatasourseService } from 'src/app/web/web.goods.datasourse.service';
 
 @Component({
   selector: 'app-orders-exchange',
@@ -7,9 +10,32 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OrdersExchangeComponent implements OnInit {
 
-  constructor() { }
+  constructor(private idb : LocalDBService, private fbd: AngularFirestore ,private sfbd: WebGoodsDatasourseService) { }
 
   ngOnInit() {
   }
+
+  DeleteLDB() {
+    this.idb.DeleteDatabase().subscribe(()=> console.log('deleted'));
+  }
+
+  ApdateModified() {
+    // const now : Date = new Date();
+    // this.sfbd.GetAllGoods().subscribe(goodsdata=> {
+    //   goodsdata.goods.forEach(good => {
+    //     this.fbd.collection('web.goods').doc(good.id).update({lastmodified: now})
+    //     .catch(()=>console.log('err',good.id))
+    //     .then(()=>console.log('Ok',good.id))
+    //   }) 
+      
+    //   goodsdata.dirtygoods.forEach(good => {
+    //     this.fbd.collection('onec.goods').doc(good.id).update({lastmodified: now})
+    //     .catch(()=>console.log('err',good.id))
+    //     .then(()=>console.log('Ok',good.id))
+    //   }) 
+    // })
+
+  }
+
 
 }

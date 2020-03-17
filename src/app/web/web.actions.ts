@@ -13,3 +13,6 @@ export const updateWebgood  = createAction("[WEB GOOD EDIT COMPONENT] add or edi
 export const webgoodUpdated = createAction("[UPDATE WEB GOOD EFFECT web good added or updated]",props<{good:IWEBGood}>());
 export const chainWebgood  = createAction("[WEB GOOD LIST COMPONENT] add or edit web good",props<{good: IWEBGood}>());
 export const webgoodChained = createAction("[CHAIN WEB GOOD EFFECT web good added or updated]",props<{good:IWEBGood}>());
+
+export const webgoodDeleted = createAction("[DELETE WEB GOOD EFFECT web good delete]",props<{id:string}>());
+export const deleteWebgood = createAction("[WEB GOOD LIST COMPONENT web good delete]",props<{id:string}>());

@@ -14,6 +14,9 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import {RouterState, StoreRouterConnectingModule, routerReducer} from '@ngrx/router-store';
+import { NgxIndexedDBModule  } from 'ngx-indexed-db';
+
+
 
 /////////////////   OWN CREATED
 import { AppComponent } from './app.component';
@@ -24,7 +27,8 @@ import { ExchangeModule } from './exchange/exchange.module';
 import { AppEffects } from './app.effects';
 import { OptionsEffects } from './options.effects';
 import { IsLoggedInGuard } from './isloged.guard';
-
+import { dbConfig } from './idb/idb.config';
+import { IdbModule } from './idb/idb.module';
 
 
 
@@ -54,13 +58,13 @@ import { IsLoggedInGuard } from './isloged.guard';
       stateKey: 'router',
       routerState: RouterState.Minimal
     }),
-    
+    NgxIndexedDBModule.forRoot(dbConfig),
     /////////////////   OWN CREATED
     
     WebModule,
     AuthModule,
-    ExchangeModule
-    
+    ExchangeModule,
+    IdbModule
     
     
 
