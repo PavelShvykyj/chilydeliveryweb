@@ -211,7 +211,6 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
         tap(newgood => {this.idb.AddElement(newgood,"WebGoods"); return newgood})
         )
     } else {
-<<<<<<< HEAD
       return from(this.db.collection('web.goods').doc(webgood.id).update(
         {
           name: webgood.name,
@@ -223,14 +222,6 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
         )).pipe(
         tap(() => this.idb.UpdateElement(webgood,"WebGoods")),
         map(() => webgood))
-=======
-      return from(this.db.collection('web.goods').doc(webgood.id).update({
-        name: webgood.name,
-        parentid: webgood.parentid,
-        isFolder: webgood.isFolder,
-        filials: webgood.filials
-      })).pipe(map(() => webgood))
->>>>>>> 44b93e14bb845e31010f70759f835d91f63c84ba
     }
   }
 
