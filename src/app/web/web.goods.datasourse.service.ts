@@ -94,7 +94,6 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
       .snapshotChanges()
       .pipe(map(res => {
         return res.map(element => {
-          console.log("GetAllGoods listener", element);
           return {
             ...(element.payload.doc.data() as object),
             isSelected: false,
@@ -120,24 +119,26 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
       .pipe(
         map(element => { return { goods: element[0], dirtygoods: element[1] } }),
         first(),
-        tap(allgoods=> {console.log('idb update all'); this.idb.UpdateAllGoods(allgoods); return allgoods} ))
+        tap(allgoods=> { this.idb.UpdateAllGoods(allgoods); return allgoods} ))
 
   }
 
+
+  /////////// нельзя покка подписываться нужен рефакторинг как правильно соотнести с хранилищем
   GetAllChanges(lastupdate:Date): Observable<{ goods: IWEBGood[], dirtygoods: IONECGood[] }> {
 
     const webgoods$ = this.db.collection('web.goods', ref => ref.where("lastmodified",">=",lastupdate))
       .snapshotChanges()
-      .pipe(map(res => {
+      .pipe(
+        map(res => {
         return res.map(element => {
-          console.log("GetAllGoods listener", element);
           return {
             ...(element.payload.doc.data() as object),
             isSelected: false,
             id: element.payload.doc.id
           }
         }) as IWEBGood[];
-      }), first());
+      }));
 
     const dirtywebgoods$ = this.db.collection('onec.goods', ref => ref.where("lastmodified",">=",lastupdate))
       .snapshotChanges()
@@ -149,19 +150,55 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
             id: element.payload.doc.id
           }
         }) as IONECGood[];
-      }), first());
+      })
+      
+      );
 
 
     return combineLatest(webgoods$, dirtywebgoods$)
       .pipe(
         map(element => { return { goods: element[0], dirtygoods: element[1] } }),
-        first());
+        tap(changes => {this.idb.UpdateChanges(changes); return changes} )
+        
+        );
 
   }
 
 
+  UpsertWebGood(webgood: IWEBGood): Observable<IWEBGood> {
+    if (webgood.id == undefined || webgood.id == "") {
+      return from(this.db.collection('web.goods').add({
+        name: webgood.name,
+        parentid: webgood.parentid,
+        isFolder: webgood.isFolder,
+        filials: webgood.filials,
+        lastmodified:new Date()
+      })).pipe(
+        map(docref => { const newgood: IWEBGood = { ...webgood, id: docref.id, isSelected: false }; return newgood }),
+        tap(newgood => {this.idb.AddElement(newgood,"WebGoods"); return newgood})
+        )
+    } else {
+      return from(this.db.collection('web.goods').doc(webgood.id).update(
+        {
+          name: webgood.name,
+          parentid: webgood.parentid,
+          isFolder: webgood.isFolder,
+          filials: webgood.filials,
+          lastmodified:new Date()
+        }
+        )).pipe(
+        tap(() => this.idb.UpdateElement(webgood,"WebGoods")),
+        map(() => webgood))
+    }
+  }
 
+  DeleteWebGood(id:string) {
+    return from(this.db.collection('web.goods').doc(id).delete()).pipe(
+      tap(()=> this.idb.DeleteElement(id,"WebGoods")),
+      map(() => id));
+  }
 
+  /////////////////////////// DELETE THIS
   UpdateByONEC(data: IONECGood): Observable<IONECGood> {
 
 
@@ -198,40 +235,6 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
 
   }
 
-  UpsertWebGood(webgood: IWEBGood): Observable<IWEBGood> {
-    if (webgood.id == undefined || webgood.id == "") {
-      return from(this.db.collection('web.goods').add({
-        name: webgood.name,
-        parentid: webgood.parentid,
-        isFolder: webgood.isFolder,
-        filials: webgood.filials,
-        lastmodified:new Date()
-      })).pipe(
-        map(docref => { const newgood: IWEBGood = { ...webgood, id: docref.id, isSelected: false }; return newgood }),
-        tap(newgood => {this.idb.AddElement(newgood,"WebGoods"); return newgood})
-        )
-    } else {
-      return from(this.db.collection('web.goods').doc(webgood.id).update(
-        {
-          name: webgood.name,
-          parentid: webgood.parentid,
-          isFolder: webgood.isFolder,
-          filials: webgood.filials,
-          lastmodified:new Date()
-        }
-        )).pipe(
-        tap(() => this.idb.UpdateElement(webgood,"WebGoods")),
-        map(() => webgood))
-    }
-  }
-
-  DeleteWebGood(id:string) {
-    return from(this.db.collection('web.goods').doc(id).delete()).pipe(
-      tap(()=> this.idb.DeleteElement(id,"WebGoods")),
-      map(() => id));
-  }
-
- 
 
 }
 

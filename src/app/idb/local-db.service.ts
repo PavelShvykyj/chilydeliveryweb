@@ -44,11 +44,19 @@ export class LocalDBService {
     await this.db.clear('DirtyGoods');
     allgoods.dirtygoods.forEach(good=> this.AddElement(good,'DirtyGoods'));
     await this.db.clear('exchangeheader');
-    const HeaderOb = {LastDownload : new Date()}
-    this.AddElement(HeaderOb,'exchangeheader')
+    const HeaderObj = {LastDownload : new Date()}
+    this.AddElement(HeaderObj,'exchangeheader')
 
     
   }
+
+  async UpdateChanges(changes: { goods: IWEBGood[], dirtygoods: IONECGood[] }) {
+    changes.goods.forEach(good=> this.UpdateElement(good,'WebGoods'));
+    changes.dirtygoods.forEach(good=> this.UpdateElement(good,'DirtyGoods'));
+    const HeaderObj = {LastDownload : new Date()}
+    this.UpdateElement(HeaderObj,'exchangeheader')
+  }
+
 
   get DB() {
     return this.db.indexedDB
