@@ -7,7 +7,7 @@ export const dbConfig: DBConfig = {
         store: 'exchangeheader',
         storeConfig: { keyPath: 'id', autoIncrement: true },
         storeSchema: [
-            { name: 'LastDownload', keypath: 'LastDownload', options: { unique: false } }
+            { name: 'LastDownload', keypath: 'id', options: { unique: false } }
         ]
     },
     {
@@ -25,6 +25,7 @@ export const dbConfig: DBConfig = {
             { name: 'id', keypath: 'id', options: { unique: true } },
             { name: 'name', keypath: 'name', options: { unique: false } },
             { name: 'isFolder', keypath: 'isFolder', options: { unique: false } },
+            { name: 'sortdefoult', keypath: 'sortdefoult', options: { unique: false } },
             { name: 'parentid', keypath: 'parentid', options: { unique: false } },
             { name: 'externalid', keypath: 'externalid', options: { unique: false } },
             { name: 'lastmodified', keypath: 'lastmodified', options: { unique: false } },
@@ -38,6 +39,7 @@ export const dbConfig: DBConfig = {
             { name: 'id', keypath: 'id', options: { unique: true } },
             { name: 'name', keypath: 'name', options: { unique: false } },
             { name: 'isFolder', keypath: 'isFolder', options: { unique: false } },
+            { name: 'sortdefoult', keypath: 'sortdefoult', options: { unique: false } },
             { name: 'parentid', keypath: 'parentid', options: { unique: false } },
             { name: 'externalid', keypath: 'externalid', options: { unique: false } },
             { name: 'lastmodified', keypath: 'lastmodified', options: { unique: false } },
@@ -54,7 +56,7 @@ export function migrationFactory() {
     return {
         1: (db, transaction) => {
             const store = transaction.objectStore('exchangeheader');
-            const initdate = new Date(2000,0,0);
+            const initdate = new Date(2000,1,1);
             const initheader = { LastDownload: initdate  };
             store.add(initheader);
         }

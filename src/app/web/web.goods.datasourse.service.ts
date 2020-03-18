@@ -7,7 +7,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { IONECGood } from '../models/onec.good';
 import { IGoodsListDatasourse } from '../models/goods.list.datasourse';
 import { Observable, BehaviorSubject, combineLatest, from } from 'rxjs';
-import { map, filter, concatMap, first, tap } from 'rxjs/operators';
+import { map, filter, concatMap, first, tap, catchError } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { areAllWebGoodsLoaded } from './web.selectors';
 import { AppState } from '../reducers';
@@ -165,15 +165,21 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
   }
 
 
-  UpsertWebGood(webgood: IWEBGood): Observable<IWEBGood> {
+   UpsertWebGood(webgood: IWEBGood): Observable<IWEBGood> {
+    const operationDate : Date = new Date();
+    const lastupdate : Promise<Date> =  this.idb.GetLastUpdate();
+    
+    this.idb.SetLastUpdate(new Promise(reject =>{reject(operationDate)}));
+
     if (webgood.id == undefined || webgood.id == "") {
       return from(this.db.collection('web.goods').add({
         name: webgood.name,
         parentid: webgood.parentid,
         isFolder: webgood.isFolder,
         filials: webgood.filials,
-        lastmodified:new Date()
+        lastmodified:operationDate
       })).pipe(
+        catchError(e => {this.idb.SetLastUpdate(lastupdate); return Observable.throw(e)} ),
         map(docref => { const newgood: IWEBGood = { ...webgood, id: docref.id, isSelected: false }; return newgood }),
         tap(newgood => {this.idb.AddElement(newgood,"WebGoods"); return newgood})
         )
@@ -184,16 +190,22 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
           parentid: webgood.parentid,
           isFolder: webgood.isFolder,
           filials: webgood.filials,
-          lastmodified:new Date()
+          lastmodified:operationDate
         }
         )).pipe(
-        tap(() => this.idb.UpdateElement(webgood,"WebGoods")),
+        catchError(e => {this.idb.SetLastUpdate(lastupdate); return Observable.throw(e)} ),
+        tap(() => this.idb.UpdateElement(webgood,"WebGoods",webgood.id)),
         map(() => webgood))
     }
   }
 
   DeleteWebGood(id:string) {
+    const operationDate : Date = new Date();
+    const lastupdate : Promise<Date> =  this.idb.GetLastUpdate();
+    this.idb.SetLastUpdate(new Promise(reject =>{ reject(operationDate)}));
+
     return from(this.db.collection('web.goods').doc(id).delete()).pipe(
+      catchError(e => {this.idb.SetLastUpdate(lastupdate); return Observable.throw(e)} ),
       tap(()=> this.idb.DeleteElement(id,"WebGoods")),
       map(() => id));
   }

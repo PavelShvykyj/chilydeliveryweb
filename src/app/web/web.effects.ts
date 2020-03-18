@@ -11,7 +11,7 @@ import { AppState } from '../reducers';
 
 import { Update } from '@ngrx/entity';
 import { LocalDBService } from '../idb/local-db.service';
-import { of } from 'rxjs';
+import { of, from } from 'rxjs';
 
 @Injectable()
 export class WebEffects {
@@ -20,17 +20,19 @@ export class WebEffects {
         this.actions$.pipe(
             ofType(WebActions.loadAllWebGoods),
             concatMap(action => {
-                return this.idb.GetAllGoods()
+                return from(this.idb.GetAllGoodsByIndex())
             }),
             
             concatMap(data => { 
+                
                 if(data.goods.length==0 && data.dirtygoods.length==0) {
                     return this.WebServise.GetAllGoods();
                 } else {
+                    console.log('idb');
                     return of(data);
                 }
                   }),
-            map(allgoods => allWebGoodsLoaded({ ...allgoods }))
+            map(allgoods =>allWebGoodsLoaded({ ...allgoods }))
         )
     );
 
