@@ -3,6 +3,7 @@ import { IFireBaseDirtyGood } from './../models/firebase.dirtygood';
 
 import { Injectable } from '@angular/core';
 import * as firebase from 'firebase/app';
+import 'firebase/firestore';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { IONECGood } from '../models/onec.good';
 import { IGoodsListDatasourse } from '../models/goods.list.datasourse';
@@ -16,7 +17,12 @@ import { Update } from '@ngrx/entity';
 import { LocalDBService } from '../idb/local-db.service';
 
 
-// firebase.initializeApp(environment.firebase);
+
+
+
+firebase.initializeApp(environment.firebase);
+
+
 // const idfield = firebase.firestore.FieldPath.documentId();
 
 @Injectable({
@@ -74,19 +80,13 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
 
 
   constructor(private db: AngularFirestore,
-              private store: Store<AppState>,
-              private idb: LocalDBService) { }
+    private store: Store<AppState>,
+    private idb: LocalDBService) { }
 
-  GetList(parentID: string | undefined) {
 
-    // this.store.pipe(
-    //   select(areAllWebGoodsLoaded),
-    //   filter(WebGoodsLoaded => {console.log("WebGoodsLoaded",WebGoodsLoaded);  return !WebGoodsLoaded} ),
-    //   concatMap(WebGoodsLoaded => this.db.collection('web.goods').snapshotChanges().pipe(map(res => { console.log(res); return res.map(element  => {return {...(element.payload.doc.data() as object) ,isSelected:false, id:element.payload.doc.id}} ) as IWEBGood[];}   ))),
-    //   first(),
-    //   tap(res => this.dataEventer.next(res))
-    //   ).subscribe();
-  }
+    get timestamp() {
+      return firebase.firestore.FieldValue.serverTimestamp();
+    }
 
   GetAllGoods(): Observable<{ goods: IWEBGood[], dirtygoods: IONECGood[] }> {
 
@@ -105,7 +105,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
     const dirtywebgoods$ = this.db.collection('onec.goods', ref => ref.orderBy("isFolder", 'desc').orderBy("name"))
       .snapshotChanges()
       .pipe(map(res => {
-        return res.map(element =>  {
+        return res.map(element => {
           return {
             ...(element.payload.doc.data() as object),
             isSelected: false,
@@ -119,31 +119,43 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
       .pipe(
         map(element => { return { goods: element[0], dirtygoods: element[1] } }),
         first(),
-        tap(allgoods=> { this.idb.UpdateAllGoods(allgoods); return allgoods} ))
+        tap(allgoods => { this.idb.UpdateAllGoods(allgoods); return allgoods }))
 
   }
 
 
   /////////// нельзя покка подписываться нужен рефакторинг как правильно соотнести с хранилищем
-  GetAllChanges(lastupdate:Date): Observable<{ goods: IWEBGood[], dirtygoods: IONECGood[] }> {
-
-    const webgoods$ = this.db.collection('web.goods', ref => ref.where("lastmodified",">=",lastupdate))
+  GetAllChanges(lastupdate: Date): Observable<{ goods: IWEBGood[], dirtygoods: IONECGood[] }> {
+    let mdate = lastupdate;
+       
+    
+    const webgoods$ = this.db.collection('web.goods', ref => ref.where("lastmodified", ">", lastupdate))
       .snapshotChanges()
       .pipe(
+       
         map(res => {
-        return res.map(element => {
-          return {
-            ...(element.payload.doc.data() as object),
-            isSelected: false,
-            id: element.payload.doc.id
-          }
-        }) as IWEBGood[];
-      }));
 
-    const dirtywebgoods$ = this.db.collection('onec.goods', ref => ref.where("lastmodified",">=",lastupdate))
+          return res.map(element => {
+            
+            const el:any = element.payload.doc.data() ;
+            mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();  
+            return {
+              ...(el),
+              isSelected: false,
+              id: element.payload.doc.id
+            }
+          }) as IWEBGood[];
+        }));
+
+    const dirtywebgoods$ = this.db.collection('onec.goods', ref => ref.where("lastmodified", ">=", lastupdate))
       .snapshotChanges()
       .pipe(map(res => {
-        return res.map(element =>  {
+        
+        return res.map(element => {
+          const el:any = element.payload.doc.data() ;
+          
+          mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();  
+
           return {
             ...(element.payload.doc.data() as object),
             isSelected: false,
@@ -151,25 +163,41 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
           }
         }) as IONECGood[];
       })
-      
+
       );
 
 
     return combineLatest(webgoods$, dirtywebgoods$)
       .pipe(
-        map(element => { return { goods: element[0], dirtygoods: element[1] } }),
-        tap(changes => {this.idb.UpdateChanges(changes); return changes} )
-        
-        );
+        map(element => { 
+          
+          console.log('lastupdate',lastupdate);
+          
+          if (mdate > lastupdate) {
+            console.log('ask set LastUpdate',mdate);
+            this.idb.SetLastUpdate(new Promise(reject => { reject(mdate) }));
+          }
+          
+          return { goods: element[0], dirtygoods: element[1] } }),
+        filter(changes => (changes.goods.length != 0 || changes.dirtygoods.length != 0)),
+        tap(changes => {
+          
+          
+          console.log('income changes', changes);
+          this.idb.UpdateChanges(changes);
+          return changes
+        })
+
+      );
 
   }
 
 
-   UpsertWebGood(webgood: IWEBGood): Observable<IWEBGood> {
-    const operationDate : Date = new Date();
-    const lastupdate : Promise<Date> =  this.idb.GetLastUpdate();
-    
-    this.idb.SetLastUpdate(new Promise(reject =>{reject(operationDate)}));
+  UpsertWebGood(webgood: IWEBGood): Observable<IWEBGood> {
+    const operationDate = new Date();
+    const lastupdate: Promise<Date> = this.idb.GetLastUpdate();
+
+    //this.idb.SetLastUpdate(new Promise(reject => { reject(operationDate) }));
 
     if (webgood.id == undefined || webgood.id == "") {
       return from(this.db.collection('web.goods').add({
@@ -177,12 +205,12 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
         parentid: webgood.parentid,
         isFolder: webgood.isFolder,
         filials: webgood.filials,
-        lastmodified:operationDate
+        lastmodified: this.timestamp
       })).pipe(
-        catchError(e => {this.idb.SetLastUpdate(lastupdate); return Observable.throw(e)} ),
+        catchError(e => { this.idb.SetLastUpdate(lastupdate); return Observable.throw(e) }),
         map(docref => { const newgood: IWEBGood = { ...webgood, id: docref.id, isSelected: false }; return newgood }),
-        tap(newgood => {this.idb.AddElement(newgood,"WebGoods"); return newgood})
-        )
+        tap(newgood => { this.idb.AddElement(newgood, "WebGoods"); return newgood })
+      )
     } else {
       return from(this.db.collection('web.goods').doc(webgood.id).update(
         {
@@ -190,23 +218,23 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
           parentid: webgood.parentid,
           isFolder: webgood.isFolder,
           filials: webgood.filials,
-          lastmodified:operationDate
+          lastmodified: this.timestamp
         }
-        )).pipe(
-        catchError(e => {this.idb.SetLastUpdate(lastupdate); return Observable.throw(e)} ),
-        tap(() => this.idb.UpdateElement(webgood,"WebGoods",webgood.id)),
+      )).pipe(
+        catchError(e => { this.idb.SetLastUpdate(lastupdate); return Observable.throw(e) }),
+        tap(() => this.idb.UpdateElement(webgood, "WebGoods")),
         map(() => webgood))
     }
   }
 
-  DeleteWebGood(id:string) {
-    const operationDate : Date = new Date();
-    const lastupdate : Promise<Date> =  this.idb.GetLastUpdate();
-    this.idb.SetLastUpdate(new Promise(reject =>{ reject(operationDate)}));
+  DeleteWebGood(id: string) {
+    const operationDate: Date = new Date();
+    const lastupdate: Promise<Date> = this.idb.GetLastUpdate();
+    this.idb.SetLastUpdate(new Promise(reject => { reject(operationDate) }));
 
     return from(this.db.collection('web.goods').doc(id).delete()).pipe(
-      catchError(e => {this.idb.SetLastUpdate(lastupdate); return Observable.throw(e)} ),
-      tap(()=> this.idb.DeleteElement(id,"WebGoods")),
+      catchError(e => { this.idb.SetLastUpdate(lastupdate); return Observable.throw(e) }),
+      tap(() => this.idb.DeleteElement(id, "WebGoods")),
       map(() => id));
   }
 
@@ -223,7 +251,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
         isFolder: data.isFolder,
         name: data.name,
         filial: data.filial,
-        lastmodified:new Date()
+        lastmodified: new Date()
       }
 
       return from(this.db.collection('onec.goods').add(dataToUpdate)).pipe(map(docref => { return { ...data, id: docref.id, externalid: data.id, isSelected: false } }));
@@ -235,7 +263,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
         isFolder: data.isFolder,
         name: data.name,
         filial: data.filial,
-        lastmodified:new Date()
+        lastmodified: new Date()
       }
 
 
@@ -247,6 +275,15 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
 
   }
 
+  GetList(parentID: string | undefined) {
 
+    // this.store.pipe(
+    //   select(areAllWebGoodsLoaded),
+    //   filter(WebGoodsLoaded => {console.log("WebGoodsLoaded",WebGoodsLoaded);  return !WebGoodsLoaded} ),
+    //   concatMap(WebGoodsLoaded => this.db.collection('web.goods').snapshotChanges().pipe(map(res => { console.log(res); return res.map(element  => {return {...(element.payload.doc.data() as object) ,isSelected:false, id:element.payload.doc.id}} ) as IWEBGood[];}   ))),
+    //   first(),
+    //   tap(res => this.dataEventer.next(res))
+    //   ).subscribe();
+  }
 }
 

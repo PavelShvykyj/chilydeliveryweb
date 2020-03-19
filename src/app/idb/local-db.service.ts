@@ -1,3 +1,5 @@
+import { updateWebgoodByExternalData } from './../web/web.actions';
+import { Store } from '@ngrx/store';
 
 import { Observable, from, combineLatest, of, Subject } from 'rxjs';
 import { map, filter, concatMap, first, tap } from 'rxjs/operators';
@@ -5,6 +7,7 @@ import { Injectable } from '@angular/core';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { IWEBGood } from '../models/web.good';
 import { IONECGood } from '../models/onec.good';
+import { AppState } from '../reducers';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +17,7 @@ export class LocalDBService {
   public lastupdateEventer:  Subject<Date> = new Subject<Date>();
   public lastupdate$ : Observable<Date> = this.lastupdateEventer.asObservable();
 
-  constructor(private db: NgxIndexedDBService) { }
+  constructor(private db: NgxIndexedDBService, private store : Store<AppState>) { }
 
   DeleteDatabase(): Observable<any> {
 
@@ -44,6 +47,7 @@ export class LocalDBService {
     await this.db.openCursorByIndex('WebGoods', 'sortdefoult', IDBKeyRange.lowerBound(""), (evt) => {
       let cursor = (<any>evt.target).result;
       if (cursor) {
+        //console.log(cursor.value.name,cursor.value.id);
         goods.push(cursor.value);
         cursor.continue();
       } else {
@@ -64,7 +68,7 @@ export class LocalDBService {
     while (!goodsdone || !dirtygoodsdone) {
       await this.Sleep(100);
     }
-
+    console.log(goods.length);
     
     return {goods,dirtygoods};
 
@@ -92,15 +96,16 @@ export class LocalDBService {
     await this.db.delete(name, id);
   }
 
-  async UpdateElement(element, name, key) {
-    await this.db.update(name, element, key)
+  async UpdateElement(element, name) {
+    console.log('UpdateElement',element.name);
+    await this.db.update(name, element)
   }
 
 
   async UpdateAllGoods(allgoods: { goods: IWEBGood[], dirtygoods: IONECGood[] }) {
 
     await this.db.clear('WebGoods');
-    allgoods.goods.forEach(good => this.AddElement({ ...good, sortdefoult: (good.isFolder ? "A_" : "Z_") + good.name }, 'WebGoods'));
+    allgoods.goods.forEach(good =>this.AddElement({ ...good, sortdefoult: (good.isFolder ? "A_" : "Z_") + good.name }, 'WebGoods'));
     await this.db.clear('DirtyGoods');
     allgoods.dirtygoods.forEach(good => this.AddElement({ ...good, sortdefoult: (good.isFolder ? "A_" : "Z_") + good.name }, 'DirtyGoods'));
     this.SetLastUpdate(new Promise(reject => { reject(new Date()) }));
@@ -108,16 +113,18 @@ export class LocalDBService {
   }
 
   async UpdateChanges(changes: { goods: IWEBGood[], dirtygoods: IONECGood[] }) {
-    changes.goods.forEach(good => this.UpdateElement({ ...good, sortdefoult: (good.isFolder ? "A_" : "Z_") + good.name }, 'WebGoods', good.id));
-    changes.dirtygoods.forEach(good => this.UpdateElement({ ...good, sortdefoult: (good.isFolder ? "A_" : "Z_") + good.name }, 'DirtyGoods', good.id));
-    this.SetLastUpdate(new Promise(reject => reject(new Date())));
+    
+    changes.goods.forEach(good => this.UpdateElement({ ...good, sortdefoult: (good.isFolder ? "A_" : "Z_") + good.name }, 'WebGoods'));
+    changes.dirtygoods.forEach(dgood => this.UpdateElement({ ...dgood, sortdefoult: (dgood.isFolder ? "A_" : "Z_") + dgood.name }, 'DirtyGoods'));
+    
   }
 
   async SetLastUpdate(lastupdate: Promise<Date>) {
     const param: Date = await lastupdate;
     await this.db.clear('exchangeheader');
-    const HeaderObj = { LastDownload: param };
-    this.UpdateElement(HeaderObj, 'exchangeheader',1);
+    const HeaderObj = { id:1, LastDownload: param };
+    this.UpdateElement(HeaderObj, 'exchangeheader');
+    console.log('SetLastUpdate');
     this.lastupdateEventer.next(param);
   }
 

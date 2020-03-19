@@ -5,9 +5,9 @@ export const dbConfig: DBConfig = {
     version: 1,
     objectStoresMeta: [{
         store: 'exchangeheader',
-        storeConfig: { keyPath: 'id', autoIncrement: true },
+        storeConfig: { keyPath: 'id', autoIncrement: false },
         storeSchema: [
-            { name: 'LastDownload', keypath: 'id', options: { unique: false } }
+            
         ]
     },
     {
@@ -57,7 +57,7 @@ export function migrationFactory() {
         1: (db, transaction) => {
             const store = transaction.objectStore('exchangeheader');
             const initdate = new Date(2000,1,1);
-            const initheader = { LastDownload: initdate  };
+            const initheader = {id:1, LastDownload: initdate  };
             store.add(initheader);
         }
     };

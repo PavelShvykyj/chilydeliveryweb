@@ -16,3 +16,6 @@ export const webgoodChained = createAction("[CHAIN WEB GOOD EFFECT web good adde
 
 export const webgoodDeleted = createAction("[DELETE WEB GOOD EFFECT web good delete]",props<{id:string}>());
 export const deleteWebgood = createAction("[WEB GOOD LIST COMPONENT web good delete]",props<{id:string}>());
+
+export const updateWebgoodByExternalData  = createAction("[APP COMPONENT] add or edit web good by external data",props<{good: IWEBGood}>());
+export const updateDirtyWebgoodByExternalData = createAction("[APP COMPONENT] add or edit dirty web good by external data",props<{good: IONECGood}>());

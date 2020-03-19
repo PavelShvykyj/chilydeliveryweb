@@ -9,6 +9,7 @@ import { map, first } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { LocalDBService } from './idb/local-db.service';
 import { WebGoodsDatasourseService } from './web/web.goods.datasourse.service';
+import { updateWebgoodByExternalData, updateDirtyWebgoodByExternalData } from './web/web.actions';
 
 
 @Component({
@@ -41,12 +42,20 @@ export class AppComponent implements OnInit {
     const currentupdatedte = await this.idb.GetLastUpdate();
     this.idb.lastupdate$.pipe(map(dateupdated => {
       if (this.fbgoodschangessubs) {
+        console.log('unsubs');
         this.fbgoodschangessubs.unsubscribe();
       }
 
       console.log("dateupdated", dateupdated);
-      this.fbgoodschangessubs = this.fdb.GetAllChanges(dateupdated).subscribe();
-    }),first()).subscribe();
+      this.fbgoodschangessubs = this.fdb.GetAllChanges(dateupdated).subscribe(changes =>{
+        changes.goods.forEach(good =>this.store.dispatch(updateWebgoodByExternalData({good})));
+        changes.dirtygoods.forEach(dirtygood =>this.store.dispatch(updateDirtyWebgoodByExternalData({good:dirtygood})));
+
+      }
+        
+        
+      );
+    })).subscribe();
     console.log("currentupdatedte", currentupdatedte);
     this.idb.lastupdateEventer.next(currentupdatedte);
 

@@ -81,6 +81,13 @@ function WebGoodUploded(state,action)  : WebState {
   }
 }
 
+function DirtyWebGoodUploded(state,action)  : WebState {
+  return {
+    ...state,
+    dirtywebGoods: DirtyWebAdapter.upsertOne(action.good ,state.dirtywebGoods)
+  }
+}
+
 function WebgoodDeleted(state,action) : WebState {
   return {
     ...state,
@@ -95,6 +102,8 @@ export const WebReducer = createReducer(
   on(WebActions.statusDirtyWebSelectedGanged,  (state,action)=> StatusDirtyWebSelectedGanged(state,action)),
   on(WebActions.onecSelectedUploaded,  (state,action)=> OneCGoodUploded(state,action)),
   on(WebActions.webgoodUpdated,  (state,action)=> WebGoodUploded(state,action)),
+  on(WebActions.updateWebgoodByExternalData,  (state,action)=> WebGoodUploded(state,action)),
+  on(WebActions.updateDirtyWebgoodByExternalData ,  (state,action)=> DirtyWebGoodUploded(state,action)),
   on(WebActions.webgoodDeleted, (state,action)=> WebgoodDeleted(state,action) ),
   on(WebActions.webgoodChained,  (state,action)=> WebGoodUploded(state,action))
   )

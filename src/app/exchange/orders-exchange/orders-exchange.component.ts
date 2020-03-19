@@ -19,21 +19,29 @@ export class OrdersExchangeComponent implements OnInit {
     this.idb.DeleteDatabase().subscribe(()=> console.log('deleted'));
   }
 
+  SetDate() {
+    const d = new Date(2020,3,19,11,29,12) ;
+  
+
+    this.idb.SetLastUpdate(new Promise(reject=>{reject(d)}) );
+  }
+
   ApdateModified() {
-    // const now : Date = new Date();
-    // this.sfbd.GetAllGoods().subscribe(goodsdata=> {
-    //   goodsdata.goods.forEach(good => {
-    //     this.fbd.collection('web.goods').doc(good.id).update({lastmodified: now})
-    //     .catch(()=>console.log('err',good.id))
-    //     .then(()=>console.log('Ok',good.id))
-    //   }) 
+    const now : Date = new Date();
+    this.idb.SetLastUpdate(new Promise(reject=>{reject(now)}) );
+    this.sfbd.GetAllGoods().subscribe(goodsdata=> {
+      goodsdata.goods.forEach(good => {
+        this.fbd.collection('web.goods').doc(good.id).update({lastmodified: now})
+        .catch(()=>console.log('err',good.id))
+        .then(()=>console.log('Ok',good.id))
+      }) 
       
-    //   goodsdata.dirtygoods.forEach(good => {
-    //     this.fbd.collection('onec.goods').doc(good.id).update({lastmodified: now})
-    //     .catch(()=>console.log('err',good.id))
-    //     .then(()=>console.log('Ok',good.id))
-    //   }) 
-    // })
+      goodsdata.dirtygoods.forEach(good => {
+        this.fbd.collection('onec.goods').doc(good.id).update({lastmodified: now})
+        .catch(()=>console.log('err',good.id))
+        .then(()=>console.log('Ok',good.id))
+      }) 
+    })
 
   }
 
