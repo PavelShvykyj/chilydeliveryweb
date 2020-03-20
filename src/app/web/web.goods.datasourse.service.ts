@@ -7,7 +7,7 @@ import 'firebase/firestore';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { IONECGood } from '../models/onec.good';
 import { IGoodsListDatasourse } from '../models/goods.list.datasourse';
-import { Observable, BehaviorSubject, combineLatest, from } from 'rxjs';
+import { Observable, BehaviorSubject, combineLatest, from, of } from 'rxjs';
 import { map, filter, concatMap, first, tap, catchError } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { areAllWebGoodsLoaded } from './web.selectors';
@@ -124,7 +124,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
   }
 
 
-  /////////// нельзя покка подписываться нужен рефакторинг как правильно соотнести с хранилищем
+  
   GetAllChanges(lastupdate: Date): Observable<{ goods: IWEBGood[], dirtygoods: IONECGood[] }> {
     let mdate = lastupdate;
        
@@ -132,20 +132,23 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
     const webgoods$ = this.db.collection('web.goods', ref => ref.where("lastmodified", ">", lastupdate))
       .snapshotChanges()
       .pipe(
-       
         map(res => {
 
           return res.map(element => {
             
             const el:any = element.payload.doc.data() ;
-            mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();  
+            console.log('GetAllChanges web el',el);
+            if (el.lastmodified!=undefined && el.lastmodified != null) {
+              mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();    
+            } 
+            
             return {
               ...(el),
               isSelected: false,
               id: element.payload.doc.id
             }
           }) as IWEBGood[];
-        }));
+        }),first());
 
     const dirtywebgoods$ = this.db.collection('onec.goods', ref => ref.where("lastmodified", ">=", lastupdate))
       .snapshotChanges()
@@ -153,8 +156,11 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
         
         return res.map(element => {
           const el:any = element.payload.doc.data() ;
+          if (el.lastmodified!=undefined && el.lastmodified != null) {
+            mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();    
+          } 
+
           
-          mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();  
 
           return {
             ...(element.payload.doc.data() as object),
@@ -162,9 +168,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
             id: element.payload.doc.id
           }
         }) as IONECGood[];
-      })
-
-      );
+      }),first());
 
 
     return combineLatest(webgoods$, dirtywebgoods$)
@@ -194,8 +198,8 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
 
 
   UpsertWebGood(webgood: IWEBGood): Observable<IWEBGood> {
-    const operationDate = new Date();
-    const lastupdate: Promise<Date> = this.idb.GetLastUpdate();
+    
+    //const lastupdate: Promise<Date> = this.idb.GetLastUpdate();
 
     //this.idb.SetLastUpdate(new Promise(reject => { reject(operationDate) }));
 
@@ -207,8 +211,16 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
         filials: webgood.filials,
         lastmodified: this.timestamp
       })).pipe(
-        catchError(e => { this.idb.SetLastUpdate(lastupdate); return Observable.throw(e) }),
-        map(docref => { const newgood: IWEBGood = { ...webgood, id: docref.id, isSelected: false }; return newgood }),
+        
+        catchError(e => { 
+          //this.idb.SetLastUpdate(lastupdate);
+          this.idb.UpdateElement(webgood, "WebGoods");
+          this.idb.AddElement(webgood,'LocaleChangedID')
+          this.idb.UpdateErrorIdsCount();
+          console.log("ERRROR ON UPSERT ELEMENT",e);
+          return Observable.throw(e) }),
+        
+        map(docref => {console.log('docref',docref); const newgood: IWEBGood = { ...webgood, id: docref.id, isSelected: false }; return newgood }),
         tap(newgood => { this.idb.AddElement(newgood, "WebGoods"); return newgood })
       )
     } else {
@@ -221,7 +233,13 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
           lastmodified: this.timestamp
         }
       )).pipe(
-        catchError(e => { this.idb.SetLastUpdate(lastupdate); return Observable.throw(e) }),
+        catchError(e => { 
+          //this.idb.SetLastUpdate(lastupdate);
+          this.idb.UpdateElement(webgood, "WebGoods");
+          this.idb.AddElement(webgood,'LocaleChangedID')
+          this.idb.UpdateErrorIdsCount();
+          console.log("ERRROR ON UPSERT ELEMENT",e);
+          return Observable.throw(e) }),
         tap(() => this.idb.UpdateElement(webgood, "WebGoods")),
         map(() => webgood))
     }

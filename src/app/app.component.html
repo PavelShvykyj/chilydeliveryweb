@@ -2,6 +2,24 @@
   <span>Simple delivery  </span>
 
   <span class="spacer"> </span>
+  <button color='accent' class="secondary" mat-stroked-button (click)="UpdateChanges()">
+    <mat-list-item class="title-small lentacontainer">
+      <p class="title-small my-2"> {{ idb.lastupdate$ | async | date: 'dd/MM/yyyy' }} </p>
+      <p class="my-2"><small class="subheading-1"> {{ idb.lastupdate$ | async | date: 'HH:mm:ss' }} </small></p> 
+      <small class="subheading-1"> Обновить товары </small> 
+    </mat-list-item>
+  </button>
+
+  <button *ngIf="(idb.errorIdCount$ | async)>0" color='warn' class="secondary" mat-stroked-button (click)="UpdateErrors()">
+    <mat-list-item class="title-small lentacontainer">
+      <p class="title-small my-2"> {{ idb.errorIdCount$ | async }} </p>
+      <p class="my-2"><small class="subheading-1"> Не переданные товары </small></p> 
+      <small class="subheading-1"> Передать товары </small> 
+    </mat-list-item>
+  </button>
+  
+  <span class="spacer"> </span>
+  
   <mat-nav-list  fxLayout="row">
     <mat-list-item fxFlex="1 1 auto"  *ngIf="!(isLoggedIn$ | async)">
       <a matLine routerLink="/login" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><mat-icon>info</mat-icon> Login  </a>

@@ -17,6 +17,10 @@ export class LocalDBService {
   public lastupdateEventer:  Subject<Date> = new Subject<Date>();
   public lastupdate$ : Observable<Date> = this.lastupdateEventer.asObservable();
 
+  public errorIdCountEventer:  Subject<number> = new Subject<number>();
+  public errorIdCount$ : Observable<number> = this.errorIdCountEventer.asObservable();
+
+
   constructor(private db: NgxIndexedDBService, private store : Store<AppState>) { }
 
   DeleteDatabase(): Observable<any> {
@@ -76,12 +80,9 @@ export class LocalDBService {
 
 
   GetAllGoods(): Observable<{ goods: IWEBGood[], dirtygoods: IONECGood[] }> {
-    const indexDetails = {
-      indexName: 'sortdefoult',
-      order: 'desc'
-    };
 
-    this.db.indexedDB
+
+    
     let webgoods$: Observable<IWEBGood[]> = from(this.db.getAll('WebGoods')) as Observable<IWEBGood[]>;
     let dirtywebgoods$: Observable<IONECGood[]> = from(this.db.getAll('DirtyGoods')) as Observable<IONECGood[]>;
     return combineLatest(webgoods$, dirtywebgoods$)
@@ -97,7 +98,7 @@ export class LocalDBService {
   }
 
   async UpdateElement(element, name) {
-    console.log('UpdateElement',element.name);
+    console.log('UpdateElement',element, element.name);
     await this.db.update(name, element)
   }
 
@@ -131,6 +132,15 @@ export class LocalDBService {
   async GetLastUpdate(): Promise<Date> {
     const lastupdate: {LastDownload:Date} = await this.db.getByKey('exchangeheader', 1);
     return lastupdate.LastDownload;
+  }
+
+  async UpdateErrorIdsCount() {
+    const erroCoutn = await this.db.count('LocaleChangedID');
+    this.errorIdCountEventer.next(erroCoutn);
+  }
+
+  GetErrors() : Promise<any[]> {
+    return this.db.getAll('LocaleChangedID');
   }
 
   get DB() {

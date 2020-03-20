@@ -1,7 +1,12 @@
 @import '~@angular/material/theming';
 
 // Create a config with the default typography levels.
-$config: mat-typography-config($title: mat-typography-level(12px, 12px, 400),
+
+
+$config: mat-typography-config(
+    $title: mat-typography-level(12px, 12px, 400),
+    $button: mat-typography-level(12px, 12px, 400),
+    $subheading-1: mat-typography-level(14px, 14px, 500)
 );
 
 @include mat-core();
@@ -33,6 +38,16 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 .avatar {
   max-height: 35px;
   border-radius: 4px;
+}
+
+.title-small {
+  font-size: mat-font-size($config, title);
+  line-height: mat-line-height($config, title);
+} 
+
+.my-2 {
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
 mat-icon {
