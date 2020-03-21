@@ -125,11 +125,11 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
 
 
   
-  GetAllChanges(lastupdate: Date): Observable<{ goods: IWEBGood[], dirtygoods: IONECGood[] }> {
+  GetAllChanges(lastupdate: Date): Observable<{ goods: IWEBGood[], dirtygoods: IONECGood[], webgoodsDeleted: IWEBGood[], dirtywebgoodsDeleted: IONECGood[] }> {
     let mdate = lastupdate;
-       
     
-    const webgoods$ = this.db.collection('web.goods', ref => ref.where("lastmodified", ">", lastupdate))
+    
+    const webgoods$ = this.db.collection('web.goods', ref => ref.where('isDeleted',"==",false).where("lastmodified", ">", lastupdate))
       .snapshotChanges()
       .pipe(
         map(res => {
@@ -150,7 +150,49 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
           }) as IWEBGood[];
         }),first());
 
-    const dirtywebgoods$ = this.db.collection('onec.goods', ref => ref.where("lastmodified", ">=", lastupdate))
+        const webgoodsDeleted$ = this.db.collection('web.goods', ref => ref.where('isDeleted',"==",true).where("lastmodified", ">", lastupdate))
+        .snapshotChanges()
+        .pipe(
+          map(res => {
+  
+            return res.map(element => {
+              
+              const el:any = element.payload.doc.data() ;
+              console.log('GetAllChanges web el',el);
+              if (el.lastmodified!=undefined && el.lastmodified != null) {
+                mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();    
+              } 
+              
+              return {
+                ...(el),
+                isSelected: false,
+                id: element.payload.doc.id
+              }
+            }) as IWEBGood[];
+          }),first());
+  
+  
+
+
+    const dirtywebgoodsDeleted$ = this.db.collection('onec.goods', ref => ref.where('isDeleted',"==",true).where("lastmodified", ">=", lastupdate))
+      .snapshotChanges()
+      .pipe(map(res => {
+        
+        return res.map(element => {
+          const el:any = element.payload.doc.data() ;
+          if (el.lastmodified!=undefined && el.lastmodified != null) {
+            mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();    
+          } 
+
+          return {
+            ...(element.payload.doc.data() as object),
+            isSelected: false,
+            id: element.payload.doc.id
+          }
+        }) as IONECGood[];
+      }),first());
+
+      const dirtywebgoods$ = this.db.collection('onec.goods', ref => ref.where('isDeleted',"==",false).where("lastmodified", ">=", lastupdate))
       .snapshotChanges()
       .pipe(map(res => {
         
@@ -168,10 +210,9 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
             id: element.payload.doc.id
           }
         }) as IONECGood[];
-      }),first());
+      }),first());      
 
-
-    return combineLatest(webgoods$, dirtywebgoods$)
+    return combineLatest(webgoods$, dirtywebgoods$, webgoodsDeleted$, dirtywebgoodsDeleted$)
       .pipe(
         map(element => { 
           
@@ -182,8 +223,12 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
             this.idb.SetLastUpdate(new Promise(reject => { reject(mdate) }));
           }
           
-          return { goods: element[0], dirtygoods: element[1] } }),
-        filter(changes => (changes.goods.length != 0 || changes.dirtygoods.length != 0)),
+          return { goods: element[0], dirtygoods: element[1], webgoodsDeleted:element[2], dirtywebgoodsDeleted: element[3]} }),
+        filter(changes => (changes.goods.length != 0 ||
+                           changes.dirtygoods.length != 0 ||
+                           changes.webgoodsDeleted.length != 0 ||
+                           changes.dirtywebgoodsDeleted.length != 0 
+                           )),
         tap(changes => {
           
           
@@ -209,6 +254,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
         parentid: webgood.parentid,
         isFolder: webgood.isFolder,
         filials: webgood.filials,
+        isDeleted: false,
         lastmodified: this.timestamp
       })).pipe(
         
@@ -230,6 +276,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
           parentid: webgood.parentid,
           isFolder: webgood.isFolder,
           filials: webgood.filials,
+          isDeleted: false,
           lastmodified: this.timestamp
         }
       )).pipe(
@@ -246,13 +293,15 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
   }
 
   DeleteWebGood(id: string) {
-    const operationDate: Date = new Date();
-    const lastupdate: Promise<Date> = this.idb.GetLastUpdate();
-    this.idb.SetLastUpdate(new Promise(reject => { reject(operationDate) }));
 
-    return from(this.db.collection('web.goods').doc(id).delete()).pipe(
-      catchError(e => { this.idb.SetLastUpdate(lastupdate); return Observable.throw(e) }),
-      tap(() => this.idb.DeleteElement(id, "WebGoods")),
+    return from(this.db.collection('web.goods').doc(id).update({
+      isDeleted:true,
+      lastmodified: this.timestamp
+    })).pipe(
+      catchError(e => {console.log("ERROR on set delete mark in firebase",id); return Observable.throw(e) }),
+      // из локальной базы удалим когда прийдет подтвеждение с сервера в UpdateChanges
+      // в отличии от обновления когда в локальную базу можно и записать
+      //tap(() => this.idb.DeleteElement(id, "WebGoods")),
       map(() => id));
   }
 

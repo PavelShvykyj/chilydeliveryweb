@@ -27,17 +27,19 @@ export class OrdersExchangeComponent implements OnInit {
   }
 
   ApdateModified() {
-    const now : Date = new Date();
-    this.idb.SetLastUpdate(new Promise(reject=>{reject(now)}) );
-    this.sfbd.GetAllGoods().subscribe(goodsdata=> {
+    //const now : Date = new Date();
+    //this.idb.SetLastUpdate(new Promise(reject=>{reject(now)}) );
+    
+    
+    this.idb.GetAllGoods().subscribe(goodsdata=> {
       goodsdata.goods.forEach(good => {
-        this.fbd.collection('web.goods').doc(good.id).update({lastmodified: now})
+        this.fbd.collection('web.goods').doc(good.id).update({isDeleted: false})
         .catch(()=>console.log('err',good.id))
         .then(()=>console.log('Ok',good.id))
       }) 
       
       goodsdata.dirtygoods.forEach(good => {
-        this.fbd.collection('onec.goods').doc(good.id).update({lastmodified: now})
+        this.fbd.collection('onec.goods').doc(good.id).update({isDeleted: false})
         .catch(()=>console.log('err',good.id))
         .then(()=>console.log('Ok',good.id))
       }) 

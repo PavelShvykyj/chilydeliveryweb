@@ -113,10 +113,12 @@ export class LocalDBService {
 
   }
 
-  async UpdateChanges(changes: { goods: IWEBGood[], dirtygoods: IONECGood[] }) {
+  async UpdateChanges(changes: { goods: IWEBGood[], dirtygoods: IONECGood[], webgoodsDeleted: IWEBGood[], dirtywebgoodsDeleted: IONECGood[] }) {
     
     changes.goods.forEach(good => this.UpdateElement({ ...good, sortdefoult: (good.isFolder ? "A_" : "Z_") + good.name }, 'WebGoods'));
     changes.dirtygoods.forEach(dgood => this.UpdateElement({ ...dgood, sortdefoult: (dgood.isFolder ? "A_" : "Z_") + dgood.name }, 'DirtyGoods'));
+    changes.webgoodsDeleted.forEach(good => this.DeleteElement(good.id, 'WebGoods'));
+    changes.dirtywebgoodsDeleted.forEach(dgood => this.DeleteElement(dgood.id, 'DirtyGoods'));
     
   }
 
