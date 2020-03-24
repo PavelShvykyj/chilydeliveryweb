@@ -20,9 +20,7 @@ import { LocalDBService } from '../idb/local-db.service';
 
 
 
-firebase.initializeApp(environment.firebase);
-
-
+//firebase.initializeApp(environment.firebase);
 // const idfield = firebase.firestore.FieldPath.documentId();
 
 @Injectable({
@@ -84,9 +82,9 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
     private idb: LocalDBService) { }
 
 
-    get timestamp() {
-      return firebase.firestore.FieldValue.serverTimestamp();
-    }
+  get timestamp() {
+    return firebase.firestore.FieldValue.serverTimestamp();
+  }
 
   GetAllGoods(): Observable<{ goods: IWEBGood[], dirtygoods: IONECGood[] }> {
 
@@ -124,65 +122,66 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
   }
 
 
-  
+
   GetAllChanges(lastupdate: Date): Observable<{ goods: IWEBGood[], dirtygoods: IONECGood[], webgoodsDeleted: IWEBGood[], dirtywebgoodsDeleted: IONECGood[] }> {
     let mdate = lastupdate;
-    
-    
-    const webgoods$ = this.db.collection('web.goods', ref => ref.where('isDeleted',"==",false).where("lastmodified", ">", lastupdate))
-      .snapshotChanges()
+
+
+    const webgoods$ = this.db.collection('web.goods', ref => ref.where('isDeleted', "==", false).where("lastmodified", ">", lastupdate))
+      .stateChanges()
       .pipe(
         map(res => {
 
           return res.map(element => {
-            
-            const el:any = element.payload.doc.data() ;
-            console.log('GetAllChanges web el',el);
-            if (el.lastmodified!=undefined && el.lastmodified != null) {
-              mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();    
-            } 
-            
+
+            const el: any = element.payload.doc.data();
+            console.log('GetAllChanges web el', el);
+            if (el.lastmodified != undefined && el.lastmodified != null) {
+              mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();
+            }
+
             return {
               ...(el),
               isSelected: false,
               id: element.payload.doc.id
             }
           }) as IWEBGood[];
-        }),first());
+        }), first());
 
-        const webgoodsDeleted$ = this.db.collection('web.goods', ref => ref.where('isDeleted',"==",true).where("lastmodified", ">", lastupdate))
-        .snapshotChanges()
-        .pipe(
-          map(res => {
-  
-            return res.map(element => {
-              
-              const el:any = element.payload.doc.data() ;
-              console.log('GetAllChanges web el',el);
-              if (el.lastmodified!=undefined && el.lastmodified != null) {
-                mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();    
-              } 
-              
-              return {
-                ...(el),
-                isSelected: false,
-                id: element.payload.doc.id
-              }
-            }) as IWEBGood[];
-          }),first());
-  
-  
+    const webgoodsDeleted$ = this.db.collection('web.goods', ref => ref.where('isDeleted', "==", true).where("lastmodified", ">", lastupdate))
+      .stateChanges()
+      .pipe(
+        map(res => {
+
+          return res.map(element => {
+
+            const el: any = element.payload.doc.data();
+            console.log('GetAllChanges web delete el', el);
+            if (el.lastmodified != undefined && el.lastmodified != null) {
+              mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();
+            }
+
+            return {
+              ...(el),
+              isSelected: false,
+              id: element.payload.doc.id
+            }
+          }) as IWEBGood[];
+        }), first());
 
 
-    const dirtywebgoodsDeleted$ = this.db.collection('onec.goods', ref => ref.where('isDeleted',"==",true).where("lastmodified", ">=", lastupdate))
-      .snapshotChanges()
+
+
+    const dirtywebgoodsDeleted$ = this.db.collection('onec.goods', ref => ref.where('isDeleted', "==", true).where("lastmodified", ">", lastupdate))
+      .stateChanges()
       .pipe(map(res => {
-        
+
         return res.map(element => {
-          const el:any = element.payload.doc.data() ;
-          if (el.lastmodified!=undefined && el.lastmodified != null) {
-            mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();    
-          } 
+          const el: any = element.payload.doc.data();
+          console.log('GetAllChanges web dirty delete el', el);
+          if (el.lastmodified != undefined && el.lastmodified != null) {
+            mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();
+          }
 
           return {
             ...(element.payload.doc.data() as object),
@@ -190,19 +189,20 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
             id: element.payload.doc.id
           }
         }) as IONECGood[];
-      }),first());
+      }), first());
 
-      const dirtywebgoods$ = this.db.collection('onec.goods', ref => ref.where('isDeleted',"==",false).where("lastmodified", ">=", lastupdate))
-      .snapshotChanges()
+    const dirtywebgoods$ = this.db.collection('onec.goods', ref => ref.where('isDeleted', "==", false).where("lastmodified", ">", lastupdate))
+      .stateChanges()
       .pipe(map(res => {
-        
-        return res.map(element => {
-          const el:any = element.payload.doc.data() ;
-          if (el.lastmodified!=undefined && el.lastmodified != null) {
-            mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();    
-          } 
 
-          
+        return res.map(element => {
+          const el: any = element.payload.doc.data();
+          console.log('GetAllChanges web dirty  el', el);
+          if (el.lastmodified != undefined && el.lastmodified != null) {
+            mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();
+          }
+
+
 
           return {
             ...(element.payload.doc.data() as object),
@@ -210,28 +210,29 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
             id: element.payload.doc.id
           }
         }) as IONECGood[];
-      }),first());      
+      }), first());
 
     return combineLatest(webgoods$, dirtywebgoods$, webgoodsDeleted$, dirtywebgoodsDeleted$)
       .pipe(
-        map(element => { 
-          
-          console.log('lastupdate',lastupdate);
-          
+        map(element => {
+
+          console.log('lastupdate', lastupdate);
+
           if (mdate > lastupdate) {
-            console.log('ask set LastUpdate',mdate);
+            console.log('ask set LastUpdate', mdate);
             this.idb.SetLastUpdate(new Promise(reject => { reject(mdate) }));
           }
-          
-          return { goods: element[0], dirtygoods: element[1], webgoodsDeleted:element[2], dirtywebgoodsDeleted: element[3]} }),
+
+          return { goods: element[0], dirtygoods: element[1], webgoodsDeleted: element[2], dirtywebgoodsDeleted: element[3] }
+        }),
         filter(changes => (changes.goods.length != 0 ||
-                           changes.dirtygoods.length != 0 ||
-                           changes.webgoodsDeleted.length != 0 ||
-                           changes.dirtywebgoodsDeleted.length != 0 
-                           )),
+          changes.dirtygoods.length != 0 ||
+          changes.webgoodsDeleted.length != 0 ||
+          changes.dirtywebgoodsDeleted.length != 0
+        )),
         tap(changes => {
-          
-          
+
+
           console.log('income changes', changes);
           this.idb.UpdateChanges(changes);
           return changes
@@ -243,7 +244,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
 
 
   UpsertWebGood(webgood: IWEBGood): Observable<IWEBGood> {
-    
+
     //const lastupdate: Promise<Date> = this.idb.GetLastUpdate();
 
     //this.idb.SetLastUpdate(new Promise(reject => { reject(operationDate) }));
@@ -257,16 +258,17 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
         isDeleted: false,
         lastmodified: this.timestamp
       })).pipe(
-        
-        catchError(e => { 
+
+        catchError(e => {
           //this.idb.SetLastUpdate(lastupdate);
           this.idb.UpdateElement(webgood, "WebGoods");
-          this.idb.AddElement(webgood,'LocaleChangedID')
+          this.idb.AddElement(webgood, 'LocaleChangedID')
           this.idb.UpdateErrorIdsCount();
-          console.log("ERRROR ON UPSERT ELEMENT",e);
-          return Observable.throw(e) }),
-        
-        map(docref => {console.log('docref',docref); const newgood: IWEBGood = { ...webgood, id: docref.id, isSelected: false }; return newgood }),
+          console.log("ERRROR ON UPSERT ELEMENT", e);
+          return Observable.throw(e)
+        }),
+
+        map(docref => { console.log('docref', docref); const newgood: IWEBGood = { ...webgood, id: docref.id, isSelected: false }; return newgood }),
         tap(newgood => { this.idb.AddElement(newgood, "WebGoods"); return newgood })
       )
     } else {
@@ -280,13 +282,14 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
           lastmodified: this.timestamp
         }
       )).pipe(
-        catchError(e => { 
+        catchError(e => {
           //this.idb.SetLastUpdate(lastupdate);
           this.idb.UpdateElement(webgood, "WebGoods");
-          this.idb.AddElement(webgood,'LocaleChangedID')
+          this.idb.AddElement(webgood, 'LocaleChangedID')
           this.idb.UpdateErrorIdsCount();
-          console.log("ERRROR ON UPSERT ELEMENT",e);
-          return Observable.throw(e) }),
+          console.log("ERRROR ON UPSERT ELEMENT", e);
+          return Observable.throw(e)
+        }),
         tap(() => this.idb.UpdateElement(webgood, "WebGoods")),
         map(() => webgood))
     }
@@ -295,49 +298,61 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
   DeleteWebGood(id: string) {
 
     return from(this.db.collection('web.goods').doc(id).update({
-      isDeleted:true,
+      isDeleted: true,
       lastmodified: this.timestamp
     })).pipe(
-      catchError(e => {console.log("ERROR on set delete mark in firebase",id); return Observable.throw(e) }),
+      catchError(e => { console.log("ERROR on set delete mark in firebase", id); return Observable.throw(e) }),
       // из локальной базы удалим когда прийдет подтвеждение с сервера в UpdateChanges
       // в отличии от обновления когда в локальную базу можно и записать
       //tap(() => this.idb.DeleteElement(id, "WebGoods")),
       map(() => id));
   }
 
+  Audit(collectionname:string) : Observable<any> {
+    return this.db.collection(collectionname).auditTrail();
+  }
+
   /////////////////////////// DELETE THIS
   UpdateByONEC(data: IONECGood): Observable<IONECGood> {
 
 
-    if (data.externalid == "" || data.externalid == undefined) {
+    return of({ 
+      id:"",
+      name: "",
+      isSelected:false,
+      parentid: "",
+      isFolder: false,
+      filial: "",
+      externalid:""});
+    // if (data.externalid == "" || data.externalid == undefined) {
 
-      /// внешний код для фиребасе = внутренний от 1С  
-      const dataToUpdate: IFireBaseDirtyGood = {
-        externalid: data.id,
-        parentid: data.parentid == undefined ? "" : data.parentid,
-        isFolder: data.isFolder,
-        name: data.name,
-        filial: data.filial,
-        lastmodified: new Date()
-      }
+    //   /// внешний код для фиребасе = внутренний от 1С  
+    //   const dataToUpdate: IFireBaseDirtyGood = {
+    //     externalid: data.id,
+    //     parentid: data.parentid == undefined ? "" : data.parentid,
+    //     isFolder: data.isFolder,
+    //     name: data.name,
+    //     filial: data.filial,
+    //     lastmodified: new Date()
+    //   }
 
-      return from(this.db.collection('onec.goods').add(dataToUpdate)).pipe(map(docref => { return { ...data, id: docref.id, externalid: data.id, isSelected: false } }));
-    } else {
+    //   return from(this.db.collection('onec.goods').add(dataToUpdate)).pipe(map(docref => { return { ...data, id: docref.id, externalid: data.id, isSelected: false } }));
+    // } else {
 
-      const dataToUpdate: IFireBaseDirtyGood = {
-        externalid: data.id,
-        parentid: data.parentid == undefined ? "" : data.parentid,
-        isFolder: data.isFolder,
-        name: data.name,
-        filial: data.filial,
-        lastmodified: new Date()
-      }
-
-
-      return from(this.db.collection('onec.goods').doc(data.externalid).update(dataToUpdate)).pipe(map(() => { return { ...data, id: data.externalid, externalid: data.id, isSelected: false } }));
+    //   const dataToUpdate: IFireBaseDirtyGood = {
+    //     externalid: data.id,
+    //     parentid: data.parentid == undefined ? "" : data.parentid,
+    //     isFolder: data.isFolder,
+    //     name: data.name,
+    //     filial: data.filial,
+    //     lastmodified: new Date()
+    //   }
 
 
-    }
+    //   return from(this.db.collection('onec.goods').doc(data.externalid).update(dataToUpdate)).pipe(map(() => { return { ...data, id: data.externalid, externalid: data.id, isSelected: false } }));
+
+
+    //}
 
 
   }

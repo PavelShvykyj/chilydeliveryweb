@@ -19,9 +19,7 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 
 @include angular-material-theme($app-theme);
 
-.spacer {
-  margin: auto;
-}
+
 
 .active {
   color: map-get($mat-light-blue, 700);

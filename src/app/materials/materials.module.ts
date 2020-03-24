@@ -13,6 +13,9 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatChipsModule} from '@angular/material/chips';
+import {MatTableModule} from '@angular/material/table';
+import {MatSortModule} from '@angular/material/sort';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 @NgModule({
   declarations: [],
@@ -32,7 +35,11 @@ import {MatChipsModule} from '@angular/material/chips';
     MatSnackBarModule,
     MatDividerModule,
     MatDialogModule,
-    MatChipsModule
+    MatChipsModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule
+
 
   ]
 })

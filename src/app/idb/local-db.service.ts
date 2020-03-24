@@ -138,6 +138,7 @@ export class LocalDBService {
 
   async UpdateErrorIdsCount() {
     const erroCoutn = await this.db.count('LocaleChangedID');
+    console.log('erroCoutn',erroCoutn);
     this.errorIdCountEventer.next(erroCoutn);
   }
 

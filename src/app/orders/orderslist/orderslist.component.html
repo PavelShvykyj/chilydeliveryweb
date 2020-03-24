@@ -1,0 +1,65 @@
+<mat-toolbar >
+    
+    <mat-form-field color='accent' appearance="fill">
+        <input #inputfilter  matInput (keyup)="applyFilter($event.target.value)" placeholder="Значение для поиска по заказам">
+        <!-- <mat-hint> поиск по всем столбцам </mat-hint> -->
+        <mat-label>Поиск по заказам</mat-label>
+        <button mat-button  matPrefix mat-icon-button aria-label="Clear" (click)="inputfilter.value=''; applyFilter('')">
+            <mat-icon>close</mat-icon>
+        </button>
+    </mat-form-field>
+    <span class="spacer"> </span>
+    <button color='warn' mat-button> Новый заказ  <mat-icon>add</mat-icon> </button>
+</mat-toolbar>
+
+<mat-table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="externalid">
+        <mat-header-cell class="table-cell table-left-cell" *matHeaderCellDef mat-sort-header> Номер 1С </mat-header-cell>
+        <mat-cell class="table-cell table-left-cell" *matCellDef="let order">{{order.externalid}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="desk">
+        <mat-header-cell class="table-cell" *matHeaderCellDef mat-sort-header> Стол 1С </mat-header-cell>
+        <mat-cell class="table-cell" *matCellDef="let order">{{order.desk}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="filial">
+        <mat-header-cell class="table-cell" *matHeaderCellDef mat-sort-header> Филиал </mat-header-cell>
+        <mat-cell class="table-cell" *matCellDef="let order">{{order.filial}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="creation">
+        <mat-header-cell class="table-cell" *matHeaderCellDef mat-sort-header> Создан </mat-header-cell>
+        <mat-cell class="table-cell" *matCellDef="let order">{{order.creation | date:'medium' }}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="phone">
+        <mat-header-cell class="table-cell" *matHeaderCellDef mat-sort-header> Телефон </mat-header-cell>
+        <mat-cell class="table-cell" *matCellDef="let order">{{order.phone}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="addres">
+        <mat-header-cell class="table-cell" *matHeaderCellDef mat-sort-header> Адресс </mat-header-cell>
+        <mat-cell class="table-cell" *matCellDef="let order">{{order.addres}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="buttonsgroup">
+        <mat-header-cell class="table-cell" *matHeaderCellDef > Действия
+            <button color='warn' mat-icon-button (click)="AddOrder()">
+                <mat-icon>add</mat-icon>
+            </button></mat-header-cell>
+        <mat-cell class="table-cell" *matCellDef="let order">
+
+            <button (click)="AddComent(order)" mat-button>
+                <mat-icon>edit</mat-icon>
+            </button>
+        </mat-cell>
+
+    </ng-container>
+
+    <mat-header-row class="table-row" *matHeaderRowDef="displayedColumns ; sticky: true"></mat-header-row>
+
+    <mat-row *matRowDef="let row; columns: displayedColumns" class="table-row"></mat-row>
+
+</mat-table>
+<mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons></mat-paginator>

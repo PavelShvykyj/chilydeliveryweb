@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { GoodsExchangeComponent } from './goods-exchange/goods-exchange.component';
 import { OrdersExchangeComponent } from './orders-exchange/orders-exchange.component';
 import { GoodsResolver } from './resolvers/goods.resolver';
+import { OrdersModule } from '../orders/orders.module';
 
 
 @NgModule({
@@ -12,7 +13,8 @@ import { GoodsResolver } from './resolvers/goods.resolver';
   imports: [
     CommonModule,
     WebModule,
-    MaterialsModule
+    MaterialsModule,
+    OrdersModule
   ],
   providers:[GoodsResolver]
 })
