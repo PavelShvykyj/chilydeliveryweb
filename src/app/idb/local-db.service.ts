@@ -2,7 +2,7 @@ import { updateWebgoodByExternalData } from './../web/web.actions';
 import { Store } from '@ngrx/store';
 
 import { Observable, from, combineLatest, of, Subject } from 'rxjs';
-import { map, filter, concatMap, first, tap } from 'rxjs/operators';
+import { map, filter, concatMap, first, tap, take } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { IWEBGood } from '../models/web.good';
@@ -86,7 +86,7 @@ export class LocalDBService {
     let webgoods$: Observable<IWEBGood[]> = from(this.db.getAll('WebGoods')) as Observable<IWEBGood[]>;
     let dirtywebgoods$: Observable<IONECGood[]> = from(this.db.getAll('DirtyGoods')) as Observable<IONECGood[]>;
     return combineLatest(webgoods$, dirtywebgoods$)
-      .pipe(map(element => { return { goods: element[0], dirtygoods: element[1] } }), first())
+      .pipe(map(element => { return { goods: element[0], dirtygoods: element[1] } }), take(1))
   }
 
   async AddElement(element, name) {

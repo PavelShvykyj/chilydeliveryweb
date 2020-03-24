@@ -7,7 +7,7 @@ import { Store, select } from '@ngrx/store';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AppState } from './reducers';
 import { AuthService } from './auth/auth.service';
-import { map, first } from 'rxjs/operators';
+import { map, first, take } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { LocalDBService } from './idb/local-db.service';
 import { WebGoodsDatasourseService } from './web/web.goods.datasourse.service';
@@ -71,12 +71,12 @@ export class AppComponent implements OnInit, OnDestroy {
       }
 
       console.log("dateupdated", dateupdated);
-      this.fbgoodschangessubs = this.fdb.GetAllChanges(dateupdated).pipe(first()).subscribe(changes => {
+      this.fbgoodschangessubs = this.fdb.GetAllChanges(dateupdated).pipe(take(1)).subscribe(changes => {
         changes.goods.forEach(good => this.store.dispatch(updateWebgoodByExternalData({ good })));
         changes.dirtygoods.forEach(dirtygood => this.store.dispatch(updateDirtyWebgoodByExternalData({ good: dirtygood })));
       }
       );
-    })).pipe(first()).subscribe();
+    })).pipe(take(1)).subscribe();
   }
 
   ngOnInit() {
@@ -154,7 +154,7 @@ export class AppComponent implements OnInit, OnDestroy {
   async RetryUpsert(element) {
     console.log('RetryUpsert', element)
     await this.idb.DeleteElement('LocaleChangedID', element);
-    this.fdb.UpsertWebGood(element).pipe(first()).subscribe();
+    this.fdb.UpsertWebGood(element).pipe(take(1)).subscribe();
   }
 
   async UpdateErrors() {

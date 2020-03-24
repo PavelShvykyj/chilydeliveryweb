@@ -8,7 +8,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { IONECGood } from '../models/onec.good';
 import { IGoodsListDatasourse } from '../models/goods.list.datasourse';
 import { Observable, BehaviorSubject, combineLatest, from, of } from 'rxjs';
-import { map, filter, concatMap, first, tap, catchError } from 'rxjs/operators';
+import { map, filter, concatMap, first,  take, tap, catchError } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { areAllWebGoodsLoaded } from './web.selectors';
 import { AppState } from '../reducers';
@@ -98,7 +98,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
             id: element.payload.doc.id
           }
         }) as IWEBGood[];
-      }), first());
+      }), take(1));
 
     const dirtywebgoods$ = this.db.collection('onec.goods', ref => ref.orderBy("isFolder", 'desc').orderBy("name"))
       .snapshotChanges()
@@ -110,13 +110,13 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
             id: element.payload.doc.id
           }
         }) as IONECGood[];
-      }), first());
+      }), take(1));
 
 
     return combineLatest(webgoods$, dirtywebgoods$)
       .pipe(
         map(element => { return { goods: element[0], dirtygoods: element[1] } }),
-        first(),
+        take(1),
         tap(allgoods => { this.idb.UpdateAllGoods(allgoods); return allgoods }))
 
   }
@@ -146,7 +146,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
               id: element.payload.doc.id
             }
           }) as IWEBGood[];
-        }), first());
+        }), take(1));
 
     const webgoodsDeleted$ = this.db.collection('web.goods', ref => ref.where('isDeleted', "==", true).where("lastmodified", ">", lastupdate))
       .stateChanges()
@@ -167,7 +167,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
               id: element.payload.doc.id
             }
           }) as IWEBGood[];
-        }), first());
+        }), take(1));
 
 
 
@@ -189,7 +189,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
             id: element.payload.doc.id
           }
         }) as IONECGood[];
-      }), first());
+      }), take(1));
 
     const dirtywebgoods$ = this.db.collection('onec.goods', ref => ref.where('isDeleted', "==", false).where("lastmodified", ">", lastupdate))
       .stateChanges()
@@ -210,7 +210,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
             id: element.payload.doc.id
           }
         }) as IONECGood[];
-      }), first());
+      }), take(1));
 
     return combineLatest(webgoods$, dirtywebgoods$, webgoodsDeleted$, dirtywebgoodsDeleted$)
       .pipe(
