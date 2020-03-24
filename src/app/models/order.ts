@@ -6,21 +6,30 @@ export interface IOrderGoodsRecord {
     comment:string
 }
 
-export interface IOrderOnecData {}
+export interface IOrderCommentRecord {
+    id:string,
+    comment:string
+}
+
+export interface  IOrderHeader {
+    addres:string,
+    phone:string,
+    comment?:string,
+}
+
+
+export interface IOrderOnecData {
+    creation:Date,
+    filial:string,
+    desk:string,
+
+
+}
 
 export interface IOrderChanges {
     type:string,
     order:IOrder
 } 
-export interface IOrder extends IBaseElement {
-    addres:string,
-    phone:string,
-    creation:Date,
-    filial:string,
-    desk:string,
-    
-    comments:string[],
+export interface IOrder extends IBaseElement, IOrderHeader, IOrderOnecData {
     goods: IOrderGoodsRecord[]
-
-
 }

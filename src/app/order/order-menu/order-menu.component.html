@@ -1,0 +1,41 @@
+<div class="grid-container">
+    <cub-toolbar [dataSourse]="ds" [toolbarcommands]="toolbarcommands"
+        (OnElementClicked)="OnLentaElementClicked($event)" (OnToolbarCommandClicked)="OnToolbarCommandClicked($event)">
+    </cub-toolbar>
+
+    <mat-card class="card">
+        
+            <mat-form-field class="w-fill" color='accent' id='fieldfilter' appearance="outline">
+                <input matInput type="text" placeholder="Поиск по имени" (input)="OnNameFilterInput()"
+                    [(ngModel)]="NameFilterValue">
+                <button mat-button *ngIf="NameFilterValue" matSuffix mat-icon-button aria-label="Clear"
+                    (click)="OnNameFilterCleared()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+        
+
+
+        <mat-card-content>
+            <mat-grid-list cols="4" gutterSize="1px" rowHeight="35px">
+                <mat-grid-tile class="menugridelement" *ngFor="let item of (elements$ | async)">
+                    <button color='accent' [ngClass]="{'secondary':item.isFolder}" mat-stroked-button
+                        (click)="ElementClicked(item)">
+                        <mat-list-item class="title-small lentacontainer">
+                            {{item.name}}
+                        </mat-list-item>
+                    </button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan=4 rowspan=1>
+
+                    <mat-button-toggle-group class="title-small">
+                        <mat-button-toggle class="title-small" [ngClass]="{'currentblock': block==startindex}"
+                            *ngFor="let block of blocks" [value]="block" (click)="OnBlockClick(block)"> {{block }}
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+
+                </mat-grid-tile>
+            </mat-grid-list>
+        </mat-card-content>
+    </mat-card>
+</div>

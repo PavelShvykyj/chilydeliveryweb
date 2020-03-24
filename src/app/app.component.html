@@ -24,7 +24,11 @@
     <mat-list-item fxFlex="1 1 auto"  *ngIf="!(isLoggedIn$ | async)">
       <a matLine routerLink="/login" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><mat-icon>info</mat-icon> Login  </a>
     </mat-list-item>
-    
+
+    <mat-list-item *ngIf="(isLoggedIn$ | async)" fxFlex="1 1 auto">
+      <a matLine routerLink="/order" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><mat-icon>info</mat-icon> new order </a>
+    </mat-list-item>
+
 
     <mat-list-item *ngIf="(isLoggedIn$ | async)" fxFlex="1 1 auto">
       <a matLine routerLink="/goods" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><mat-icon>info</mat-icon> Goods  </a>

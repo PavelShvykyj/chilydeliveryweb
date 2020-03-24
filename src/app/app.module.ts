@@ -1,3 +1,4 @@
+import { OrderModule } from './order/order.module';
 import { MaterialsModule } from './materials/materials.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -64,7 +65,8 @@ import { IdbModule } from './idb/idb.module';
     WebModule,
     AuthModule,
     ExchangeModule,
-    IdbModule
+    IdbModule,
+    OrderModule
     
     
 

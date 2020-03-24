@@ -1,0 +1,74 @@
+@import '~@angular/material/theming';
+
+// Create a config with the default typography levels.
+
+
+$config: mat-typography-config($title: mat-typography-level(14px, 14px, 400),
+  $button: mat-typography-level(12px, 12px, 400),
+  $subheading-1: mat-typography-level(13px, 13px, 500));
+
+mat-form-field {
+  max-height: 100%;
+  font-size: mat-font-size($config, title);
+  line-height: mat-line-height($config, title);
+}
+
+#fieldadress {
+  max-height: 100% !important;
+  padding-bottom: 2px !important;
+  margin-bottom: -1.25em !important;
+}
+
+#fieldphone {
+    max-height: 100% !important;
+    padding-bottom: 2px !important;
+    margin-bottom: -1.25em !important;
+  }
+
+#fieldcomment {
+    max-height: 100% !important;
+    padding-bottom: 2px !important;
+    margin-bottom: -1.25em !important;
+  }
+
+
+.mat-form-field-wrapper {
+  max-height: 100% !important;
+  padding-bottom: 2px !important;
+  margin-bottom: -1.25em !important;
+}
+
+mat-card-subtitle {
+  align-content: center;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+
+.card {
+  align-content: center;
+  justify-content: center;
+  padding: 0px;
+  margin: 1px;
+  margin-bottom: 0px;
+  background-color: map-get($mat-grey, 100);
+}
+
+.toolbar {
+  padding: 1px;
+}
+
+.w-fill {
+  width: 95%;
+}
+
+.fill {
+  align-content: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  height: calc(100%-6px) !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}

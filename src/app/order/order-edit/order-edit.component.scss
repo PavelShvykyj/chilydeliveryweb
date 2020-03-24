@@ -1,0 +1,32 @@
+@import '~@angular/material/theming';
+
+
+
+.ordertoolbar {
+    background-color: map-get($mat-red, 100);;
+} 
+
+.ordermenu {
+    background-color: map-get($mat-purple, 100);;
+} 
+.ordergoods {
+    background-color: map-get($mat-deep-purple, 100);;
+} 
+
+.orderheader {
+    background-color: map-get($mat-indigo, 100);;
+}
+
+.gridelement{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.grid-container {
+    height: 612px;
+    min-height: 612px;
+    width: 100%;
+    background-color:map-get($mat-grey, 400);
+}

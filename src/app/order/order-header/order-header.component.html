@@ -1,0 +1,41 @@
+<mat-card class="fill card">
+
+    <mat-card-subtitle> Данные доставки </mat-card-subtitle>
+
+    <form [formGroup]="form">
+
+
+        <mat-form-field id='fieldadress'   color='accent' class="w-fill" appearance="outline">
+            <input required formControlName='addres' #inputadress matInput>
+            <!-- <mat-hint> Заполнить обязательно </mat-hint> -->
+            <mat-label>Адресс </mat-label>
+            <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="inputadress.value=''">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+
+        <div class="spacer"> </div>
+
+        <mat-form-field id='fieldphone'  color='accent' class="w-fill" appearance="outline">
+            <input required formControlName='phone' #inputphone matInput>
+            <!-- <mat-hint> поиск по всем столбцам </mat-hint> -->
+            <mat-label>Телефон</mat-label>
+            <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="inputphone.value=''; ">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+
+        <div class="spacer"> </div>
+
+        <mat-form-field id='fieldcomment'  color='accent' class="w-fill" appearance="outline">
+            <input formControlName='comment' #inputcomment matInput>
+            <!-- <mat-hint> поиск по всем столбцам </mat-hint> -->
+            <mat-label>Коментарий</mat-label>
+            <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="inputcomment.value='';">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+
+
+    </form>
+</mat-card>
