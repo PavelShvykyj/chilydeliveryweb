@@ -13,6 +13,8 @@ import { OrderMenuComponent } from './order-menu/order-menu.component';
 import { OrderToolbarComponent } from './order-toolbar/order-toolbar.component';
 import { BaseelementsModule } from '../baseelements/baseelements.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { OrdersModule } from '../orders/orders.module';
+
 
 
 
@@ -25,6 +27,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     BaseelementsModule,
     FormsModule,
     ReactiveFormsModule,
+    OrdersModule,
     EffectsModule.forFeature([EditOrderEffects]),
     StoreModule.forFeature(fromEditorder.editorderFeatureKey, editorderreducer, { metaReducers: fromEditorder.metaReducers })
   ]

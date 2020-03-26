@@ -1,3 +1,4 @@
+import { share } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -13,7 +14,7 @@ export class AuthService {
   private authState$: Observable<firebase.User>
 
   constructor(private afAuth: AngularFireAuth, private store: Store<AppState>) {
-    this.authState$ = this.afAuth.authState;
+    this.authState$ = this.afAuth.authState.pipe(share());
     this.authState$.subscribe(user => {this.store.dispatch(AuthStausChanged({user}))});
 
   }

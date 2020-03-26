@@ -6,6 +6,7 @@ import { createFeatureSelector, createSelector, props } from '@ngrx/store';
 import { Dictionary } from '@ngrx/entity';
 import { selectOptionState } from '../option.selectors';
 import { state } from '@angular/animations';
+import { selectAllWebEntities } from '../web/web.selectors';
 
 
 /// ОБЩИЕ 
@@ -21,6 +22,14 @@ export const selectAllOrderGoods = createSelector(
     GoodsState,
     fromEditOrder.selectAll // встроеный в адаптер селектор мы его експортировали в файле reducers/index 
 )
+
+export const selectAllOrderGoodsWithEntity = createSelector(
+    selectAllOrderGoods,
+    selectAllWebEntities,
+    (records,entities) => records.map(record => {return {...record, good:entities[record.id]}})
+)
+
+
 
 export const selectOrderHeader = createSelector(
     selectEditOrderState,

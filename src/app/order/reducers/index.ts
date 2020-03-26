@@ -48,11 +48,33 @@ export const EditOrderInitialState = {
   goods: EditOrderGoodsAdapter.getInitialState()
 }
 
+function UpsertOrderRecord(state: EditOrderState ,action) {
+  let record : IOrderGoodsRecord = action.record;
+  if ((state.goods.ids as string[]).indexOf(record.id)  == -1) {
+    return {...state,goods: EditOrderGoodsAdapter.upsertOne(action.record,state.goods) }  
+  } else {
+
+    const findedrecord   = state.goods.entities[record.id];
+    if (findedrecord.quantity+record.quantity > 0) {
+      record.quantity = findedrecord.quantity+record.quantity;
+      return {...state,goods: EditOrderGoodsAdapter.upsertOne(record,state.goods) }  
+      
+    } else {
+      return {...state,goods: EditOrderGoodsAdapter.removeOne(action.record,state.goods) }  
+
+    }
+
+
+  }
+
+  
+}
+
 export const EditOrderReducer = createReducer(
   EditOrderInitialState,
   on(EditOrderActions.OrderCreated, (state,action)=> EditOrderInitialState),
   on(EditOrderActions.UpdateOrderHeader, (state,action)=> {return {...state, ...action.header}}),
-  on(EditOrderActions.UpsertOrderRecord, (state,action)=> {return {...state,goods: EditOrderGoodsAdapter.upsertOne(action.record,state.goods) } }),
+  on(EditOrderActions.UpsertOrderRecord, (state,action)=> UpsertOrderRecord(state,action)),
   on(EditOrderActions.DeleteOrderRecord, (state,action)=> {return {...state,goods: EditOrderGoodsAdapter.removeOne(action.recordid,state.goods) } }),
 
 

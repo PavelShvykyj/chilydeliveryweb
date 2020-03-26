@@ -1,1 +1,43 @@
-<p>order-goods-list works!</p>
+<mat-table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="good">
+        <mat-header-cell class="table-cell table-left-cell" *matHeaderCellDef mat-sort-header> Товар </mat-header-cell>
+        <mat-cell class="table-cell table-left-cell" *matCellDef="let record"> <small class="GoodNameInTable">{{record.good.name}} </small></mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="quantity">
+        <mat-header-cell class="table-cell" *matHeaderCellDef mat-sort-header> Количество </mat-header-cell>
+        <mat-cell class="table-cell" *matCellDef="let record">{{record.quantity}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="comment">
+        <mat-header-cell class="table-cell" *matHeaderCellDef mat-sort-header> Коментарий </mat-header-cell>
+        <mat-cell class="table-cell" *matCellDef="let record"> <small>{{record.comment}}</small></mat-cell>
+    </ng-container>
+
+
+    <ng-container matColumnDef="buttonsgroup">
+        <mat-header-cell class="table-cell" *matHeaderCellDef > Действия</mat-header-cell>
+
+        <mat-cell class="table-cell" *matCellDef="let record">
+            <button color='warn' mat-icon-button (click)="IncrQuantity(record)">
+                <mat-icon>add</mat-icon>
+            </button>
+            <button (click)="DecrQuantity(record)" mat-icon-button>
+                <mat-icon>remove</mat-icon>
+            </button>
+            <button (click)="Del(record)" mat-icon-button>
+                <mat-icon>delete</mat-icon>
+            </button>
+
+        </mat-cell>
+
+    </ng-container>
+
+    <mat-header-row class="table-row" *matHeaderRowDef="displayedColumns ; sticky: true"></mat-header-row>
+
+    <mat-row *matRowDef="let row; columns: displayedColumns" class="table-row"></mat-row>
+
+</mat-table>
+<mat-paginator [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons></mat-paginator>
+
+

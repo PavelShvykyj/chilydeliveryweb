@@ -56,7 +56,9 @@ mat-card-header {
   justify-content: center;
 }
 
-
+.ctrl {
+  background-color: map-get($mat-red, 100);
+}
 
 button {
   height: 100%;

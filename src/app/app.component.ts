@@ -49,7 +49,16 @@ export class AppComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl("login");
   }
 
+  async UpdateChangesAsync() {
+    const currentupdatedte = await this.idb.GetLastUpdate();
+    console.log("currentupdatedte", currentupdatedte);
+    this.idb.lastupdateEventer.next(currentupdatedte);
+    const changes = await this.fdb.GetAllChangesAsync(currentupdatedte);
+    console.log("changes",changes);
+    changes.goods.forEach(good => this.store.dispatch(updateWebgoodByExternalData({ good })));
+    changes.dirtygoods.forEach(dirtygood => this.store.dispatch(updateDirtyWebgoodByExternalData({ good: dirtygood })));
 
+  }
 
   async StartListenGoodsChange() {
     const currentupdatedte = await this.idb.GetLastUpdate();
@@ -81,29 +90,29 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.store.dispatch(LoadOptions());
-    this.UpdateChanges();
+    this.UpdateChangesAsync();
     this.idb.UpdateErrorIdsCount();
-    this.orderssubs = this.fdborders.GetOrdersChanges()
-      .subscribe(orderchanges => {
-        const ordersToUpdate: IOrder[] = [];
-        const ordersToDelete: string[] = [];
-        orderchanges.forEach(element => {
-          if (element.type == 'removed') {
-            ordersToDelete.push(element.order.id)
-          } else {
-            ordersToUpdate.push(element.order)
-          }
-          if (ordersToUpdate.length != 0) {
-            this.store.dispatch(OrdersUpdated({ orders: ordersToUpdate }));
-          }
-          if (ordersToDelete.length != 0) {
-            this.store.dispatch(OrdersDeleted({ orders: ordersToDelete }));
-          }
+    // this.orderssubs = this.fdborders.GetOrdersChanges()
+    //   .subscribe(orderchanges => {
+    //     const ordersToUpdate: IOrder[] = [];
+    //     const ordersToDelete: string[] = [];
+    //     orderchanges.forEach(element => {
+    //       if (element.type == 'removed') {
+    //         ordersToDelete.push(element.order.id)
+    //       } else {
+    //         ordersToUpdate.push(element.order)
+    //       }
+    //       if (ordersToUpdate.length != 0) {
+    //         this.store.dispatch(OrdersUpdated({ orders: ordersToUpdate }));
+    //       }
+    //       if (ordersToDelete.length != 0) {
+    //         this.store.dispatch(OrdersDeleted({ orders: ordersToDelete }));
+    //       }
 
-        })
+    //     })
 
 
-      });
+    //   });
 
     //this.AuditOn()
   }

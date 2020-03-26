@@ -1,14 +1,15 @@
+import { async } from '@angular/core/testing';
 import { IWEBGood, IWEBGoodWithFilials } from './../models/web.good';
 import { IFireBaseDirtyGood } from './../models/firebase.dirtygood';
 
 import { Injectable } from '@angular/core';
 import * as firebase from 'firebase/app';
 import 'firebase/firestore';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentData, QuerySnapshot } from '@angular/fire/firestore';
 import { IONECGood } from '../models/onec.good';
 import { IGoodsListDatasourse } from '../models/goods.list.datasourse';
 import { Observable, BehaviorSubject, combineLatest, from, of } from 'rxjs';
-import { map, filter, concatMap, first,  take, tap, catchError } from 'rxjs/operators';
+import { map, filter, concatMap, first, take, tap, catchError, share } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { areAllWebGoodsLoaded } from './web.selectors';
 import { AppState } from '../reducers';
@@ -88,19 +89,18 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
 
   GetAllGoods(): Observable<{ goods: IWEBGood[], dirtygoods: IONECGood[] }> {
 
-    const webgoods$ = this.db.collection('web.goods', ref => ref.orderBy("isFolder", 'desc').orderBy("name"))
-      .snapshotChanges()
+    const webgoods$ = from(this.db.firestore.collection('web.goods').get())
       .pipe(map(res => {
-        return res.map(element => {
+        return res.docs.map(element => {
           return {
-            ...(element.payload.doc.data() as object),
+            ...(element.data() as object),
             isSelected: false,
-            id: element.payload.doc.id
+            id: element.id
           }
         }) as IWEBGood[];
-      }), take(1));
+      }), take(1), share());
 
-    const dirtywebgoods$ = this.db.collection('onec.goods', ref => ref.orderBy("isFolder", 'desc').orderBy("name"))
+    const dirtywebgoods$ = this.db.collection('onec.goods')
       .snapshotChanges()
       .pipe(map(res => {
         return res.map(element => {
@@ -110,64 +110,123 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
             id: element.payload.doc.id
           }
         }) as IONECGood[];
-      }), take(1));
+      }), take(1), share());
 
 
     return combineLatest(webgoods$, dirtywebgoods$)
       .pipe(
         map(element => { return { goods: element[0], dirtygoods: element[1] } }),
         take(1),
-        tap(allgoods => { this.idb.UpdateAllGoods(allgoods); return allgoods }))
+
+        tap(allgoods => { this.idb.UpdateAllGoods(allgoods); return allgoods }),
+        share())
 
   }
 
 
+  async GetWebChanges(lastupdate: Date): Promise<QuerySnapshot<DocumentData>> {
+    return this.db.firestore.collection('web.goods')
+      //.orderBy("lastmodified")
+      .where("lastmodified",">",lastupdate).get()
+  }
+
+  async GetDirtyChanges(lastupdate: Date): Promise<QuerySnapshot<DocumentData>> {
+    return this.db.firestore.collection('onec.goods')
+      //.orderBy("lastmodified")
+      .where("lastmodified",">",lastupdate).get()
+  }
+
+  async GetAllChangesAsync(lastupdate: Date): Promise<{
+    goods: IWEBGood[],
+    dirtygoods: IONECGood[],
+    webgoodsDeleted: IWEBGood[],
+    dirtywebgoodsDeleted: IONECGood[]
+  }> {
+    let mdate = lastupdate;
+    let goods: IWEBGood[] = [];
+    let dirtygoods: IONECGood[] = [];
+    let webgoodsDeleted: IWEBGood[] = [];
+    let dirtywebgoodsDeleted: IONECGood[] = [];
+
+    const snapsgoods = await this.GetWebChanges(lastupdate);
+    let changesgoods = snapsgoods.docs.map(snap => {
+      const el: any = snap.data();
+      if (el.lastmodified != undefined && el.lastmodified != null) {
+        mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();
+      }
+      return {
+        ...(el),
+        isSelected: false,
+        id: snap.id
+      }
+    });
+
+    const snapsdirty = await this.GetDirtyChanges(lastupdate);
+    let changesdirty = snapsdirty.docs.map(snap => {
+      const el: any = snap.data();
+
+      if (el.lastmodified != undefined && el.lastmodified != null) {
+        mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();
+      }
+      return {
+        ...(el),
+        isSelected: false,
+        id: snap.id
+      }
+    });
+
+    goods = changesgoods.filter(good => good.isDeleted == false) as IWEBGood[];
+    webgoodsDeleted = changesgoods.filter(good => good.isDeleted == true) as IWEBGood[];
+    dirtygoods = changesdirty.filter(good => good.isDeleted == false) as IONECGood[];
+    dirtywebgoodsDeleted = changesdirty.filter(good => good.isDeleted == true) as IONECGood[];
+
+    if (mdate > lastupdate) {
+      console.log('ask set LastUpdate', mdate);
+      await this.idb.SetLastUpdate(new Promise(reject => { reject(mdate) }));
+    }
+
+    return new Promise(reject => reject({
+      goods,
+      webgoodsDeleted,
+      dirtygoods,
+      dirtywebgoodsDeleted
+    }));
+
+
+  }
 
   GetAllChanges(lastupdate: Date): Observable<{ goods: IWEBGood[], dirtygoods: IONECGood[], webgoodsDeleted: IWEBGood[], dirtywebgoodsDeleted: IONECGood[] }> {
     let mdate = lastupdate;
 
 
-    const webgoods$ = this.db.collection('web.goods', ref => ref.where('isDeleted', "==", false).where("lastmodified", ">", lastupdate))
-      .stateChanges()
-      .pipe(
-        map(res => {
+    const goodschanges$ = from(this.db.firestore.collection('web.goods')
+      .orderBy("lastmodified")
+      .startAfter(lastupdate).get())
+      .pipe(map(snaps => {
+        return snaps.docs.map(element => {
+          const el: any = element.data();
+          console.log('GetAllChanges web el', el);
+          if (el.lastmodified != undefined && el.lastmodified != null) {
+            mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();
+          }
 
-          return res.map(element => {
+          return {
+            ...(el),
+            isSelected: false,
+            id: element.id
+          }
+        });
+      }), take(1), share());
 
-            const el: any = element.payload.doc.data();
-            console.log('GetAllChanges web el', el);
-            if (el.lastmodified != undefined && el.lastmodified != null) {
-              mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();
-            }
+    const webgoods$ = goodschanges$.pipe(
+      map(goods => goods.filter(good => good.isDeleted == false) as IWEBGood[]), take(1)
+    );
 
-            return {
-              ...(el),
-              isSelected: false,
-              id: element.payload.doc.id
-            }
-          }) as IWEBGood[];
-        }), take(1));
+    const webgoodsDeleted$ = goodschanges$.pipe(
+      map(goods => goods.filter(good => good.isDeleted == true) as IWEBGood[]), take(1)
+    );
 
-    const webgoodsDeleted$ = this.db.collection('web.goods', ref => ref.where('isDeleted', "==", true).where("lastmodified", ">", lastupdate))
-      .stateChanges()
-      .pipe(
-        map(res => {
 
-          return res.map(element => {
-
-            const el: any = element.payload.doc.data();
-            console.log('GetAllChanges web delete el', el);
-            if (el.lastmodified != undefined && el.lastmodified != null) {
-              mdate = mdate > el.lastmodified.toDate() ? mdate : el.lastmodified.toDate();
-            }
-
-            return {
-              ...(el),
-              isSelected: false,
-              id: element.payload.doc.id
-            }
-          }) as IWEBGood[];
-        }), take(1));
 
 
 
@@ -308,7 +367,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
       map(() => id));
   }
 
-  Audit(collectionname:string) : Observable<any> {
+  Audit(collectionname: string): Observable<any> {
     return this.db.collection(collectionname).auditTrail();
   }
 
@@ -316,14 +375,15 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
   UpdateByONEC(data: IONECGood): Observable<IONECGood> {
 
 
-    return of({ 
-      id:"",
+    return of({
+      id: "",
       name: "",
-      isSelected:false,
+      isSelected: false,
       parentid: "",
       isFolder: false,
       filial: "",
-      externalid:""});
+      externalid: ""
+    });
     // if (data.externalid == "" || data.externalid == undefined) {
 
     //   /// внешний код для фиребасе = внутренний от 1С  

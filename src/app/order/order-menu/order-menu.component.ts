@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { IOrderGoodsRecord } from './../../models/order';
+import { Component, OnInit, ViewChild, Input, HostListener } from '@angular/core';
 import { CubToolbarComponent } from 'src/app/baseelements/cub-toolbar/cub-toolbar.component';
 import { ITolbarCommandsList } from 'src/app/models/toolbar.commandslist';
 import { Observable } from 'rxjs';
@@ -10,6 +11,7 @@ import { MatSnackBar } from '@angular/material';
 import { selectGoodsByParent, selectGoodBySelection, selectGoodByName } from 'src/app/web/web.selectors';
 import { map } from 'rxjs/operators';
 import { IBaseGood } from 'src/app/models/base.good';
+import { UpsertOrderRecord } from '../editorder.actions';
 
 @Component({
   selector: 'order-menu',
@@ -26,6 +28,9 @@ export class OrderMenuComponent implements OnInit {
 
   @Input('onlyfolders')
   onlyfolders: boolean = false
+
+  
+  isCTRLDOWN : boolean = false;
 
   elements$: Observable<IWEBGoodWithFilials[]>;
   allelements$: Observable<IWEBGoodWithFilials[]>;
@@ -177,9 +182,20 @@ export class OrderMenuComponent implements OnInit {
       this.toolbar.AddElement(item);
       this.UpdateGoodsview();
     } else {
-
+      const quantity = this.isCTRLDOWN ? -1 : 1 ; 
+      const record : IOrderGoodsRecord = {
+        id:item.id,
+        quantity:quantity,
+        comment:""
+      }
+      this.store.dispatch(UpsertOrderRecord({record}))
     }
 
   }
+
+  OnControlStatusChange(value) {
+    this.isCTRLDOWN=value
+  }
+  
 
 }

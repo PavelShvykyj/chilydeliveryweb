@@ -1,9 +1,9 @@
-<div class="grid-container">
+<div class="grid-container" CtrlStatus (OnDirectiveChange)="OnControlStatusChange($event)">
     <cub-toolbar [dataSourse]="ds" [toolbarcommands]="toolbarcommands"
         (OnElementClicked)="OnLentaElementClicked($event)" (OnToolbarCommandClicked)="OnToolbarCommandClicked($event)">
     </cub-toolbar>
 
-    <mat-card class="card">
+    <mat-card  class="card">
         
             <mat-form-field class="w-fill" color='accent' id='fieldfilter' appearance="outline">
                 <input matInput type="text" placeholder="Поиск по имени" (input)="OnNameFilterInput()"
@@ -16,14 +16,18 @@
         
 
 
-        <mat-card-content>
+        <mat-card-content >
             <mat-grid-list cols="4" gutterSize="1px" rowHeight="35px">
                 <mat-grid-tile class="menugridelement" *ngFor="let item of (elements$ | async)">
-                    <button color='accent' [ngClass]="{'secondary':item.isFolder}" mat-stroked-button
-                        (click)="ElementClicked(item)">
+                    <button  color='accent' [ngClass]="{'secondary':item.isFolder}" mat-stroked-button
+                        (click)="ElementClicked(item)" >
+                        
+                        
                         <mat-list-item class="title-small lentacontainer">
-                            {{item.name}}
+                            <small *ngIf="!item.isFolder && isCTRLDOWN" matBadge="-1" matBadgeOverlap="false" matBadgePosition="after" matBadgeColor="warn">{{item.name}} </small>
+                            <span *ngIf="item.isFolder || !isCTRLDOWN"> {{item.name}} </span>
                         </mat-list-item>
+                        
                     </button>
                 </mat-grid-tile>
                 <mat-grid-tile colspan=4 rowspan=1>

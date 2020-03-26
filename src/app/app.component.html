@@ -2,7 +2,7 @@
   <span>Simple delivery  </span>
 
   <span class="spacer"> </span>
-  <button color='accent' class="secondary" mat-stroked-button (click)="UpdateChanges()">
+  <button color='accent' class="secondary" mat-stroked-button (click)="UpdateChangesAsync()">
     <mat-list-item class="title-small lentacontainer">
       <p class="title-small my-2"> {{ idb.lastupdate$ | async | date: 'dd/MM/yyyy' }} </p>
       <p class="my-2"><small class="subheading-1"> {{ idb.lastupdate$ | async | date: 'HH:mm:ss' }} </small></p> 

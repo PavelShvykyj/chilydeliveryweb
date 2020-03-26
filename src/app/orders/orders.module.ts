@@ -8,13 +8,14 @@ import { EffectsModule } from '@ngrx/effects';
 import { OrderEffects } from './order.effects';
 import { OrdersDatasourseService } from './orders.datasourse.service';
 import { OrderslistComponent } from './orderslist/orderslist.component';
+import { CtrlStatusDirective } from './ctrldown.directive';
 
 
 
 
 @NgModule({
-  declarations: [OrderslistComponent],
-  exports:[OrderslistComponent],
+  declarations: [OrderslistComponent, CtrlStatusDirective],
+  exports:[OrderslistComponent,CtrlStatusDirective],
   imports: [
     CommonModule,
     MaterialsModule,

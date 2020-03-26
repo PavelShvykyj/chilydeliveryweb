@@ -1,0 +1,46 @@
+@import '~@angular/material/theming';
+
+// Create a config with the default typography levels.
+
+
+$config: mat-typography-config(
+    $title: mat-typography-level(12px, 12px, 400),
+    $button: mat-typography-level(12px, 12px, 400),
+    $subheading-1: mat-typography-level(14px, 14px, 500)
+);
+
+mat-form-field {
+    max-height: 100%;
+    min-width: 40%;
+    font-size: mat-font-size($config, title);
+    line-height: mat-line-height($config, title);
+}
+
+.table-left-cell {
+    border-left: 1px solid;
+    border-left-color:  rgba(0, 0, 0, 0.12);
+}
+
+.table-cell {
+    justify-content: center !important;
+    justify-self: center !important;
+    align-content: center !important;
+    align-self: center !important;
+    max-height: 30px !important;
+    height: 30px !important; 
+    min-height: 30px !important;
+    border-right: 1px solid;
+    border-right-color:  rgba(0, 0, 0, 0.12);
+    text-align: center !important;  
+}
+
+.GoodNameInTable {
+    text-transform: lowercase;
+}
+
+.table-row {
+    max-height: 30px !important;
+    height: 30px !important;   
+    text-align: center !important;
+    min-height: 30px !important;
+}
