@@ -42,7 +42,7 @@ export const EditOrderInitialState = {
   addres:"",
   phone:"",
   creation: new Date(),
-  filial:"",
+  filial:"luxor",
   desk:"",
   comment:"",
   goods: EditOrderGoodsAdapter.getInitialState()
@@ -74,6 +74,7 @@ export const EditOrderReducer = createReducer(
   EditOrderInitialState,
   on(EditOrderActions.OrderCreated, (state,action)=> EditOrderInitialState),
   on(EditOrderActions.UpdateOrderHeader, (state,action)=> {return {...state, ...action.header}}),
+  on(EditOrderActions.UpdateOrderfilial, (state,action)=> {return {...state, filial: action.filial}}),
   on(EditOrderActions.UpsertOrderRecord, (state,action)=> UpsertOrderRecord(state,action)),
   on(EditOrderActions.DeleteOrderRecord, (state,action)=> {return {...state,goods: EditOrderGoodsAdapter.removeOne(action.recordid,state.goods) } }),
 

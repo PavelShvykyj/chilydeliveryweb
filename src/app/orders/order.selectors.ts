@@ -1,3 +1,4 @@
+import { state } from '@angular/animations';
 import { IONECGood, IONECGoodWithOwner } from './../models/onec.good';
 import { IWEBGood, IWEBGoodWithFilials } from './../models/web.good';
 import { OrdersState } from './reducers/index';
@@ -23,5 +24,7 @@ export const selectAllOrdersEntities = createSelector(
     fromOrder.selectEntities // встроеный в адаптер селектор мы его експортировали в файле reducers/index 
 )
 
+export const AreOrdesLoaded = createSelector(selectOrderState,
+    state => state.allOrdersLoaded)
 
 

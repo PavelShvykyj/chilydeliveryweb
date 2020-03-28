@@ -2,6 +2,9 @@
   <span>Simple delivery  </span>
 
   <span class="spacer"> </span>
+  <mat-spinner diameter=40 color='accent' *ngIf="loading"></mat-spinner>
+  <span class="spacer"> </span>
+
   <button color='accent' class="secondary" mat-stroked-button (click)="UpdateChangesAsync()">
     <mat-list-item class="title-small lentacontainer">
       <p class="title-small my-2"> {{ idb.lastupdate$ | async | date: 'dd/MM/yyyy' }} </p>

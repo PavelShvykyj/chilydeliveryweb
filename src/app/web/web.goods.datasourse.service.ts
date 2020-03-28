@@ -80,7 +80,10 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
 
   constructor(private db: AngularFirestore,
     private store: Store<AppState>,
-    private idb: LocalDBService) { }
+    private idb: LocalDBService) { 
+      console.log('store',this.store);
+
+    }
 
 
   get timestamp() {

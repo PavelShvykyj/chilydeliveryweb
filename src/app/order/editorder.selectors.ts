@@ -13,6 +13,8 @@ import { selectAllWebEntities } from '../web/web.selectors';
 
 export const selectEditOrderState = createFeatureSelector<EditOrderState>(fromEditOrder.editorderFeatureKey);
 
+
+
 export const GoodsState = createSelector(
     selectEditOrderState,
     state => state.goods
@@ -58,6 +60,11 @@ export const selectOrderFilial = createSelector(
     state => state.filial
 )
 
+export const EditingOrder = createSelector(
+    selectEditOrderState,
+    selectAllOrderGoods,
+    (state,goods) => {return  {...state, goods:goods}}
+);
 
 
 

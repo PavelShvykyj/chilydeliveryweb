@@ -1,3 +1,4 @@
+import { CreateOrder, OrderCreated } from './editorder.actions';
 import { Injectable } from '@angular/core';
 
 import { IONECGood } from '../models/onec.good';
@@ -11,12 +12,20 @@ import { Update } from '@ngrx/entity';
 
 import { concatMap, map } from 'rxjs/operators';
 import { of, from } from 'rxjs';
+import { OrdersDatasourseService } from '../orders/orders.datasourse.service';
 
 @Injectable()
 export class EditOrderEffects {
 
+    CreateOrders$ = createEffect(() => this.actions$.pipe(
+        ofType(CreateOrder),
+        concatMap(action => this.OrdersServise.AddOrder(action.order)),
+        map(() => OrderCreated())
+    ))
+        
+
     constructor(private actions$: Actions, 
-        private WebServise: WebGoodsDatasourseService,
+        private OrdersServise: OrdersDatasourseService,
         private idb: LocalDBService,
         private store : Store<AppState>) {
 }

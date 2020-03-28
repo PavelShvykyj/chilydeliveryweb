@@ -1,8 +1,10 @@
+import { Router } from '@angular/router';
+import { OrdersDatasourseService } from './../orders.datasourse.service';
 import { Subscription } from 'rxjs';
 import { IOrder } from './../../models/order';
 import { Store, select } from '@ngrx/store';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort, MatSnackBar } from '@angular/material';
 import { AppState } from 'src/app/reducers';
 import { selectAllOrders } from '../order.selectors';
 
@@ -30,7 +32,10 @@ export class OrderslistComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
-  constructor(private store: Store<AppState> ) { }
+  constructor(private store: Store<AppState>,
+             private db: OrdersDatasourseService,
+             private router : Router,
+             private snackBar: MatSnackBar  ) { }
 
   ngOnInit() {
     this.ordersusbs = this.store.pipe(select(selectAllOrders))
@@ -44,18 +49,28 @@ export class OrderslistComponent implements OnInit, OnDestroy {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    
   }
 
   ngOnDestroy() {
+    
     this.ordersusbs.unsubscribe();
   }
 
-  AddOrder() {
-
+   AddOrder() {
+    this.router.navigateByUrl("order");
   }
 
   AddComent(order:IOrder) {
 
+  }
+
+  async Remove(id:string) {
+    let snack = this.snackBar.open("Для удаления нажмите -->", "OK",{duration: 2000});
+    snack.onAction().subscribe(res=>{
+      this.db.RemoveOrder(id);
+      console.log('REMOVED');
+    })
   }
 
   applyFilter(filterValue: string) {

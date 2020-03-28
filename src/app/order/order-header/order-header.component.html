@@ -6,10 +6,10 @@
 
 
         <mat-form-field id='fieldadress'   color='accent' class="w-fill" appearance="outline">
-            <input required formControlName='addres' #inputadress matInput>
+            <input required formControlName='addres' #inputadress matInput (blur)="UpdateHeader()">
             <!-- <mat-hint> Заполнить обязательно </mat-hint> -->
             <mat-label>Адресс </mat-label>
-            <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="inputadress.value=''">
+            <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="inputadress.value=''; UpdateHeader() ">
                 <mat-icon>close</mat-icon>
             </button>
         </mat-form-field>
@@ -17,10 +17,10 @@
         <div class="spacer"> </div>
 
         <mat-form-field id='fieldphone'  color='accent' class="w-fill" appearance="outline">
-            <input required formControlName='phone' #inputphone matInput>
+            <input required formControlName='phone' #inputphone matInput (blur)="UpdateHeader()">
             <!-- <mat-hint> поиск по всем столбцам </mat-hint> -->
             <mat-label>Телефон</mat-label>
-            <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="inputphone.value=''; ">
+            <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="inputphone.value=''; UpdateHeader()">
                 <mat-icon>close</mat-icon>
             </button>
         </mat-form-field>
@@ -28,10 +28,10 @@
         <div class="spacer"> </div>
 
         <mat-form-field id='fieldcomment'  color='accent' class="w-fill" appearance="outline">
-            <input formControlName='comment' #inputcomment matInput>
+            <input formControlName='comment' #inputcomment matInput (blur)="UpdateHeader()">
             <!-- <mat-hint> поиск по всем столбцам </mat-hint> -->
             <mat-label>Коментарий</mat-label>
-            <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="inputcomment.value='';">
+            <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="inputcomment.value='';UpdateHeader()">
                 <mat-icon>close</mat-icon>
             </button>
         </mat-form-field>

@@ -30,6 +30,7 @@ import { OptionsEffects } from './options.effects';
 import { IsLoggedInGuard } from './isloged.guard';
 import { dbConfig } from './idb/idb.config';
 import { IdbModule } from './idb/idb.module';
+import { AngularFireDatabaseModule } from '@angular/fire/database';
 
 
 
@@ -51,6 +52,7 @@ import { IdbModule } from './idb/idb.module';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFirestoreModule,
+    AngularFireDatabaseModule,
     FlexLayoutModule,
     StoreModule.forRoot(reducers, { metaReducers }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),

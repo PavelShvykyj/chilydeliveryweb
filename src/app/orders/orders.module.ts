@@ -9,6 +9,7 @@ import { OrderEffects } from './order.effects';
 import { OrdersDatasourseService } from './orders.datasourse.service';
 import { OrderslistComponent } from './orderslist/orderslist.component';
 import { CtrlStatusDirective } from './ctrldown.directive';
+import { OrdesResolver } from './orderslist/orders.resolver';
 
 
 
@@ -23,6 +24,6 @@ import { CtrlStatusDirective } from './ctrldown.directive';
 
     StoreModule.forFeature(fromOrders.ordersFeatureKey, orderreducer, { metaReducers: fromOrders.metaReducers })
   ],
-  providers:[OrdersDatasourseService]
+  providers:[OrdersDatasourseService,OrdesResolver]
 })
 export class OrdersModule { }

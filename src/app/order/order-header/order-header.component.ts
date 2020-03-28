@@ -28,19 +28,32 @@ export class OrderHeaderComponent implements OnInit, OnDestroy {
     this.store.pipe(
       select(selectOrderHeader),
       tap(header=>{
-        console.log(header);
-        this.addres=header.addres,
-        this.phone=header.phone,
-        this.comment=header.comment
+        
+          this.addres=header.addres;
+        
+        
+          this.phone=header.phone;
+        
+        
+          this.comment=header.comment;
+        
       })).subscribe();
   }
 
   ngOnDestroy() {
+    this.UpdateHeader()
+  }
+
+  UpdateHeader() {
     const header : IOrderHeader = {...this.form.value}
     this.store.dispatch(UpdateOrderHeader({
       header
     }))
 
+  }
+
+  get headervalid() {
+    return this.form.valid
   }
 
   get addres() {
@@ -56,14 +69,17 @@ export class OrderHeaderComponent implements OnInit, OnDestroy {
   }
 
   set addres(value: string) {
-    this.form.get('addres').patchValue(value);
+    this.form.get('addres').setValue(value);
+    
   }
 
   set phone(value: string) {
-    this.form.get('phone').patchValue(value);
+    this.form.get('phone').setValue(value);
+    
   }
 
   set comment(value: string) {
-    this.form.get('comment').patchValue(value);
+    this.form.get('comment').setValue(value);
+    
   }
 }

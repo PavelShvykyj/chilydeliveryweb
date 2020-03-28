@@ -24,9 +24,24 @@
     height: 100%;
 }
 
+.gridelement-row{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+  
+}
+
 .grid-container {
     height: 612px;
     min-height: 612px;
     width: 100%;
     background-color:map-get($mat-grey, 400);
+}
+
+
+
+
+.mat-toolbar-row .mat-toolbar-single-row {
+    height: 100% !important;
 }

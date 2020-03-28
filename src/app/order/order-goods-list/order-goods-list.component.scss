@@ -34,6 +34,12 @@ mat-form-field {
     text-align: center !important;  
 }
 
+.table-header-cell {
+    border-top: 1px solid;
+    border-top-color:  rgba(0, 0, 0, 0.12);
+
+}
+
 .GoodNameInTable {
     text-transform: lowercase;
 }
@@ -43,4 +49,24 @@ mat-form-field {
     height: 30px !important;   
     text-align: center !important;
     min-height: 30px !important;
+}
+
+mat-radio-button {
+    margin-left: 2px;
+    margin-right: 2px;
+}
+mat-card-subtitle {
+    display: flex !important;
+}
+
+mat-card {
+    padding: 4px;
+}
+
+.small {
+    margin-top: 3px;
+    margin-left: 6px;
+    text-align: center;
+    display: inline-block;
+    vertical-align: middle;
 }

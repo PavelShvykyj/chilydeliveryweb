@@ -36,11 +36,7 @@ export class WebEffects {
         )
     );
 
-    uploadOnecGoods$ = createEffect(() => this.actions$.pipe(
-        ofType(WebActions.uploadOnecSelected),
-        concatMap(action => this.WebServise.UpdateByONEC(action.good)),
-        map(newgood => onecSelectedUploaded({newgood})))
-    );
+
 
     upsertWebGood$ = createEffect(() => this.actions$.pipe(
         ofType(WebActions.updateWebgood),

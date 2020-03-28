@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { GoodsResolver } from './exchange/resolvers/goods.resolver';
 import { IsLoggedInGuard } from './isloged.guard';
 import { OrderEditComponent } from './order/order-edit/order-edit.component';
+import { OrdesResolver } from './orders/orderslist/orders.resolver';
 
 const routes: Routes = [
   {
@@ -23,7 +24,7 @@ const routes: Routes = [
   {
     path: 'orders',
     component: OrdersExchangeComponent,
-    resolve : {goods : GoodsResolver},
+    resolve : {goods : GoodsResolver, orders: OrdesResolver},
     canActivate:[IsLoggedInGuard]
   },
   

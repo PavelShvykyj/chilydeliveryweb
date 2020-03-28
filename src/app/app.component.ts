@@ -8,7 +8,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AppState } from './reducers';
 import { AuthService } from './auth/auth.service';
 import { map, first, take } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
 import { LocalDBService } from './idb/local-db.service';
 import { WebGoodsDatasourseService } from './web/web.goods.datasourse.service';
 import { updateWebgoodByExternalData, updateDirtyWebgoodByExternalData } from './web/web.actions';
@@ -30,7 +30,9 @@ export class AppComponent implements OnInit, OnDestroy {
   dateuptsubs: Subscription;
   auditgoodsubs: Subscription;
   auditdirtygoodsubs: Subscription;
+  loadingsubs: Subscription;
   orderssubs: Subscription;
+  loading: boolean = true;
 
   constructor(private store: Store<AppState>,
     private fdb: WebGoodsDatasourseService,
@@ -51,10 +53,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   async UpdateChangesAsync() {
     const currentupdatedte = await this.idb.GetLastUpdate();
-    console.log("currentupdatedte", currentupdatedte);
     this.idb.lastupdateEventer.next(currentupdatedte);
     const changes = await this.fdb.GetAllChangesAsync(currentupdatedte);
-    console.log("changes",changes);
     changes.goods.forEach(good => this.store.dispatch(updateWebgoodByExternalData({ good })));
     changes.dirtygoods.forEach(dirtygood => this.store.dispatch(updateDirtyWebgoodByExternalData({ good: dirtygood })));
 
@@ -62,9 +62,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   async StartListenGoodsChange() {
     const currentupdatedte = await this.idb.GetLastUpdate();
-    console.log("currentupdatedte", currentupdatedte);
     this.idb.lastupdateEventer.next(currentupdatedte);
-
   }
 
   ExternalChangesSubscription() {
@@ -88,33 +86,36 @@ export class AppComponent implements OnInit, OnDestroy {
     })).pipe(take(1)).subscribe();
   }
 
+  ListenLoading() {
+    this.loadingsubs = this.router.events.subscribe(event => {
+      switch (true) {
+        case event instanceof NavigationStart: {
+          this.loading = true;
+          break;
+        }
+        case event instanceof NavigationEnd:
+        case event instanceof NavigationCancel:
+        case event instanceof NavigationError:
+          {
+            this.loading = false;
+            break;
+          }
+
+        default:
+          break;
+      }
+
+
+    })
+  }
+
   ngOnInit() {
     this.store.dispatch(LoadOptions());
-    this.UpdateChangesAsync();
+    this.fdborders.OdrdersChangesStart();
+    //this.UpdateChangesAsync();
     this.idb.UpdateErrorIdsCount();
-    // this.orderssubs = this.fdborders.GetOrdersChanges()
-    //   .subscribe(orderchanges => {
-    //     const ordersToUpdate: IOrder[] = [];
-    //     const ordersToDelete: string[] = [];
-    //     orderchanges.forEach(element => {
-    //       if (element.type == 'removed') {
-    //         ordersToDelete.push(element.order.id)
-    //       } else {
-    //         ordersToUpdate.push(element.order)
-    //       }
-    //       if (ordersToUpdate.length != 0) {
-    //         this.store.dispatch(OrdersUpdated({ orders: ordersToUpdate }));
-    //       }
-    //       if (ordersToDelete.length != 0) {
-    //         this.store.dispatch(OrdersDeleted({ orders: ordersToDelete }));
-    //       }
+    this.ListenLoading();
 
-    //     })
-
-
-    //   });
-
-    //this.AuditOn()
   }
 
 
@@ -125,28 +126,30 @@ export class AppComponent implements OnInit, OnDestroy {
 
   Unsubscribe() {
     if (this.fbgoodschangessubs) {
-      console.log('unsubs changes');
       this.fbgoodschangessubs.unsubscribe();
     }
 
     if (this.dateuptsubs) {
-      console.log('unsubs date');
       this.fbgoodschangessubs.unsubscribe();
     }
 
     if (this.auditgoodsubs) {
-      console.log('unsubs auditgoodsubs');
+
       this.auditgoodsubs.unsubscribe();
     }
     if (this.auditgoodsubs) {
-      console.log('unsubs auditgoodsubs');
       this.auditgoodsubs.unsubscribe();
     }
+
     if (this.orderssubs) {
-      console.log('unsubs orderssubs');
       this.orderssubs.unsubscribe();
     }
 
+    if (this.orderssubs) {
+      this.loadingsubs.unsubscribe();
+    }
+
+    this.fdborders.OdrdersChangesStop();
   }
 
 
@@ -168,7 +171,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   async UpdateErrors() {
     const errors = await this.idb.GetErrors();
-    console.log("local errors", errors);
     errors.forEach(element => this.RetryUpsert(element))
   }
 
