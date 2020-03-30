@@ -1,3 +1,4 @@
+import { TelegramService } from './../telegram.service';
 import { tap, map, first, filter, concatMap } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
@@ -17,7 +18,8 @@ export class OrderToolbarComponent implements OnInit {
   
 
   constructor(private snackBar: MatSnackBar, 
-    private store: Store<AppState>
+              private store: Store<AppState>,
+              private telegram:TelegramService
     ) { }
 
   ngOnInit() {
@@ -36,8 +38,31 @@ export class OrderToolbarComponent implements OnInit {
 
   }
 
+  GetTformatedMessage(order) : string {
+    let message : string =  `<b>НОВЫЙ ЗАКАЗ :</b>
+    <i>Адрес: </i> ${order.addres} ,
+    <i>Тел. : </i> ${order.phone} ,
+    <i>Комент : </i> ${order.comment} ,
+    <i>ТОВАРЫ : </i>
+    `;
+
+    order.entities.forEach(element => {
+      message = message + `${element.good.name} :  ${element.quantity}
+      `
+    });
+    console.log(message);
+
+    return message;
+    };
+
+
+
+
+
+
   CreateOrder() {
-    
+    let tfilifal : string;
+    let tmessage : string;
 
     this.store.pipe(
       
@@ -45,11 +70,16 @@ export class OrderToolbarComponent implements OnInit {
       first(),
       filter(EditingOrder=> this.OrderValid(EditingOrder)==true),
       
-      /// тут фильтр на проверку запонения
-      map(order => this.store.dispatch(CreateOrder({order: {...order,id:"",externalid:"",isSelected:false}}))),
+      
+      map(order =>{
+        tfilifal = order.filial;
+        tmessage = this.GetTformatedMessage(order);  
+        this.store.dispatch(CreateOrder({order: {...order,id:"",externalid:"",isSelected:false}}))
+      } ),
      
       ).subscribe(
-        res=>{this.snackBar.open("ЗАКАЗ СОЗДАН", "OK",{duration: 2000}); },
+        res=>{this.telegram.SendMessage(tfilifal,tmessage);
+              this.snackBar.open("ЗАКАЗ СОЗДАН", "OK",{duration: 2000}); },
         err=>{this.snackBar.open("ЧТО ТО ПОШЛО НЕ ТАК", "OK",{duration: 2000}); }
 
 

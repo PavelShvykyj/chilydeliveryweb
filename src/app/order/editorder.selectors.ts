@@ -63,7 +63,8 @@ export const selectOrderFilial = createSelector(
 export const EditingOrder = createSelector(
     selectEditOrderState,
     selectAllOrderGoods,
-    (state,goods) => {return  {...state, goods:goods}}
+    selectAllOrderGoodsWithEntity,
+    (state,goods,entities) => {return  {...state, goods:goods, entities:entities}}
 );
 
 

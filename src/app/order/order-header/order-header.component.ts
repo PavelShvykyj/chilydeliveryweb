@@ -6,6 +6,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { selectOrderHeader } from '../editorder.selectors';
 import { IOrderHeader } from 'src/app/models/order';
 import { UpdateOrderHeader } from '../editorder.actions';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'order-header',
@@ -14,6 +15,7 @@ import { UpdateOrderHeader } from '../editorder.actions';
 })
 export class OrderHeaderComponent implements OnInit, OnDestroy {
   form: FormGroup;
+  headersubs: Subscription;
 
   constructor(private store: Store<AppState>) {
     this.form = new FormGroup({
@@ -25,7 +27,7 @@ export class OrderHeaderComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    this.store.pipe(
+    this.headersubs =  this.store.pipe(
       select(selectOrderHeader),
       tap(header=>{
         
@@ -42,6 +44,7 @@ export class OrderHeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.UpdateHeader()
+    this.headersubs.unsubscribe();
   }
 
   UpdateHeader() {

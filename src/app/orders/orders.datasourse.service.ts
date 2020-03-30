@@ -14,6 +14,7 @@ import { environment } from 'src/environments/environment';
 import * as firebase from 'firebase/app';
 import 'firebase/database';
 import { OrderActions } from './order.action.types';
+import { Itparams } from '../models/telegram';
 
 
 
@@ -31,7 +32,14 @@ export class OrdersDatasourseService {
   }
 
 
+  async GetTelegramParams() {
+    const snapparams = await this.db.database.ref('telegram').once('value');
+    let tparams : Itparams = {};
+    
+    snapparams.forEach(snap => { tparams[snap.key]=snap.val()}  );
+    return tparams
 
+  }
 
   GetOrders(): Observable<IOrder[]> {
     return from(this.db.database.ref('orders').once('value'))

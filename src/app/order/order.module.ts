@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderEditComponent } from '../order/order-edit/order-edit.component';
 import { MaterialsModule } from '../materials/materials.module';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, props } from '@ngrx/store';
 import * as fromEditorder from './reducers';
 import { editorderreducer } from './reducers';
 import { EditOrderEffects } from './editorder.effects';
@@ -14,6 +14,8 @@ import { OrderToolbarComponent } from './order-toolbar/order-toolbar.component';
 import { BaseelementsModule } from '../baseelements/baseelements.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { OrdersModule } from '../orders/orders.module';
+import { TelegramService } from './telegram.service';
+import { HttpClientModule } from '@angular/common/http';
 
 
 
@@ -21,15 +23,17 @@ import { OrdersModule } from '../orders/orders.module';
 @NgModule({
   declarations: [OrderEditComponent, OrderHeaderComponent, OrderGoodsListComponent, OrderMenuComponent, OrderToolbarComponent],
   exports:[OrderEditComponent],
-  imports: [
+  imports:[
     MaterialsModule,
     CommonModule,
+    HttpClientModule,
     BaseelementsModule,
     FormsModule,
     ReactiveFormsModule,
     OrdersModule,
     EffectsModule.forFeature([EditOrderEffects]),
     StoreModule.forFeature(fromEditorder.editorderFeatureKey, editorderreducer, { metaReducers: fromEditorder.metaReducers })
-  ]
+  ],
+  providers:[TelegramService]
 })
 export class OrderModule { }
