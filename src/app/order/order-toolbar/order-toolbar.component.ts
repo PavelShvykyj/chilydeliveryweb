@@ -39,18 +39,19 @@ export class OrderToolbarComponent implements OnInit {
   }
 
   GetTformatedMessage(order) : string {
-    let message : string =  `<b>НОВЫЙ ЗАКАЗ :</b>
-    <i>Адрес: </i> ${order.addres} ,
-    <i>Тел. : </i> ${order.phone} ,
-    <i>Комент : </i> ${order.comment} ,
-    <i>ТОВАРЫ : </i>
-    `;
+    let message : string =  `<b>НОВЫЙ ЗАКАЗ : ${order.externalid}</b>
+    <b>Филиал : </b> ${order.filial} 
+    <i>Адрес: </i> ${order.addres} 
+    <i>Тел. : </i> ${order.phone} 
+    <i>Коммент : </i> ${order.comment}`; 
+    // <i>ТОВАРЫ : </i>
+    // `;
 
-    order.entities.forEach(element => {
-      message = message + `${element.good.name} :  ${element.quantity}
-      `
-    });
-    console.log(message);
+    // order.entities.forEach(element => {
+    //   message = message + `${element.good.name} :  ${element.quantity}
+    //   `
+    // });
+    
 
     return message;
     };

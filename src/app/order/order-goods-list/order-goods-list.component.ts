@@ -1,13 +1,15 @@
+import { first } from 'rxjs/operators';
 import { UpsertOrderRecord, DeleteOrderRecord, UpdateOrderfilial } from './../editorder.actions';
 import { IOrderGoodsRecord, IOrderGoodsRecordWithEntity } from './../../models/order';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort, MatDialogConfig, MatDialogRef, MatDialog } from '@angular/material';
 import { IOrder } from 'src/app/models/order';
 import { Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
 import { selectAllOrders } from 'src/app/orders/order.selectors';
 import { selectAllOrderGoodsWithEntity, selectOrderFilial } from '../editorder.selectors';
+import { DialogstringinputComponent } from 'src/app/baseelements/dialogstringinput/dialogstringinput.component';
 
 @Component({
   selector: 'order-goods-list',
@@ -24,7 +26,9 @@ export class OrderGoodsListComponent implements OnInit {
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
-  constructor(private store: Store<AppState> ) { }
+  
+  constructor(private store: Store<AppState>,
+              public dialog: MatDialog ) { }
 
   ngOnInit() {
     this.ordersusbs = this.store.pipe(select(selectAllOrderGoodsWithEntity))
@@ -60,6 +64,26 @@ export class OrderGoodsListComponent implements OnInit {
   DecrQuantity(record) {
     record.quantity = -1;
     this.store.dispatch(UpsertOrderRecord({record}));
+
+  }
+
+  OnRecordClick(record ) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus=true;
+    dialogConfig.minHeight="25wh"
+    dialogConfig.minWidth="25wv"
+    
+    dialogConfig.data = {title: `Комментарий для : ${record.good.name}` , answer:record.comment}
+
+    const DialogRef : MatDialogRef<DialogstringinputComponent>  = this.dialog.open(
+      DialogstringinputComponent,
+      dialogConfig);
+      DialogRef.afterClosed().pipe(first()).subscribe(res =>{
+      record.comment = res.answer;
+      this.store.dispatch(UpsertOrderRecord({record}));
+    });
+
 
   }
 

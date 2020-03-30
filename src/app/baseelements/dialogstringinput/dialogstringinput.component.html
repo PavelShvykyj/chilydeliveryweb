@@ -1,0 +1,14 @@
+<h6 mat-dialog-title> {{title}} </h6>
+
+<mat-dialog-content>
+    <mat-form-field  class="w-fill">
+        <input matInput [(ngModel)]="answer" #answerinput="ngModel"  >
+        <mat-hint> Введите запрашиваеме значение  </mat-hint>
+    </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-button (click)="Answer()"> Save </button>
+    <!-- <button mat-button (click)="Answer()"> Cancel </button> -->
+</mat-dialog-actions>

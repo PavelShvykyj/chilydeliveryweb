@@ -30,7 +30,7 @@
 
     <ng-container matColumnDef="comment">
         <mat-header-cell class="table-cell table-header-cell" *matHeaderCellDef mat-sort-header> Коментарий </mat-header-cell>
-        <mat-cell class="table-cell" *matCellDef="let record"> <small>{{record.comment}}</small></mat-cell>
+        <mat-cell class="table-cell" *matCellDef="let record" (click)="OnRecordClick(record)"> <small>{{record.comment}}</small></mat-cell>
     </ng-container>
 
 
