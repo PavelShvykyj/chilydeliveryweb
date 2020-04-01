@@ -22,18 +22,15 @@ export class EditOrderEffects {
 
     CreateOrders$ = createEffect(() => this.actions$.pipe(
         ofType(CreateOrder),
-        concatMap(action => this.OrdersServise.AddOrder(action.order)),
-
-        /// ошибка должна бы прервать цепочку...
-        tap(neworder => {
-            this.snackBar.open("ЗАКАЗ СОЗДАН", "OK",{duration: 2000})
-            this.telegram.SendMessage(neworder.filial, this.GetTformatedMessage(neworder))
-        }),
-        map(() => OrderCreated()),
-        catchError((err,caught ) => { this.OnOrderError(err); return caught}   )
-        
-
-    ))
+        concatMap(action => this.OrdersServise.AddOrder(action.order).pipe(
+            tap(neworder => {
+                this.snackBar.open("ЗАКАЗ СОЗДАН", "OK",{duration: 2000})
+                this.telegram.SendMessage(neworder.filial, this.GetTformatedMessage(neworder))
+            }),
+            map(() => OrderCreated()),
+            catchError(err => { this.OnOrderError(err); return of(OrderCreatedErr())}   )
+        )),
+    ));
 
 
     constructor(private actions$: Actions,

@@ -76,7 +76,7 @@ export class OrdersDatasourseService {
   /// наращиаем счетчик в тарнзакции на выходе имеем новый счетчик 
   /// инжектируем в данные заказа и пробуем создать его
   AddOrder(data : IOrder) : Observable<any> {
-    
+    //return throwError(data);
 
     if (data.externalid.length != 0) {
       /// повторная попытка после неудачи данные уже заполнен
