@@ -92,7 +92,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
 
   GetAllGoods(): Observable<{ goods: IWEBGood[], dirtygoods: IONECGood[] }> {
 
-    const webgoods$ = from(this.db.firestore.collection('web.goods').get())
+    const webgoods$ = from(this.db.firestore.collection('web.goods').where("isDeleted","==",false).get())
       .pipe(map(res => {
         return res.docs.map(element => {
           return {
