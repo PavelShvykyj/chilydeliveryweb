@@ -70,6 +70,11 @@ function UpsertOrderRecord(state: EditOrderState ,action) {
   
 }
 
+function OnOrderCreatedErr(state,action) {
+  console.log("REDUCER OnOrderCreatedErr")
+  return state;
+}
+
 export const EditOrderReducer = createReducer(
   EditOrderInitialState,
   on(EditOrderActions.OrderCreated, (state,action)=> EditOrderInitialState),
@@ -77,9 +82,9 @@ export const EditOrderReducer = createReducer(
   on(EditOrderActions.UpdateOrderfilial, (state,action)=> {return {...state, filial: action.filial}}),
   on(EditOrderActions.UpsertOrderRecord, (state,action)=> UpsertOrderRecord(state,action)),
   on(EditOrderActions.DeleteOrderRecord, (state,action)=> {return {...state,goods: EditOrderGoodsAdapter.removeOne(action.recordid,state.goods) } }),
+  on(EditOrderActions.OrderCreatedErr, (state,action)=> OnOrderCreatedErr(state,action)),
 
-
-
+  
 );
 
 export function editorderreducer(state: EditOrderState | undefined, action: Action) {

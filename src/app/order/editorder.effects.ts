@@ -1,4 +1,4 @@
-import { CreateOrder, OrderCreated } from './editorder.actions';
+import { CreateOrder, OrderCreated, OrderCreatedErr } from './editorder.actions';
 import { Injectable } from '@angular/core';
 
 import { IONECGood } from '../models/onec.good';
@@ -10,9 +10,12 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AppState } from '../reducers';
 import { Update } from '@ngrx/entity';
 
-import { concatMap, map } from 'rxjs/operators';
-import { of, from } from 'rxjs';
+import { concatMap, map, tap, catchError, first } from 'rxjs/operators';
+import { of,  throwError, Observable } from 'rxjs';
 import { OrdersDatasourseService } from '../orders/orders.datasourse.service';
+import { TelegramService } from './telegram.service';
+import { MatDialog, MatDialogConfig, MatDialogRef, MatSnackBar } from '@angular/material';
+import { YndialogComponent } from '../baseelements/yndialog/yndialog.component';
 
 @Injectable()
 export class EditOrderEffects {
@@ -20,14 +23,69 @@ export class EditOrderEffects {
     CreateOrders$ = createEffect(() => this.actions$.pipe(
         ofType(CreateOrder),
         concatMap(action => this.OrdersServise.AddOrder(action.order)),
-        map(() => OrderCreated())
-    ))
+
+        /// ошибка должна бы прервать цепочку...
+        tap(neworder => {
+            this.snackBar.open("ЗАКАЗ СОЗДАН", "OK",{duration: 2000})
+            this.telegram.SendMessage(neworder.filial, this.GetTformatedMessage(neworder))
+        }),
+        map(() => OrderCreated()),
+        catchError((err,caught ) => { this.OnOrderError(err); return caught}   )
         
 
-    constructor(private actions$: Actions, 
+    ))
+
+
+    constructor(private actions$: Actions,
         private OrdersServise: OrdersDatasourseService,
-        private idb: LocalDBService,
-        private store : Store<AppState>) {
-}
+        public dialog: MatDialog,
+        private telegram: TelegramService,
+        private snackBar: MatSnackBar,
+        private store: Store<AppState>) {
+    }
+
+    GetTformatedMessage(order): string {
+        let message: string = `<b>НОВЫЙ ЗАКАЗ : ${order.externalid}</b>
+        <b>Филиал : </b> ${order.filial} 
+        <i>Адрес: </i> ${order.addres} 
+        <i>Тел. : </i> ${order.phone} 
+        <i>Коммент : </i> ${order.comment}`;
+        // <i>ТОВАРЫ : </i>
+        // `;
+
+        // order.entities.forEach(element => {
+        //   message = message + `${element.good.name} :  ${element.quantity}
+        //   `
+        // });
+
+
+        return message;
+    };
+
+    OnOrderError(err)  {
+
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.disableClose = true;
+        dialogConfig.autoFocus = true;
+        dialogConfig.minHeight = "25wh"
+        dialogConfig.minWidth = "25wv"
+
+        dialogConfig.data = { title: "Ошибки при создании заказа. Повторить попытку?", content: err.comment }
+
+        const DialogRef: MatDialogRef<YndialogComponent> = this.dialog.open(
+            YndialogComponent,
+            dialogConfig);
+
+
+        return DialogRef.afterClosed().pipe(first()).subscribe(
+             res => {
+                
+                if (res.answer) {
+                    console.log('err',err);
+                    this.store.dispatch(CreateOrder({order:err}))
+                }
+             }
+        )
+    }
 
 }

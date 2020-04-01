@@ -6,10 +6,11 @@ import { MaterialsModule } from '../materials/materials.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { CubToolbarComponent } from './cub-toolbar/cub-toolbar.component';
 import { DialogstringinputComponent } from './dialogstringinput/dialogstringinput.component';
+import { YndialogComponent } from './yndialog/yndialog.component';
 
 @NgModule({
-  declarations: [LentaToolbarComponent, CubToolbarComponent, DialogstringinputComponent],
-  entryComponents:[DialogstringinputComponent],
+  declarations: [LentaToolbarComponent, CubToolbarComponent, DialogstringinputComponent, YndialogComponent],
+  entryComponents:[DialogstringinputComponent,YndialogComponent],
   imports: [
     CommonModule,
     FormsModule,

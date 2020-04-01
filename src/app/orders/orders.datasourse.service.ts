@@ -2,8 +2,9 @@ import { IOrder, IOrderChanges } from './../models/order';
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 
-import { Observable, BehaviorSubject, combineLatest, from, of } from 'rxjs';
+import { Observable, BehaviorSubject, combineLatest, from, of, throwError } from 'rxjs';
 import { map, filter, concatMap, first, tap, catchError, take } from 'rxjs/operators';
+
 
 import { select, Store, props } from '@ngrx/store';
 import { AppState } from '../reducers';
@@ -53,21 +54,98 @@ export class OrdersDatasourseService {
       }), take(1));
   }
 
-  AddOrder(data : IOrder) : Observable<firebase.database.Reference> {
-    const neworser = {
-      externalid:"",
-      addres:data.addres,
-      phone:data.phone,
-      creation:"",
-      filial:data.filial,
-      desk:data.desk,
-      comment:data.comment,  
-      goods:data.goods.map(good=> {return {id:good.id, comment:good.comment,quantity: good.quantity }})
-      };
+  CreateOrder(neworder) {
+    
+    
+    return from(this.db.database.ref('orders').push({...neworder, creation: this.timestamp}))
+    .pipe(
+      
+      catchError(err => {
+      neworder.comment = JSON.stringify(err);
+      return throwError(neworder)}
+      ),
+    map(()=>neworder)
+    );
+  }
 
-    const res = from(this.db.database.ref('orders').push({...neworser, creation: this.timestamp}));
-    return res;
-    //return from( this.db.list('orders').push({...data, creation: this.timestamp}))
+
+
+
+
+
+  /// наращиаем счетчик в тарнзакции на выходе имеем новый счетчик 
+  /// инжектируем в данные заказа и пробуем создать его
+  AddOrder(data : IOrder) : Observable<any> {
+    
+
+    if (data.externalid.length != 0) {
+      /// повторная попытка после неудачи данные уже заполнен
+      return this.CreateOrder(data);
+    } else {
+      
+      const neworder = {
+        externalid:data.externalid,
+        addres:data.addres,
+        phone:data.phone,
+        creation:"",
+        filial:data.filial,
+        desk:data.desk,
+        comment:data.comment,  
+        goods:data.goods.map(good=> {return {id:good.id, comment:good.comment,quantity: good.quantity }})
+        };
+
+
+      
+      return from(this.db.database.ref('orderscounter').transaction(
+        function(currentData) {
+        
+        
+        /// currentData = "202042-1" => "202042-2" 
+        /// счетчик обнуляется каждый день
+        const spliter = "-";
+        const today = new Date();
+        const prefix : string =  today.getFullYear().toString()+
+                                 today.getMonth().toString()+
+                                 today.getDate().toString();
+        
+        
+        if (currentData==null) {
+          return prefix+spliter+"1";
+        }
+        
+        
+        
+        const conter : string = currentData as string;
+        const counterparts : string[] =  conter.split(spliter);
+        
+        
+
+
+
+        let newcount : number = +counterparts[1]
+        if (prefix == counterparts[0]) {
+          newcount = newcount + 1;
+          return prefix+spliter+newcount.toString();
+
+        } else {
+          return prefix+spliter+"1"
+        }                                 
+
+
+      }))
+      .pipe(
+        catchError(err => {
+          neworder.comment = JSON.stringify(err);
+          return throwError(neworder)}),
+          
+        concatMap(res => {
+          neworder.externalid=res.snapshot.val();
+          return this.CreateOrder(neworder);
+
+      }))
+      
+
+    }
     
   }
 

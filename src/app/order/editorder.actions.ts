@@ -10,3 +10,4 @@ export const UpsertOrderRecord    = createAction("[EDIT ORDER COMPONENT] Update 
 export const DeleteOrderRecord    = createAction("[EDIT ORDER COMPONENT] Delete order goods record in memoty",props<{recordid: string}>());
 export const CreateOrder    = createAction("[EDIT ORDER COMPONENT] Create new orders",props<{order: IOrder}>());
 export const OrderCreated   = createAction("[EDIT ORDER EFFECT] Order are created");
+export const OrderCreatedErr   = createAction("[EDIT ORDER EFFECT] Order are not created");

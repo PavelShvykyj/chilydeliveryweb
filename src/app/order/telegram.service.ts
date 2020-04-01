@@ -16,15 +16,17 @@ export class TelegramService {
 
   constructor(private http : HttpClient,
               private rtdb : OrdersDatasourseService) {
-      this.GetParams()
+      this.GetParams();
+      
    }
 
    private async GetParams() {
      this.tparams = await this.rtdb.GetTelegramParams();
-     
+     console.log('tparams',this.tparams);
    }
 
    SendMessage(filial:string,message:string) {
+    
     let params = new HttpParams();
     params = params.append("chat_id", this.tparams[filial].chatid);
     params = params.append("text", message);

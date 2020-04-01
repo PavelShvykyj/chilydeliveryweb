@@ -1,12 +1,13 @@
 import { TelegramService } from './../telegram.service';
 import { tap, map, first, filter, concatMap } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
 import { EditingOrder } from '../editorder.selectors';
 import { CreateOrder } from '../editorder.actions';
 import { IOrder } from 'src/app/models/order';
+import { YndialogComponent } from 'src/app/baseelements/yndialog/yndialog.component';
 
 @Component({
   selector: 'order-toolbar',
@@ -19,7 +20,7 @@ export class OrderToolbarComponent implements OnInit {
 
   constructor(private snackBar: MatSnackBar, 
               private store: Store<AppState>,
-              private telegram:TelegramService
+              public dialog: MatDialog
     ) { }
 
   ngOnInit() {
@@ -38,32 +39,10 @@ export class OrderToolbarComponent implements OnInit {
 
   }
 
-  GetTformatedMessage(order) : string {
-    let message : string =  `<b>НОВЫЙ ЗАКАЗ : ${order.externalid}</b>
-    <b>Филиал : </b> ${order.filial} 
-    <i>Адрес: </i> ${order.addres} 
-    <i>Тел. : </i> ${order.phone} 
-    <i>Коммент : </i> ${order.comment}`; 
-    // <i>ТОВАРЫ : </i>
-    // `;
-
-    // order.entities.forEach(element => {
-    //   message = message + `${element.good.name} :  ${element.quantity}
-    //   `
-    // });
-    
-
-    return message;
-    };
-
-
-
 
 
 
   CreateOrder() {
-    let tfilifal : string;
-    let tmessage : string;
 
     this.store.pipe(
       
@@ -73,15 +52,16 @@ export class OrderToolbarComponent implements OnInit {
       
       
       map(order =>{
-        tfilifal = order.filial;
-        tmessage = this.GetTformatedMessage(order);  
+         
         this.store.dispatch(CreateOrder({order: {...order,id:"",externalid:"",isSelected:false}}))
       } ),
      
       ).subscribe(
-        res=>{this.telegram.SendMessage(tfilifal,tmessage);
-              this.snackBar.open("ЗАКАЗ СОЗДАН", "OK",{duration: 2000}); },
-        err=>{this.snackBar.open("ЧТО ТО ПОШЛО НЕ ТАК", "OK",{duration: 2000}); }
+        res=> {},
+        err=>{
+          this.snackBar.open("Что то  пошло не так","OK")
+          
+         }
 
 
       );
