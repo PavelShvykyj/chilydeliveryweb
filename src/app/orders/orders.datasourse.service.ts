@@ -105,10 +105,12 @@ export class OrdersDatasourseService {
         const spliter = "-";
         const today = new Date();
         const prefix : string =  today.getFullYear().toString()+
-                                 today.getMonth().toString()+
+                                 (today.getMonth()+1).toString()+
                                  today.getDate().toString();
         
         
+
+
         if (currentData==null) {
           return prefix+spliter+"1";
         }
@@ -153,10 +155,7 @@ export class OrdersDatasourseService {
     return this.db.database.ref('orders/'+id).remove();
   }
 
-  
-
   OnOrdersChanged(data: firebase.database.DataSnapshot) {
-    console.log('OnOrdersChanged', data.val());
     this.store.dispatch(OrderActions.OrdersUpdated({ orders: [{ ...data.val(), id: data.key }] }));
   }
 

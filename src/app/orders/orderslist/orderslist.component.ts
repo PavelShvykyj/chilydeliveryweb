@@ -40,7 +40,6 @@ export class OrderslistComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.ordersusbs = this.store.pipe(select(selectAllOrders))
     .subscribe(orders=>{
-      console.log(orders);
       this.dataSource.data=orders;
     });
 
@@ -69,7 +68,6 @@ export class OrderslistComponent implements OnInit, OnDestroy {
     let snack = this.snackBar.open("Для удаления нажмите -->", "OK",{duration: 2000});
     snack.onAction().subscribe(res=>{
       this.db.RemoveOrder(id);
-      console.log('REMOVED');
     })
   }
 

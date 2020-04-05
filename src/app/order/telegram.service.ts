@@ -22,7 +22,6 @@ export class TelegramService {
 
    private async GetParams() {
      this.tparams = await this.rtdb.GetTelegramParams();
-     console.log('tparams',this.tparams);
    }
 
    SendMessage(filial:string,message:string) {

@@ -21,7 +21,6 @@ import { OrdesResolver } from './orderslist/orders.resolver';
     CommonModule,
     MaterialsModule,
     EffectsModule.forFeature([OrderEffects]),
-
     StoreModule.forFeature(fromOrders.ordersFeatureKey, orderreducer, { metaReducers: fromOrders.metaReducers })
   ],
   providers:[OrdersDatasourseService,OrdesResolver]
