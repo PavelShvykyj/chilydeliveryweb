@@ -90,6 +90,7 @@ export class LocalDBService {
   }
 
   async AddElement(element, name) {
+    console.log('AddElement',element, name);
     await this.db.add(name, element);
   }
 

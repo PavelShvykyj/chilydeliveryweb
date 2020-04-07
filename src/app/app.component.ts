@@ -55,8 +55,10 @@ export class AppComponent implements OnInit, OnDestroy {
     const currentupdatedte = await this.idb.GetLastUpdate();
     this.idb.lastupdateEventer.next(currentupdatedte);
     const changes = await this.fdb.GetAllChangesAsync(currentupdatedte);
+    await this.idb.UpdateChanges(changes);
     changes.goods.forEach(good => this.store.dispatch(updateWebgoodByExternalData({ good })));
     changes.dirtygoods.forEach(dirtygood => this.store.dispatch(updateDirtyWebgoodByExternalData({ good: dirtygood })));
+    
 
   }
 

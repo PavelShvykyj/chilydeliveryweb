@@ -331,7 +331,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
         }),
 
         map(docref => { console.log('docref', docref); const newgood: IWEBGood = { ...webgood, id: docref.id, isSelected: false }; return newgood }),
-        tap(newgood => { this.idb.AddElement(newgood, "WebGoods"); return newgood })
+        tap(newgood => { this.idb.AddElement({...newgood, sortdefoult: (newgood.isFolder ? "A_" : "Z_") + newgood.name}, "WebGoods"); return newgood })
       )
     } else {
       return from(this.db.collection('web.goods').doc(webgood.id).update(
