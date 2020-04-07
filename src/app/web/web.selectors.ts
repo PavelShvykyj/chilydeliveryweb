@@ -53,7 +53,7 @@ function GetByname(dirtygoods:Dictionary<IONECGood>,goods:IWEBGood[],props:{only
         goods = goods.filter(el=>el.isFolder)  
     }    
     
-    goods = goods.filter(element => {return ((!element.isFolder || props.onlyfolders) && element.name.search(props.filter)!=-1)})
+    goods = goods.filter(element => {return ((!element.isFolder || props.onlyfolders) && element.name.toUpperCase().search(props.filter)!=-1)})
     return GoodsWithFilials(goods,dirtygoods);
 }
 
@@ -113,7 +113,7 @@ export const selectDirtyGoodByName = createSelector(
     selectAllDirtyWebGoods,
     selectAllWebGoods,
     (goods:IONECGood[], webgoods:IWEBGood[] ,props)=> {
-        goods = goods.filter(element => { return (element.filial==props.filialname && !element.isFolder && element.name.search(props.name)!=-1)});
+        goods = goods.filter(element => { return (element.filial==props.filialname && !element.isFolder && element.name.toUpperCase().search(props.name)!=-1)});
         return DirtyGoodsWithOwner(goods,webgoods)
     }
 

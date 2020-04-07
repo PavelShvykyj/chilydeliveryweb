@@ -11,6 +11,12 @@ export interface IOrderGoodsRecordWithEntity extends IOrderGoodsRecord {
     good:IWEBGood
 }
 
+export interface IOrderGoodsRecordWithDirty {
+    id:string,
+    dirtyid:string[],
+    quantity:number,
+    comment:string
+}
 
 export interface IOrderCommentRecord {
     id:string,
@@ -36,6 +42,10 @@ export interface IOrderChanges {
     type:string,
     order:IOrder
 } 
+
+export interface IOrderWithDirty extends IBaseElement, IOrderHeader, IOrderOnecData {
+    goods: IOrderGoodsRecordWithDirty[]
+}
 
 export interface IOrder extends IBaseElement, IOrderHeader, IOrderOnecData {
     goods: IOrderGoodsRecord[]

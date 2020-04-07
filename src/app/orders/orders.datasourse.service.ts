@@ -1,4 +1,4 @@
-import { IOrder, IOrderChanges } from './../models/order';
+import { IOrder, IOrderChanges, IOrderWithDirty } from './../models/order';
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 
@@ -75,7 +75,7 @@ export class OrdersDatasourseService {
 
   /// наращиаем счетчик в тарнзакции на выходе имеем новый счетчик 
   /// инжектируем в данные заказа и пробуем создать его
-  AddOrder(data : IOrder) : Observable<any> {
+  AddOrder(data : IOrderWithDirty) : Observable<any> {
     //return throwError(data);
 
     if (data.externalid.length != 0) {
@@ -91,7 +91,7 @@ export class OrdersDatasourseService {
         filial:data.filial,
         desk:data.desk,
         comment:data.comment,  
-        goods:data.goods.map(good=> {return {id:good.id, comment:good.comment,quantity: good.quantity }})
+        goods:data.goods.map(good=> {return {id:good.id,dirtyid:good.dirtyid , comment:good.comment,quantity: good.quantity }})
         };
 
 

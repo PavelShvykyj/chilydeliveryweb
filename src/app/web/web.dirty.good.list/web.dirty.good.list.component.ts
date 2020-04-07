@@ -133,7 +133,7 @@ export class WebDirtyGoodListComponent implements OnInit {
       this.allelements$ = this.store.pipe(select(selectDirtyGoodsByParent,{parentid:this.GetCurrentParent(),filialname:this.filialname}));  
     } else {
       // заменям пробелы \s* на любое количество любых сиволов (".*")
-      const reg = this.NameFilterValue.replace( /\s*/g, ".*");
+      const reg = this.NameFilterValue.toUpperCase().replace( /\s*/g, ".*");
       this.allelements$ = this.store.pipe(select(selectDirtyGoodByName,{name:reg,filialname:this.filialname}));
     }
     this.UpdateGoodsview();

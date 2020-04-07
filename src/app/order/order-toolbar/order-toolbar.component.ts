@@ -1,3 +1,4 @@
+import { IOrderGoodsRecordWithDirty, IOrderGoodsRecord } from './../../models/order';
 import { TelegramService } from './../telegram.service';
 import { tap, map, first, filter, concatMap } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
@@ -40,8 +41,6 @@ export class OrderToolbarComponent implements OnInit {
   }
 
 
-
-
   CreateOrder() {
 
     this.store.pipe(
@@ -53,7 +52,7 @@ export class OrderToolbarComponent implements OnInit {
       
       map(order =>{
          
-        this.store.dispatch(CreateOrder({order: {...order,id:"",externalid:"",isSelected:false}}))
+        this.store.dispatch(CreateOrder({order: {...order, goods: order.entities.map(el => {return {...el, dirtyid:el.good.filials }}),  id:"",externalid:"",isSelected:false}}))
       } ),
      
       ).subscribe(
