@@ -1,17 +1,17 @@
 <mat-card>
     <mat-card-subtitle>
-        <small class="small">ФИЛИАЛ : </small>
+        <small class="small">ФИЛИАЛ:</small>
         <span class="spacer"></span>
-        <mat-radio-group color='warn' [(ngModel)]="filial" (change)="OnFilialChange()">
+        <mat-radio-group class="radio-group" color='warn' [(ngModel)]="filial" (change)="OnFilialChange()">
             <mat-radio-button value="luxor">
-                "luxor"
+                <span class="radio-lable">luxor</span>
             </mat-radio-button>
 
             <mat-radio-button value="dastor">
-                "dastor"
+                <span class="radio-lable">dastor</span>
             </mat-radio-button>
             <mat-radio-button value="vopak">
-                "vopak"
+                <span class="radio-lable">vopak</span>
             </mat-radio-button>
         </mat-radio-group>
     </mat-card-subtitle>

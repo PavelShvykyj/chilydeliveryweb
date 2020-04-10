@@ -81,6 +81,7 @@ export class OrderGoodsListComponent implements OnInit {
       dialogConfig);
       DialogRef.afterClosed().pipe(first()).subscribe(res =>{
       record.comment = res.answer;
+      record.quantity = 0; 
       this.store.dispatch(UpsertOrderRecord({record}));
     });
 

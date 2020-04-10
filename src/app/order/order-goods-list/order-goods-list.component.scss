@@ -51,6 +51,21 @@ mat-form-field {
     min-height: 30px !important;
 }
 
+.radio-lable {
+    font-weight: 900 !important;
+    
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width:100%;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+
 mat-radio-button {
     margin-left: 2px;
     margin-right: 2px;
