@@ -34,7 +34,10 @@ mat-form-field {
     text-align: center !important;  
 }
 
-
+::ng-deep .order-tooltip {
+    white-space: pre-line !important;
+    font-size: mat-font-size($config, title);
+  }
 
 .table-row {
     max-height: 30px !important;

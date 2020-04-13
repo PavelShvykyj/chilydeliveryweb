@@ -52,7 +52,7 @@
         </mat-header-cell>
         <mat-cell class="table-cell" *matCellDef="let order">
 
-            <button (click)="AddComent(order)" mat-button>
+            <button [matTooltip]="GetTooltipText(order)" matTooltipPosition='left' matTooltipClass="order-tooltip" (click)="AddComent(order)" mat-button>
                 <mat-icon>edit</mat-icon>
             </button>
             <button (click)="Remove(order.id)" mat-button>

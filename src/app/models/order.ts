@@ -50,3 +50,7 @@ export interface IOrderWithDirty extends IBaseElement, IOrderHeader, IOrderOnecD
 export interface IOrder extends IBaseElement, IOrderHeader, IOrderOnecData {
     goods: IOrderGoodsRecord[]
 }
+
+export interface IOrderWithGoods extends IBaseElement, IOrderHeader, IOrderOnecData {
+    goods: IOrderGoodsRecordWithEntity[]
+}

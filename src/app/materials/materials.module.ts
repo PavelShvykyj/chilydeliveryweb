@@ -19,6 +19,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [],
@@ -44,7 +45,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     MatPaginatorModule,
     MatBadgeModule,
     MatRadioModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatTooltipModule
 
 
   ]

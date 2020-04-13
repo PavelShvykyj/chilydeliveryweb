@@ -3,15 +3,19 @@
         <small class="small">ФИЛИАЛ:</small>
         <span class="spacer"></span>
         <mat-radio-group class="radio-group" color='warn' [(ngModel)]="filial" (change)="OnFilialChange()">
+            <!-- <mat-radio-button value="empty">
+                <span class="radio-lable">Не выбран</span>
+            </mat-radio-button> -->
+           
             <mat-radio-button value="luxor">
-                <span class="radio-lable">luxor</span>
+                <span class="radio-lable">ЛЮКСОР</span>
             </mat-radio-button>
 
             <mat-radio-button value="dastor">
-                <span class="radio-lable">dastor</span>
+                <span class="radio-lable">ДАСТОР</span>
             </mat-radio-button>
             <mat-radio-button value="vopak">
-                <span class="radio-lable">vopak</span>
+                <span class="radio-lable">ВОПАК</span>
             </mat-radio-button>
         </mat-radio-group>
     </mat-card-subtitle>

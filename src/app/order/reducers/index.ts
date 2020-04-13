@@ -42,7 +42,7 @@ export const EditOrderInitialState = {
   addres:"",
   phone:"",
   creation: new Date(),
-  filial:"luxor",
+  filial:"",
   desk:"",
   comment:"",
   goods: EditOrderGoodsAdapter.getInitialState()

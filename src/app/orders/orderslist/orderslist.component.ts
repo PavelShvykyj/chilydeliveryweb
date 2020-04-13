@@ -1,12 +1,13 @@
 import { Router } from '@angular/router';
 import { OrdersDatasourseService } from './../orders.datasourse.service';
 import { Subscription } from 'rxjs';
-import { IOrder } from './../../models/order';
+import { IOrder, IOrderWithGoods } from './../../models/order';
 import { Store, select } from '@ngrx/store';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort, MatSnackBar } from '@angular/material';
 import { AppState } from 'src/app/reducers';
-import { selectAllOrders } from '../order.selectors';
+import { selectAllOrders, selectAllOrdersWithEntities } from '../order.selectors';
+import { selectEntities } from 'src/app/web/reducers';
 
 @Component({
   selector: 'orderslist',
@@ -15,7 +16,7 @@ import { selectAllOrders } from '../order.selectors';
 })
 export class OrderslistComponent implements OnInit, OnDestroy {
   displayedColumns : string[] = ['externalid','desk','filial','creation','phone','addres','buttonsgroup']
-  dataSource : MatTableDataSource<IOrder>  = new MatTableDataSource([{
+  dataSource : MatTableDataSource<IOrderWithGoods>  = new MatTableDataSource([{
     id:"",
     isSelected:false,
     externalid:"",
@@ -38,7 +39,7 @@ export class OrderslistComponent implements OnInit, OnDestroy {
              private snackBar: MatSnackBar  ) { }
 
   ngOnInit() {
-    this.ordersusbs = this.store.pipe(select(selectAllOrders))
+    this.ordersusbs = this.store.pipe(select(selectAllOrdersWithEntities))
     .subscribe(orders=>{
       this.dataSource.data=orders;
     });
@@ -70,6 +71,18 @@ export class OrderslistComponent implements OnInit, OnDestroy {
       this.db.RemoveOrder(id);
     })
   }
+
+  GetTooltipText(order: IOrderWithGoods): string {
+    
+    
+    const formated : string[] = order.goods.map(el =>`${el.good.name} ${el.quantity} ${el.comment}`);
+    return formated.join('\n');
+    
+
+    
+
+  }
+
 
   applyFilter(filterValue: string) {
     filterValue = filterValue.trim(); // Remove whitespace

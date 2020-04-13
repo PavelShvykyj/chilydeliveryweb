@@ -42,10 +42,11 @@ export class EditOrderEffects {
     }
 
     GetTformatedMessage(order): string {
-        let message: string = `<b>НОВЫЙ ЗАКАЗ : ${order.externalid}</b>
-        <b>Филиал : </b> ${order.filial} 
+        const shortid : string = (order.externalid as string).split("-")[1];
+        let message: string = `<b>ЗАКАЗ : ${shortid}</b>
         <i>Адрес: </i> ${order.addres} 
         <i>Тел. : </i> ${order.phone} 
+        <b>Филиал : </b> ${order.filial} 
         <i>Коммент : </i> ${order.comment}`;
         // <i>ТОВАРЫ : </i>
         // `;

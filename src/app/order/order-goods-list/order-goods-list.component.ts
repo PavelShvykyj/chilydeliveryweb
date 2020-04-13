@@ -21,7 +21,7 @@ export class OrderGoodsListComponent implements OnInit {
   displayedColumns : string[] = ['good' ,'quantity','comment','buttonsgroup'];
   dataSource : MatTableDataSource<IOrderGoodsRecordWithEntity>  = new MatTableDataSource([]);
   ordersusbs:Subscription;
-  filial : string = 'luxor';
+  filial : string = '';
   filialsubs : Subscription;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
