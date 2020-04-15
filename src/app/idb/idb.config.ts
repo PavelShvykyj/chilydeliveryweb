@@ -2,7 +2,7 @@ import { DBConfig } from 'ngx-indexed-db';
 
 export const dbConfig: DBConfig = {
     name: 'FBcache',
-    version: 1,
+    version: 2,
     objectStoresMeta: [{
         store: 'exchangeheader',
         storeConfig: { keyPath: 'id', autoIncrement: false },
@@ -44,6 +44,14 @@ export const dbConfig: DBConfig = {
             { name: 'externalid', keypath: 'externalid', options: { unique: false } },
             { name: 'lastmodified', keypath: 'lastmodified', options: { unique: false } },
             { name: 'filial', keypath: 'filial', options: { unique: false } }
+        ]
+    },
+    /////////////////   Добавлено в версии 2 ///////////////////////////////////
+    {
+        store: 'Streets',
+        storeConfig: { keyPath: 'id', autoIncrement: true },
+        storeSchema: [
+            { name: 'name', keypath: 'name', options: { unique: false } }
         ]
     },
 

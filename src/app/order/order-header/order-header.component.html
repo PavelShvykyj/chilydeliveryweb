@@ -6,12 +6,20 @@
 
 
         <mat-form-field id='fieldadress'   color='accent' class="w-fill" appearance="outline">
-            <input required formControlName='addres' #inputadress matInput (blur)="UpdateHeader()">
+            <input [matAutocomplete]="auto" required formControlName='addres' #inputadress matInput (input)="OnAddresInput()" (blur)="UpdateHeader()">
             <!-- <mat-hint> Заполнить обязательно </mat-hint> -->
             <mat-label>Адресс </mat-label>
-            <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="inputadress.value=''; UpdateHeader() ">
+            <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="ClearAdress()">
                 <mat-icon>close</mat-icon>
             </button>
+
+            <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let street of streetsByname$ | async" [value]="street.name">
+                  {{street.name}}
+                </mat-option>
+            </mat-autocomplete>
+
+
         </mat-form-field>
 
         <div class="spacer"> </div>
@@ -20,7 +28,7 @@
             <input required formControlName='phone' #inputphone matInput (blur)="UpdateHeader()">
             <!-- <mat-hint> поиск по всем столбцам </mat-hint> -->
             <mat-label>Телефон</mat-label>
-            <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="inputphone.value=''; UpdateHeader()">
+            <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="ClearPhone()">
                 <mat-icon>close</mat-icon>
             </button>
         </mat-form-field>
@@ -31,7 +39,7 @@
             <input formControlName='comment' #inputcomment matInput (blur)="UpdateHeader()">
             <!-- <mat-hint> поиск по всем столбцам </mat-hint> -->
             <mat-label>Коментарий</mat-label>
-            <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="inputcomment.value='';UpdateHeader()">
+            <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="ClearComment()">
                 <mat-icon>close</mat-icon>
             </button>
         </mat-form-field>

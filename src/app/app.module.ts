@@ -31,6 +31,7 @@ import { IsLoggedInGuard } from './isloged.guard';
 import { dbConfig } from './idb/idb.config';
 import { IdbModule } from './idb/idb.module';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
+import { StreetsModule } from './streets/streets.module';
 
 
 
@@ -68,7 +69,8 @@ import { AngularFireDatabaseModule } from '@angular/fire/database';
     AuthModule,
     ExchangeModule,
     IdbModule,
-    OrderModule
+    OrderModule,
+    StreetsModule
     
     
 

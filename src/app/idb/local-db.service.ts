@@ -1,3 +1,4 @@
+import { IStreet } from './../models/street';
 import { updateWebgoodByExternalData } from './../web/web.actions';
 import { Store } from '@ngrx/store';
 
@@ -39,6 +40,11 @@ export class LocalDBService {
     });
 
     return promise;
+  }
+
+
+  async GetAllStreetsByIndex() :Promise<IStreet[]> {
+    return await this.db.getAll("Streets");
   }
 
   async GetAllGoodsByIndex(): Promise<{ goods: IWEBGood[], dirtygoods: IONECGood[] }>  {
@@ -113,6 +119,13 @@ export class LocalDBService {
     this.SetLastUpdate(new Promise(reject => { reject(new Date()) }));
 
   }
+
+  async UpdateAllStreets(streets: IStreet[] ) {
+    await this.db.clear('Streets');
+    streets.forEach(street => this.AddElement(street,'Streets'));
+
+  }
+ 
 
   async UpdateChanges(changes: { goods: IWEBGood[], dirtygoods: IONECGood[], webgoodsDeleted: IWEBGood[], dirtywebgoodsDeleted: IONECGood[] }) {
     

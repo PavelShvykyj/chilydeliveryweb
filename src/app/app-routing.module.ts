@@ -7,6 +7,7 @@ import { GoodsResolver } from './exchange/resolvers/goods.resolver';
 import { IsLoggedInGuard } from './isloged.guard';
 import { OrderEditComponent } from './order/order-edit/order-edit.component';
 import { OrdesResolver } from './orders/orderslist/orders.resolver';
+import { StreetsResolver } from './streets/streets.resolver';
 
 const routes: Routes = [
   {
@@ -31,7 +32,7 @@ const routes: Routes = [
   {
     path: 'order',
     component: OrderEditComponent,
-    resolve : {goods : GoodsResolver},
+    resolve : {goods : GoodsResolver, streets:StreetsResolver},
     canActivate:[IsLoggedInGuard]
   },
 

@@ -1,3 +1,4 @@
+import { IStreet } from './../../models/street';
 import { tap } from 'rxjs/operators';
 import { AppState } from './../../reducers/index';
 import { Store, select } from '@ngrx/store';
@@ -6,7 +7,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { selectOrderHeader } from '../editorder.selectors';
 import { IOrderHeader } from 'src/app/models/order';
 import { UpdateOrderHeader } from '../editorder.actions';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable, of } from 'rxjs';
+import { selectByName } from 'src/app/streets/streets.selectors';
 
 @Component({
   selector: 'order-header',
@@ -16,13 +18,18 @@ import { Subscription } from 'rxjs';
 export class OrderHeaderComponent implements OnInit, OnDestroy {
   form: FormGroup;
   headersubs: Subscription;
+  streetsByname$ : Observable<IStreet[]> = of([]);
+
 
   constructor(private store: Store<AppState>) {
     this.form = new FormGroup({
       addres: new FormControl("", Validators.required),
       phone: new FormControl("", Validators.required),
       comment: new FormControl("")
-    })
+    });
+
+    
+
   }
 
 
@@ -53,6 +60,31 @@ export class OrderHeaderComponent implements OnInit, OnDestroy {
       header
     }))
 
+  }
+
+  OnAddresInput() {
+ 
+    if (this.addres.length==0) {
+      this.streetsByname$ = of([]);
+    } else {
+      const reg = this.addres.toUpperCase().replace(/\s*/g, ".*");
+      this.streetsByname$ = this.store.pipe(select(selectByName, {filter: reg }));
+    }
+  }
+
+  ClearAdress() {
+    this.addres="";
+    this.UpdateHeader();
+  }
+
+  ClearPhone() {
+    this.phone="";
+    this.UpdateHeader();
+  }
+
+  ClearComment() {
+    this.comment="";
+    this.UpdateHeader();
   }
 
   get headervalid() {
