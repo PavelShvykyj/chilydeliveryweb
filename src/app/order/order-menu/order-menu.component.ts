@@ -126,7 +126,7 @@ export class OrderMenuComponent implements OnInit {
       this.allelements$ = this.store.pipe(select(selectGoodsByParent, { onlyfolders: this.onlyfolders, parentid: this.GetCurrentParentID() }));
     } else {
       // заменям пробелы \s* на любое количество любых сиволов (".*")
-      const reg = this.NameFilterValue.toUpperCase().replace(/\s*/g, ".*");
+      const reg = ".*"+this.NameFilterValue.trim().toUpperCase().replace(/\s+/g, ".*")+".*";
       this.allelements$ = this.store.pipe(select(selectGoodByName, { onlyfolders: this.onlyfolders, filter: reg }));
     }
     this.UpdateGoodsview();

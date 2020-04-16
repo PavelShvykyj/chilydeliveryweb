@@ -64,10 +64,10 @@ export class OrderHeaderComponent implements OnInit, OnDestroy {
 
   OnAddresInput() {
  
-    if (this.addres.length==0) {
+    if (this.addres.trim().length==0) {
       this.streetsByname$ = of([]);
     } else {
-      const reg = this.addres.toUpperCase().replace(/\s*/g, ".*");
+      const reg = ".*"+this.addres.trim().toUpperCase().replace(/\s+/g, ".*")+".*";
       this.streetsByname$ = this.store.pipe(select(selectByName, {filter: reg }));
     }
   }
