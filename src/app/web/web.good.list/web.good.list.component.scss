@@ -19,7 +19,10 @@ $config: mat-typography-config($title: mat-typography-level(12px, 12px, 400),
   color: red;
 }
 
-
+.price-in-list {
+  color: map-get($mat-light-blue, 700);
+  margin-right: 2px;
+}
 
 mat-card-subtitle {
   margin-top: 18px;

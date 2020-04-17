@@ -25,16 +25,26 @@
         <mat-header-cell class="table-cell table-left-cell table-header-cell" *matHeaderCellDef mat-sort-header> Товар </mat-header-cell>
         <mat-cell class="table-cell table-left-cell" *matCellDef="let record"> <small
                 class="GoodNameInTable">{{record.good.name}} </small></mat-cell>
+        <mat-footer-cell *matFooterCellDef class="table-footer-cell"  > Итого </mat-footer-cell>    
     </ng-container>
 
     <ng-container matColumnDef="quantity">
         <mat-header-cell class="table-cell table-header-cell" *matHeaderCellDef mat-sort-header> Количество </mat-header-cell>
         <mat-cell class="table-cell" *matCellDef="let record">{{record.quantity}}</mat-cell>
+        <mat-footer-cell *matFooterCellDef class="table-footer-cell"  > {{ total }} </mat-footer-cell>    
     </ng-container>
+
+    <ng-container matColumnDef="price">
+        <mat-header-cell class="table-cell table-header-cell" *matHeaderCellDef mat-sort-header> Цена </mat-header-cell>
+        <mat-cell class="table-cell" *matCellDef="let record">{{record.good.price}}</mat-cell>
+        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+    </ng-container>
+
 
     <ng-container matColumnDef="comment">
         <mat-header-cell class="table-cell table-header-cell" *matHeaderCellDef mat-sort-header> Коментарий </mat-header-cell>
         <mat-cell class="table-cell" *matCellDef="let record" (click)="OnRecordClick(record)"> <small>{{record.comment}}</small></mat-cell>
+        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
 
@@ -53,11 +63,11 @@
             </button>
 
         </mat-cell>
-
+        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
     <mat-header-row class="table-row" *matHeaderRowDef="displayedColumns ; sticky: true"></mat-header-row>
-
+    <mat-footer-row  class="table-row" *matFooterRowDef="displayedColumns"></mat-footer-row>    
     <mat-row *matRowDef="let row; columns: displayedColumns" class="table-row"></mat-row>
 
 </mat-table>

@@ -23,7 +23,8 @@ export class WebGoodEditComponent implements OnInit {
 
 
       this.form = new FormGroup({name: new FormControl(this.data.item.name,Validators.required),
-        isFolder: new FormControl(this.data.item.isFolder)
+        isFolder: new FormControl(this.data.item.isFolder),
+        price: new FormControl(this.data.item.price==undefined? 0 : this.data.item.price)
        })  
 
     }
@@ -73,6 +74,7 @@ export class WebGoodEditComponent implements OnInit {
       isFolder:this.form.get("isFolder").value,
       name: this.form.get("name").value,
       parentid: this.data.parentel==undefined? "" : this.data.parentel.id,
+      price:this.form.get("price").value,
       filials:this.data.item.filialElements.map(el => el.id)
     }
     this.dialogRef.close({answer: 'save', data : newversion });

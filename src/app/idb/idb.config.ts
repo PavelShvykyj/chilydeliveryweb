@@ -2,7 +2,7 @@ import { DBConfig } from 'ngx-indexed-db';
 
 export const dbConfig: DBConfig = {
     name: 'FBcache',
-    version: 2,
+    version: 3,
     objectStoresMeta: [{
         store: 'exchangeheader',
         storeConfig: { keyPath: 'id', autoIncrement: false },
@@ -67,6 +67,11 @@ export function migrationFactory() {
             const initdate = new Date(2000,1,1);
             const initheader = {id:1, LastDownload: initdate  };
             store.add(initheader);
+        },
+
+        3: (db, transaction) => {
+            const store = transaction.objectStore('WebGoods');
+            store.createIndex('price', 'price', { unique: false });
         }
     };
 }

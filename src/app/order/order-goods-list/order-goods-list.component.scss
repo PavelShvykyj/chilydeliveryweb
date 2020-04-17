@@ -34,10 +34,36 @@ mat-form-field {
     text-align: center !important;  
 }
 
+// .mat-column-buttonsgroup {
+//     flex: 0 0 24% !important;
+// }
+
+// .mat-column-good {
+//     flex: 0 0 34% !important;
+// }
+
+// .mat-column-quantity {
+//     flex: 0 0 14% !important;
+// }
+
+// .mat-column-price {
+//     flex: 0 0 9% !important;
+// }
+
+// .mat-column-comment {
+//     flex: 0 0 14% !important;
+// }
+
+
+
 .table-header-cell {
     border-top: 1px solid;
     border-top-color:  rgba(0, 0, 0, 0.12);
 
+}
+
+.table-footer-cell {
+    color: map-get($mat-light-blue, 700);
 }
 
 .GoodNameInTable {

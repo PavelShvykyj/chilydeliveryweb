@@ -98,7 +98,8 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
           return {
             ...(element.data() as object),
             isSelected: false,
-            id: element.id
+            id: element.id,
+            price: element.data().price==undefined ? 0 : element.data().price==undefined
           }
         }) as IWEBGood[];
       }), take(1), share());
@@ -314,6 +315,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
     if (webgood.id == undefined || webgood.id == "") {
       return from(this.db.collection('web.goods').add({
         name: webgood.name,
+        price:webgood.price,
         parentid: webgood.parentid,
         isFolder: webgood.isFolder,
         filials: webgood.filials,
@@ -337,6 +339,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
       return from(this.db.collection('web.goods').doc(webgood.id).update(
         {
           name: webgood.name,
+          price:webgood.price,
           parentid: webgood.parentid,
           isFolder: webgood.isFolder,
           filials: webgood.filials,

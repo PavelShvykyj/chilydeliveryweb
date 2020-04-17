@@ -1,3 +1,4 @@
+
 import { IStreet } from './../models/street';
 import { updateWebgoodByExternalData } from './../web/web.actions';
 import { Store } from '@ngrx/store';
@@ -58,7 +59,8 @@ export class LocalDBService {
       let cursor = (<any>evt.target).result;
       if (cursor) {
         //console.log(cursor.value.name,cursor.value.id);
-        goods.push(cursor.value);
+        const good : IWEBGood = {...cursor.value, price: cursor.value.price==undefined ? 0 : cursor.value.price}
+        goods.push(good);
         cursor.continue();
       } else {
         goodsdone = true;

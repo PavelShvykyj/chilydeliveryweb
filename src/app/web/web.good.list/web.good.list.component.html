@@ -37,7 +37,7 @@
           <mat-icon>edit</mat-icon>
         </button>
         
-        <h4 class="title-sub" mat-line>{{item.name}}</h4>
+        <h4 class="title-sub" mat-line><small class="price-in-list" *ngIf="!item.isFolder"> {{item.price}} </small>  {{item.name}}</h4>
         <p mat-line  ><small *ngFor="let filial of item.filialNames"> {{ filial }} </small>  </p>
       </mat-list-item>
       <mat-divider></mat-divider>

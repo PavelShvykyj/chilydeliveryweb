@@ -18,11 +18,12 @@ import { DialogstringinputComponent } from 'src/app/baseelements/dialogstringinp
 })
 export class OrderGoodsListComponent implements OnInit {
 
-  displayedColumns : string[] = ['good' ,'quantity','comment','buttonsgroup'];
+  displayedColumns : string[] = ['good' ,'quantity','price' ,'comment','buttonsgroup'];
   dataSource : MatTableDataSource<IOrderGoodsRecordWithEntity>  = new MatTableDataSource([]);
   ordersusbs:Subscription;
   filial : string = '';
   filialsubs : Subscription;
+  total:number = 0;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -35,6 +36,8 @@ export class OrderGoodsListComponent implements OnInit {
     .subscribe(orderrecords=>{
       
       this.dataSource.data=orderrecords;
+      this.total = this.GetOrderTotal();
+
     });
 
     this.filialsubs = this.store.pipe(select(selectOrderFilial))
@@ -43,6 +46,12 @@ export class OrderGoodsListComponent implements OnInit {
     });
   }
   
+  GetOrderTotal():number {
+    let total = 0;
+    this.dataSource.data.forEach(record => total=total+record.quantity*record.good.price);
+    return total;
+  } 
+
   get goodsvalid() {
     return true
   }

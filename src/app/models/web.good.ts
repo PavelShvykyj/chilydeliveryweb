@@ -2,6 +2,7 @@ import { IBaseGood } from './base.good';
 import { IONECGood } from './onec.good';
 
 export interface IWEBGood extends IBaseGood {
+    price?:number,
     filials: string[]
 }
 
