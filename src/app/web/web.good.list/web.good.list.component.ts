@@ -320,6 +320,7 @@ export class WebGoodListComponent implements OnInit {
             /// создаем новый елемент
             let newweb: IWEBGoodWithFilials = {
               id: "",
+              price:0,
               isFolder: false,
               name: selection.dirty[0].name,
               parentid: this.GetCurrentParentID(),
