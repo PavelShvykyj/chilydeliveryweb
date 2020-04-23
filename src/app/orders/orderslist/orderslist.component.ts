@@ -3,7 +3,7 @@ import { OrdersDatasourseService } from './../orders.datasourse.service';
 import { Subscription } from 'rxjs';
 import { IOrder, IOrderWithGoods } from './../../models/order';
 import { Store, select } from '@ngrx/store';
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort, MatSnackBar } from '@angular/material';
 import { AppState } from 'src/app/reducers';
 import { selectAllOrders, selectAllOrdersWithEntities } from '../order.selectors';
@@ -35,13 +35,17 @@ export class OrderslistComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
   constructor(private store: Store<AppState>,
              private db: OrdersDatasourseService,
+             private ngZone : NgZone,
              private router : Router,
              private snackBar: MatSnackBar  ) { }
 
   ngOnInit() {
     this.ordersusbs = this.store.pipe(select(selectAllOrdersWithEntities))
     .subscribe(orders=>{
-      this.dataSource.data=orders;
+      this.ngZone.run(() => {
+        this.dataSource.data=orders;
+      })
+      
     });
 
   }
@@ -76,6 +80,7 @@ export class OrderslistComponent implements OnInit, OnDestroy {
     
     
     const formated : string[] = order.goods.map(el =>`${el.good.name} ${el.quantity} ${el.comment}`);
+    console.log(formated);
     return formated.join('\n');
     
 
