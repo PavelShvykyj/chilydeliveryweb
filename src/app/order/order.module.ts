@@ -16,7 +16,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { OrdersModule } from '../orders/orders.module';
 import { TelegramService } from './telegram.service';
 import { HttpClientModule } from '@angular/common/http';
-
+import { NgxMaskModule } from 'ngx-mask'
 
 
 
@@ -32,7 +32,8 @@ import { HttpClientModule } from '@angular/common/http';
     ReactiveFormsModule,
     OrdersModule,
     EffectsModule.forFeature([EditOrderEffects]),
-    StoreModule.forFeature(fromEditorder.editorderFeatureKey, editorderreducer, { metaReducers: fromEditorder.metaReducers })
+    StoreModule.forFeature(fromEditorder.editorderFeatureKey, editorderreducer, { metaReducers: fromEditorder.metaReducers }),
+    NgxMaskModule
   ],
   providers:[TelegramService]
 })

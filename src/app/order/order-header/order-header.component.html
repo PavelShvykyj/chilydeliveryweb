@@ -24,8 +24,9 @@
 
         <div class="spacer"> </div>
 
-        <mat-form-field id='fieldphone'  color='accent' class="w-fill" appearance="outline">
-            <input required formControlName='phone' #inputphone matInput (blur)="UpdateHeader()">
+        <mat-form-field [matTooltip]="getErrorMessage('phone')" matTooltipClass="error-tooltip" matTooltipPosition='above' id='fieldphone'  color='accent' class="w-fill" appearance="outline">
+            <input mask="9999999999"  required formControlName='phone' #inputphone matInput (blur)="UpdateHeader()">
+            
             <!-- <mat-hint> поиск по всем столбцам </mat-hint> -->
             <mat-label>Телефон</mat-label>
             <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="ClearPhone()">

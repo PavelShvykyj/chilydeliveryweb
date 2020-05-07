@@ -24,7 +24,7 @@ export class OrderHeaderComponent implements OnInit, OnDestroy {
   constructor(private store: Store<AppState>) {
     this.form = new FormGroup({
       addres: new FormControl("", Validators.required),
-      phone: new FormControl("", Validators.required),
+      phone: new FormControl("", [Validators.required, Validators.minLength(10), Validators.maxLength(10)]),
       comment: new FormControl("")
     });
 
@@ -87,6 +87,12 @@ export class OrderHeaderComponent implements OnInit, OnDestroy {
     this.UpdateHeader();
   }
 
+  getErrorMessage(controlname: string) {
+    return this.form.hasError('minlength',controlname) ? 'Нехватает символов...' :
+    this.form.hasError('maxlength',controlname) ? 'Лишние символы...' :
+        '';
+  }
+
   get headervalid() {
     return this.form.valid
   }
@@ -98,6 +104,11 @@ export class OrderHeaderComponent implements OnInit, OnDestroy {
   get phone() {
     return this.form.get('phone').value
   }
+
+  get phoneControl() {
+    return this.form.get('phone');
+  }
+
 
   get comment() {
     return this.form.get('comment').value

@@ -16,7 +16,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import {RouterState, StoreRouterConnectingModule, routerReducer} from '@ngrx/router-store';
 import { NgxIndexedDBModule  } from 'ngx-indexed-db';
-
+import { NgxMaskModule, IConfig } from 'ngx-mask'
 
 
 /////////////////   OWN CREATED
@@ -63,6 +63,7 @@ import { StreetsModule } from './streets/streets.module';
       routerState: RouterState.Minimal
     }),
     NgxIndexedDBModule.forRoot(dbConfig),
+    NgxMaskModule.forRoot(),
     /////////////////   OWN CREATED
     
     WebModule,

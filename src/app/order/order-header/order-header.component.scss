@@ -72,3 +72,7 @@ mat-card-subtitle {
   max-width: 100% !important;
   max-height: 100% !important;
 }
+
+::ng-deep .error-tooltip {
+  background-color: red !important;
+}
