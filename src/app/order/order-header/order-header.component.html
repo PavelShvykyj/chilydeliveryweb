@@ -25,7 +25,7 @@
         <div class="spacer"> </div>
 
         <mat-form-field [matTooltip]="getErrorMessage('phone')" matTooltipClass="error-tooltip" matTooltipPosition='above' id='fieldphone'  color='accent' class="w-fill" appearance="outline">
-            <input mask="9999999999"  required formControlName='phone' #inputphone matInput (blur)="UpdateHeader()">
+            <input prefix="+38 " mask="(000) 000 00 00"  required formControlName='phone' #inputphone matInput (blur)="UpdateHeader()">
             
             <!-- <mat-hint> поиск по всем столбцам </mat-hint> -->
             <mat-label>Телефон</mat-label>
