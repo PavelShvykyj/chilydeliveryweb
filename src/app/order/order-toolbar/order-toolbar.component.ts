@@ -29,8 +29,7 @@ export class OrderToolbarComponent implements OnInit {
 
   OrderValid(EditingOrder ) {
     
-   
-    if (EditingOrder.addres.length>1 && EditingOrder.phone.length>1 && EditingOrder.goods.length>0 && EditingOrder.filial.length>0)  {
+    if (EditingOrder.addres.length>1 && EditingOrder.phone.length==10 && EditingOrder.goods.length>0 && EditingOrder.filial.length>0)  {
       
       return true
     } else {
