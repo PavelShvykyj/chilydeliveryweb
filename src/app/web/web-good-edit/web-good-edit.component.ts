@@ -21,7 +21,8 @@ export class WebGoodEditComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data : {item: IWEBGoodWithFilials, parentel: IBaseGood},
     public dialog: MatDialog) { 
 
-
+      console.log("Picture in dialog open",this.data.item.picture)
+      
       this.form = new FormGroup({name: new FormControl(this.data.item.name,Validators.required),
         isFolder: new FormControl(this.data.item.isFolder),
         price: new FormControl(this.data.item.price==undefined? 0 : this.data.item.price)
@@ -61,6 +62,13 @@ export class WebGoodEditComponent implements OnInit {
 
   }
 
+  OnFileUploaded(event) {
+    
+    this.data.item.picture = event;
+    //this.Save();
+  }
+
+
   Save() {
     if(this.form.invalid) {
       this.form.get("name").markAsTouched();
@@ -75,6 +83,7 @@ export class WebGoodEditComponent implements OnInit {
       name: this.form.get("name").value,
       parentid: this.data.parentel==undefined? "" : this.data.parentel.id,
       price:this.form.get("price").value,
+      picture:this.data.item.picture,
       filials:this.data.item.filialElements.map(el => el.id)
     }
     this.dialogRef.close({answer: 'save', data : newversion });

@@ -21,6 +21,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [],
@@ -48,9 +49,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     MatRadioModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
-    MatAutocompleteModule
-
-
+    MatAutocompleteModule,
+    MatProgressBarModule
   ]
 })
 export class MaterialsModule { }

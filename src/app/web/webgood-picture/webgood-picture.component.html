@@ -1,0 +1,20 @@
+<div class="container">
+
+    <div class="c-elemnt-1" *ngIf="(downloadURL$ | async) as URL">
+        <!--<span> {{URL}} </span> -->            
+         <img class="picture" [src]="URL">
+    </div>
+
+    <div class="c-elemnt-2">
+        
+        <input #fileInput hidden type="file" (change)="UploadFile($event)" id="picture">
+        <button type="button" mat-raised-button (click)="fileInput.click()">Choose File</button>
+        
+       
+        <div  *ngIf="(uploadPercent$ | async) as percent"  >
+            <span> load:  {{percent / 100 | percent}} </span>
+            <mat-progress-bar color='warn' mode="determinate" [value]="percent"></mat-progress-bar>
+        </div>
+    </div>
+
+</div>

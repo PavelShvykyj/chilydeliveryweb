@@ -14,22 +14,24 @@ import { WebDirtyGoodListComponent } from './web.dirty.good.list/web.dirty.good.
 import { WebGoodEditComponent } from './web-good-edit/web-good-edit.component';
 import { SelectparentComponent } from './selectparent/selectparent.component';
 import { WebFolderListComponent } from './web.folder.list/web.folder.list.component';
-
+import {AngularFireStorageModule} from '@angular/fire/storage';
+import { WebgoodPictureComponent } from './webgood-picture/webgood-picture.component';
 
 
 
 @NgModule({
-  declarations: [WebGoodListComponent,WebFolderListComponent, WebDirtyGoodListComponent, WebGoodEditComponent, SelectparentComponent],
+  declarations: [WebGoodListComponent,WebFolderListComponent, WebDirtyGoodListComponent, WebGoodEditComponent, SelectparentComponent, WebgoodPictureComponent],
   imports: [
     CommonModule,
     BaseelementsModule,
     FormsModule,
     ReactiveFormsModule,
+    AngularFireStorageModule,
     MaterialsModule,
     EffectsModule.forFeature([WebEffects]),
     StoreModule.forFeature(fromWeb.webFeatureKey, reducer , { metaReducers: fromWeb.metaReducers })
   ],
-  entryComponents: [WebGoodEditComponent,SelectparentComponent],
+  entryComponents: [WebGoodEditComponent,SelectparentComponent,WebgoodPictureComponent],
   providers: [WebGoodsDatasourseService],
   exports: [WebGoodListComponent,WebDirtyGoodListComponent]
 })

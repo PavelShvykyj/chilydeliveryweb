@@ -16,6 +16,7 @@ import { AppState } from '../reducers';
 import { environment } from 'src/environments/environment';
 import { Update } from '@ngrx/entity';
 import { LocalDBService } from '../idb/local-db.service';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 
 
@@ -319,6 +320,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
         parentid: webgood.parentid,
         isFolder: webgood.isFolder,
         filials: webgood.filials,
+        picture:"",
         isDeleted: false,
         lastmodified: this.timestamp
       })).pipe(
@@ -343,6 +345,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
           parentid: webgood.parentid,
           isFolder: webgood.isFolder,
           filials: webgood.filials,
+          picture: webgood.picture,
           isDeleted: false,
           lastmodified: this.timestamp
         }

@@ -12,6 +12,10 @@
         <p mat-line  ><small > Родитель </small>  </p>
       </mat-list-item>
       <mat-list-item>
+        <webgood-picture [goodid]="data.id" [name]="data.item.picture" (FileUploaded)="OnFileUploaded($event)" ></webgood-picture>
+      </mat-list-item>
+
+      <mat-list-item>
         <mat-checkbox formControlName="isFolder"> Это группа</mat-checkbox>
       </mat-list-item>
       <mat-list-item>

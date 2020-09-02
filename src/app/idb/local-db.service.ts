@@ -59,7 +59,7 @@ export class LocalDBService {
       let cursor = (<any>evt.target).result;
       if (cursor) {
         //console.log(cursor.value.name,cursor.value.id);
-        const good : IWEBGood = {...cursor.value, price: cursor.value.price==undefined ? 0 : cursor.value.price}
+        const good : IWEBGood = {...cursor.value, picture: cursor.value.picture==undefined ? "" : cursor.value.picture  ,price: cursor.value.price==undefined ? 0 : cursor.value.price}
         goods.push(good);
         cursor.continue();
       } else {
