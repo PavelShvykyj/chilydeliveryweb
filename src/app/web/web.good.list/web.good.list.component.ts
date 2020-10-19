@@ -252,7 +252,7 @@ export class WebGoodListComponent implements OnInit {
     const parentel: IBaseGood | undefined = this.GetCurrentParent();
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
-    dialogConfig.minHeight = "400px";
+    dialogConfig.minHeight = "500px";
     dialogConfig.minWidth = "30vw"
 
     dialogConfig.data = { item, parentel }

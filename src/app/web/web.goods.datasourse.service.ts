@@ -317,6 +317,10 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
       return from(this.db.collection('web.goods').add({
         name: webgood.name,
         price:webgood.price,
+        mCategory: webgood.mCategory,
+        mType: webgood.mType,
+        mShowOnMobile: webgood.mShowOnMobile,
+        mNumber: webgood.mNumber,
         parentid: webgood.parentid,
         isFolder: webgood.isFolder,
         filials: webgood.filials,
@@ -346,6 +350,10 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
           isFolder: webgood.isFolder,
           filials: webgood.filials,
           picture: webgood.picture,
+          mCategory: webgood.mCategory,
+          mType: webgood.mType,
+          mShowOnMobile: webgood.mShowOnMobile,
+          mNumber: webgood.mNumber,
           isDeleted: false,
           lastmodified: this.timestamp
         }

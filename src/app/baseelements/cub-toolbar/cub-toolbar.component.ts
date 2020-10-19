@@ -78,9 +78,9 @@ export class CubToolbarComponent implements OnInit {
 
     if (LentaLenth <= 1) {
       return 1
-    } else if(LentaLenth == 2) {
+    } else if(LentaLenth >= 2 && LentaLenth <= 4) {
       return 2
-    } else if(LentaLenth >= 3 && LentaLenth <= 6) {
+    } else if(LentaLenth > 4 && LentaLenth <= 6) {
       return 3
     } else {
       return 4

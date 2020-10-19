@@ -25,8 +25,12 @@ export class WebGoodEditComponent implements OnInit {
       
       this.form = new FormGroup({name: new FormControl(this.data.item.name,Validators.required),
         isFolder: new FormControl(this.data.item.isFolder),
-        price: new FormControl(this.data.item.price==undefined? 0 : this.data.item.price)
-       })  
+        price: new FormControl(this.data.item.price==undefined? 0 : this.data.item.price),
+        mCategory: new FormControl(this.data.item.mCategory==undefined? 0 : this.data.item.mCategory),
+        mType: new FormControl(this.data.item.mType==undefined? 0 : this.data.item.mType),
+        mShowOnMobile: new FormControl(this.data.item.mShowOnMobile==undefined? false : this.data.item.mShowOnMobile),
+        mNumber: new FormControl(this.data.item.mNumber==undefined? 0 : this.data.item.mNumber)
+      })  
 
     }
 
@@ -75,7 +79,7 @@ export class WebGoodEditComponent implements OnInit {
       return;
     }
 
-   
+  
 
     const newversion : IWEBGood  = {
       ...this.data.item,
@@ -83,6 +87,10 @@ export class WebGoodEditComponent implements OnInit {
       name: this.form.get("name").value,
       parentid: this.data.parentel==undefined? "" : this.data.parentel.id,
       price:this.form.get("price").value,
+      mCategory: this.form.get("mCategory").value,
+      mType: this.form.get("mType").value,
+      mShowOnMobile: this.form.get("mShowOnMobile").value,
+      mNumber: this.form.get("mNumber").value,
       picture:this.data.item.picture,
       filials:this.data.item.filialElements.map(el => el.id)
     }

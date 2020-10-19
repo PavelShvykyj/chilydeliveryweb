@@ -46,8 +46,10 @@ export class OrdersDatasourseService {
     return from(this.db.database.ref('orders').once('value'))
       .pipe(map(orderssnap => {
         const orders: IOrder[] = [];
-
+        console.clear();
+        console.log('GetOrders',orderssnap);
         orderssnap.forEach(childSnapshot => {
+          console.log('Order',{ ...childSnapshot.val(), id: childSnapshot.key });
           orders.push({ ...childSnapshot.val(), id: childSnapshot.key })
         });
         return orders;
