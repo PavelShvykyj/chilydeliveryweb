@@ -29,6 +29,7 @@ export class WebGoodEditComponent implements OnInit {
         mCategory: new FormControl(this.data.item.mCategory==undefined? 0 : this.data.item.mCategory),
         mType: new FormControl(this.data.item.mType==undefined? 0 : this.data.item.mType),
         mShowOnMobile: new FormControl(this.data.item.mShowOnMobile==undefined? false : this.data.item.mShowOnMobile),
+        mSize: new FormControl(this.data.item.mSize==undefined? 0 : this.data.item.mSize),
         mNumber: new FormControl(this.data.item.mNumber==undefined? 0 : this.data.item.mNumber)
       })  
 
@@ -89,6 +90,7 @@ export class WebGoodEditComponent implements OnInit {
       price:this.form.get("price").value,
       mCategory: this.form.get("mCategory").value,
       mType: this.form.get("mType").value,
+      mSize: this.form.get("mSize").value,
       mShowOnMobile: this.form.get("mShowOnMobile").value,
       mNumber: this.form.get("mNumber").value,
       picture:this.data.item.picture,

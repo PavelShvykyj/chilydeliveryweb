@@ -48,6 +48,11 @@ export class LocalDBService {
     return await this.db.getAll("Streets");
   }
 
+  async GetWebGoodsByIndex() :Promise<IWEBGood[]> {
+    return await this.db.getAll("WebGoods");
+
+  }
+
   async GetAllGoodsByIndex(): Promise<{ goods: IWEBGood[], dirtygoods: IONECGood[] }>  {
     let goods: IWEBGood[] = [];
     let dirtygoods: IONECGood[] = [];

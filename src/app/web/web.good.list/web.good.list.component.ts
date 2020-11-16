@@ -16,7 +16,8 @@ import { map, first, tap } from 'rxjs/operators';
 import { CubToolbarComponent } from 'src/app/baseelements/cub-toolbar/cub-toolbar.component';
 import { MatDialog, MatDialogConfig, MatDialogRef, MatSnackBar } from '@angular/material';
 import { WebGoodEditComponent } from '../web-good-edit/web-good-edit.component';
-import { element } from 'protractor';
+import { MobileService } from 'src/app/mobile/mobile.service';
+
 
 
 
@@ -57,6 +58,12 @@ export class WebGoodListComponent implements OnInit {
       iconeName: 'attachment'
     },
 
+    {
+      commandName: "mobileupdate",
+      buttonName: "",
+      iconeName: 'mobile_screen_share'
+    },
+
 
   ]
 
@@ -77,7 +84,9 @@ export class WebGoodListComponent implements OnInit {
   constructor(public ds: WebGoodsDatasourseService,
     private store: Store<AppState>,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar) { }
+    private snackBar: MatSnackBar,
+    private ms: MobileService
+    ) { }
 
   ngOnInit() {
     this.allelements$ = this.store.pipe(select(selectGoodsByParent, { onlyfolders: this.onlyfolders, parentid: undefined }));
@@ -157,6 +166,9 @@ export class WebGoodListComponent implements OnInit {
       case "chain":
         this.ChainSelected()
 
+        break;
+      case "mobileupdate":
+        this.SetMobileData()
         break;
       case "delete":
         this.DeleteSelected();
@@ -348,9 +360,12 @@ export class WebGoodListComponent implements OnInit {
 
       })).subscribe();
 
-
-
   }
 
+   SetMobileData() {
+     this.ms.UpdateMobileData()
+     .then(()=> this.snackBar.open("Данные обновлены", "OK",{duration: 1000}))
+     .catch(err=>{console.log('err',err); this.snackBar.open("Ошибки при обновлении мобильных данных", "OK",{duration: 1000})})
+  }
 
 }
