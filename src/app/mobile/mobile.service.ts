@@ -45,9 +45,15 @@ export class MobileService {
   constructor(private idb: LocalDBService, private fdb: AngularFireDatabase) { }
 
   async UpdateMobileData() : Promise<any>  {
-    const shablonsize = new RegExp("\d\d\sСМ", 'g');
-    const shablonsizeshort = new RegExp("\d\d\СМ", 'g');
-    const shabloncat  = new RegExp("(ЦМ)", 'g');
+    const shablonsize = new RegExp(/\d\d\sСМ/, 'ig');
+    const shablonsizeshort = new RegExp(/\d\dСМ/, 'ig');
+    const shabloncat  = new RegExp(/.ЦМ./, 'ig');
+    const shablon34  = new RegExp(/\"/, 'ig');
+    const shablonfit  = new RegExp(/ФІТ/, 'ig');
+    const shablonleft  = new RegExp(/\(/, 'ig');
+    const shablonright  = new RegExp(/\)/, 'ig');
+    const shablondot  = new RegExp(/\./, 'ig');
+    const shablonpiza  = new RegExp(/ПІЦА/, 'ig');
 
     let WebGoods: IWEBGood[] = await this.idb.GetWebGoodsByIndex();
     
@@ -66,11 +72,20 @@ export class MobileService {
                           } });
 
                               
-      mData.map(el => 
+    mData = mData.map(el => 
       {
-        el.name = el.name.toUpperCase().replace(shablonsize,"").replace(shabloncat,"").replace(shablonsizeshort,"")
-      }
-      );
+        return{...el, name : el.name.toUpperCase()
+                                    .replace(shablonsize,'')
+                                    .replace(shabloncat,'')
+                                    .replace(shablonsizeshort,'')
+                                    .replace(shablon34,'')
+                                    .replace(shablonfit,'')
+                                    .replace(shablonleft,'')
+                                    .replace(shablonright,'')
+                                    .replace(shablondot,'')
+                                    .replace(shablonpiza,'')
+                                  } 
+      });
 
     let mGoods : IMobileGood[] = [];
     let mPrice : IMobilePriceElement[] = [];
@@ -85,7 +100,30 @@ export class MobileService {
 
     let tasks : Promise<any>[] = [];
     
-    console.log('mGoods',mGoods.filter(el=> el.mCategory == 1));
+    mGoods.sort((el1,el2)=> {
+      if (el1.mCategory>el2.mCategory)  {
+        return 1;
+      }
+
+      if (el1.mCategory==el2.mCategory) {
+        if (el1.mNumber>el2.mNumber) {
+          return 1;
+        }
+        if (el1.mNumber==el2.mNumber) {
+          return 0;
+        }
+        if (el1.mNumber<el2.mNumber) {
+          return -1;
+        }
+
+
+      }
+
+      if (el1.mCategory<el2.mCategory) {
+        return -1;
+      }
+
+    })
 
 
     tasks.push(this.fdb.database.ref('goods').set(mGoods));

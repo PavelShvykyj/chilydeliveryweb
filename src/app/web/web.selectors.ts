@@ -45,6 +45,8 @@ export const selectAllDirtyWebGoods = createSelector(
     fromWeb.selectDirtyAll // встроеный в адаптер селектор мы его експортировали в файле reducers/index 
 )
 
+
+
 /////////////// ФУНКЦИИ
 
 
@@ -71,7 +73,47 @@ function GoodsWithFilials(goods , dirtygoods) : IWEBGoodWithFilials[] {
        })
 }
 
-/// ФИЛЬТРы
+/// ФИЛЬТРЫ
+export const selectWebGoodsByCategoty = createSelector(
+    selectAllWebGoods,
+    (goods:IWEBGood[],  props) =>
+    {
+        let catgoods : IWEBGood[] = goods.filter(el => {return (el.mCategory == props.mCategory) && !el.isFolder});
+        catgoods = catgoods.filter(el => {return (el.name.toUpperCase().search(props.name)!=-1)});
+        
+        catgoods = catgoods.sort((el1,el2)=>{
+             if (el1.mNumber>el2.mNumber) {
+                 return -1
+             }   
+
+             if (el1.mNumber==el2.mNumber) {
+                return 0
+            }   
+
+            if (el1.mNumber<el2.mNumber) {
+                return 1
+            }   
+
+        })
+
+        return catgoods
+
+    }
+);    
+
+export const selectMaxNumbersByCategoty = createSelector(
+    selectWebGoodsByCategoty,
+    (goods:IWEBGood[]) =>
+    {
+        if (goods.length == 0) {
+            return 0
+        } else {
+            return goods[0].mNumber = undefined? 0 : goods[0].mNumber;
+        }
+    }
+);    
+
+
 
 export const selectGoodsByParent = createSelector(
     selectAllWebGoods,

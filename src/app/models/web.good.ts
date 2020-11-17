@@ -9,6 +9,7 @@ export interface IWEBGood extends IBaseGood {
     mShowOnMobile?:boolean,
     mNumber?:number,
     mSize?:number,
+    mName?:string,
     filials: string[]
 }
 

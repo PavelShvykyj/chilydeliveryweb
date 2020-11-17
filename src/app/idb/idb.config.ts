@@ -92,6 +92,7 @@ export function migrationFactory() {
         6:(db, transaction) => {
             const store = transaction.objectStore('WebGoods');
             store.createIndex('mSize', 'mSize', { unique: false });
+            store.createIndex('mName', 'mName', { unique: false });
         }
 
     };
