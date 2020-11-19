@@ -1,7 +1,7 @@
 <ng-container *ngIf="toolbarcommands.length!=0">
 <mat-toolbar   class="mat-toolbar">
   <mat-button-toggle-group fxLayout="row" class="toolbar-element mat-button-toggle-label">
-    <mat-button-toggle fxFlex *ngFor="let command of toolbarcommands" [value]="command.commandName"
+    <mat-button-toggle [class]="Getcommandclass(command)" fxFlex *ngFor="let command of toolbarcommands" [value]="command.commandName"
       (click)="ToolbarCommandClicked(command.commandName)" >
       <mat-icon>{{command.iconeName }}</mat-icon>
       {{command.buttonName}}

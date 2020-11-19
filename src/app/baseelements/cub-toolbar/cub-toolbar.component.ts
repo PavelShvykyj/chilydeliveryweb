@@ -73,6 +73,10 @@ export class CubToolbarComponent implements OnInit {
     this.OnToolbarCommandClicked.emit(commandName);
   } 
 
+  Getcommandclass(command) {
+    return command.class = undefined ? "empty" : command.class;
+  }
+
   GetColumsQuont() {
     const LentaLenth = this.lenta.length;
 

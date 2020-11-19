@@ -44,7 +44,7 @@
 
           <mat-list-item>
             <mat-form-field >
-              <input matInput type="string" placeholder="Короткое имя в категории" formControlName="mName">
+              <input matInput type="string" placeholder="Короткое имя в категории" formControlName="mName" (change)="OnMobileNameChange()">
               <!-- <mat-hint> Отредактировать цену </mat-hint> -->
               
             </mat-form-field>
@@ -60,14 +60,14 @@
             </mat-form-field>
             <span class="mx"></span>
             <ng-container *ngIf="(categoryMaxNumber$ | async) as MaxNumber">
-            <button mat-icon-button matTooltip="Установить новый номер"  (click)=AvtoNumber(MaxNumber)> <mat-icon >autorenew</mat-icon> </button>
+              <button mat-icon-button matTooltip="Установить новый номер"  (click)=AvtoNumber(MaxNumber+1)> <mat-icon >autorenew</mat-icon> </button>
             </ng-container>
             <span class="mx"></span>
             
-            <ng-container *ngIf="(categoryElements$ | async) as categoryElements">
+            <ng-container *ngIf="(categoryShowElements$ | async) as categoryElements">
               <button mat-icon-button matTooltip="Установить номер по аналогу" [matMenuTriggerFor]="analog"> <mat-icon >content_copy</mat-icon> </button>  
               <mat-menu #analog="matMenu"  >
-               <button mat-menu-item *ngFor="let element of categoryElements" (click)="AnalogSelected(element.mNumber)"> {{element.name}} </button>
+               <button mat-menu-item *ngFor="let element of categoryElements" (click)="AvtoNumber(element.mNumber)"> ( {{element.mNumber}} ) {{element.name}} </button>
               </mat-menu>
           </ng-container>
           </mat-list-item>
@@ -85,7 +85,7 @@
               <!--<input matInput (change) = "OnCategoryChange()" type="number" placeholder="П-1; С-2; К-3; Б-4; У-5" formControlName="mCategory">-->
               <!-- <mat-hint> Отредактировать цену </mat-hint> -->
               <mat-label>Категория</mat-label>
-              <mat-select formControlName="mCategory">
+              <mat-select formControlName="mCategory" (change)=OnCategoryChange()>
                 
                 <mat-option  [value]="0">  Без категории </mat-option>
                 <mat-option  [value]="1">  Пицца </mat-option>
@@ -93,8 +93,8 @@
                 <mat-option  [value]="3">  Кухня </mat-option>
                 <mat-option  [value]="4">  Бар </mat-option>
                 <mat-option  [value]="5">  Услуги </mat-option>
-                <mat-option  [value]="6">  Добавки </mat-option>
-                <mat-option  [value]="7">  Что это? </mat-option>
+                <mat-option  [value]="6">  Соуса </mat-option>
+                <mat-option  [value]="7">  Добавки </mat-option>
                 
               </mat-select>
             

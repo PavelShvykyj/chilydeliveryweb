@@ -1,3 +1,4 @@
+import { UpdateMobileData } from './../../mobile/mobile.actions';
 import { IONECGood, IONECGoodWithOwner } from './../../models/onec.good';
 import { selectGoodsByParent, selectGoodBySelection, selectGoodByName, selectAllBySelection } from './../web.selectors';
 import { IWEBGood, IWEBGoodWithFilials } from './../../models/web.good';
@@ -6,7 +7,7 @@ import { WebGoodsDatasourseService } from '../web.goods.datasourse.service';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
 
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ITolbarCommandsList } from 'src/app/models/toolbar.commandslist';
 import { IBaseGood } from 'src/app/models/base.good';
 import { MatCheckboxChange } from '@angular/material/checkbox';
@@ -17,9 +18,43 @@ import { CubToolbarComponent } from 'src/app/baseelements/cub-toolbar/cub-toolba
 import { MatDialog, MatDialogConfig, MatDialogRef, MatSnackBar } from '@angular/material';
 import { WebGoodEditComponent } from '../web-good-edit/web-good-edit.component';
 import { MobileService } from 'src/app/mobile/mobile.service';
+import { selectMObileDataUpdated } from 'src/app/mobile/mobile.selectors';
 
 
+export const commandshablon : ITolbarCommandsList[] = [
+  {
+    commandName: "refresh",
+    buttonName: "",
+    iconeName: 'refresh'
+  },
 
+  {
+    commandName: "add",
+    buttonName: "",
+    iconeName: 'add_circle'
+  },
+
+  {
+    commandName: "delete",
+    buttonName: "",
+    iconeName: 'delete'
+  },
+
+
+  {
+    commandName: "chain",
+    buttonName: "",
+    iconeName: 'attachment'
+  },
+
+  {
+    commandName: "mobileupdate",
+    buttonName: "",
+    iconeName: 'mobile_screen_share'
+  },
+
+
+]
 
 @Component({
   selector: 'webgoodlist',
@@ -32,40 +67,7 @@ export class WebGoodListComponent implements OnInit {
   toolbar: CubToolbarComponent;
 
   @Input('toolbarcommands')
-  toolbarcommands: ITolbarCommandsList[] = [
-    {
-      commandName: "refresh",
-      buttonName: "",
-      iconeName: 'refresh'
-    },
-
-    {
-      commandName: "add",
-      buttonName: "",
-      iconeName: 'add_circle'
-    },
-
-    {
-      commandName: "delete",
-      buttonName: "",
-      iconeName: 'delete'
-    },
-
-
-    {
-      commandName: "chain",
-      buttonName: "",
-      iconeName: 'attachment'
-    },
-
-    {
-      commandName: "mobileupdate",
-      buttonName: "",
-      iconeName: 'mobile_screen_share'
-    },
-
-
-  ]
+  toolbarcommands$: Observable<ITolbarCommandsList[]>; 
 
   @Input('onlyfolders')
   onlyfolders: boolean = false
@@ -91,6 +93,21 @@ export class WebGoodListComponent implements OnInit {
   ngOnInit() {
     this.allelements$ = this.store.pipe(select(selectGoodsByParent, { onlyfolders: this.onlyfolders, parentid: undefined }));
     this.selectedelements$ = this.store.pipe(select(selectGoodBySelection));
+    this.toolbarcommands$ = this.store.pipe(select(selectMObileDataUpdated),
+    map(isUpdated => {
+      if (isUpdated) {
+        return commandshablon;
+      } else {
+        return commandshablon.map(el => {
+          if (el.commandName == "mobileupdate") {
+            return {...el, class: "atention"}
+          } else {
+            return {...el, class: "empty"}
+          }
+        });
+      }
+
+    }));
     this.UpdateGoodsview();
   }
 
@@ -363,9 +380,11 @@ export class WebGoodListComponent implements OnInit {
   }
 
    SetMobileData() {
-     this.ms.UpdateMobileData()
-     .then(()=> this.snackBar.open("Данные обновлены", "OK",{duration: 1000}))
-     .catch(err=>{console.log('err',err); this.snackBar.open("Ошибки при обновлении мобильных данных", "OK",{duration: 1000})})
+    this.store.dispatch(UpdateMobileData()); 
+    
+    // this.ms.UpdateMobileData()
+    //  .then(()=> this.snackBar.open("Данные обновлены", "OK",{duration: 1000}))
+    //  .catch(err=>{console.log('err',err); this.snackBar.open("Ошибки при обновлении мобильных данных", "OK",{duration: 1000})})
   }
 
 }

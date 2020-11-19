@@ -1,5 +1,11 @@
+@import '~@angular/material/theming';
+@include mat-core();
+
 .mx {
     margin-right: 2px;
     margin-left: 2px;
-
 }
+
+.mat-selected {
+    color: map-get($mat-light-blue, 700) !important;
+  }

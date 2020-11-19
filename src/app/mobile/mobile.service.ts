@@ -1,3 +1,4 @@
+
 import { IMobileGood, IMobilePriceElement ,IMobileData } from './../models/mobile.good';
 import { IWEBGood } from 'src/app/models/web.good';
 import { Injectable } from '@angular/core';
@@ -5,6 +6,7 @@ import { LocalDBService } from '../idb/local-db.service';
 import { AngularFireDatabase } from '@angular/fire/database';
 import * as firebase from 'firebase/app';
 import 'firebase/database';
+import {  Observable, of, from } from 'rxjs';
 
 
 function DataIsEqual(el:Object,uel:Object) : boolean {
@@ -17,7 +19,7 @@ function DataIsEqual(el:Object,uel:Object) : boolean {
 }
 
 
-function DefoultIfEMpty(val,defoult) : any {
+export function DefoultIfEMpty(val,defoult) : any {
   if (val == undefined) {
     return defoult
   } else {
@@ -25,7 +27,7 @@ function DefoultIfEMpty(val,defoult) : any {
   }
 }
 
-function MDataBitMap(el:IMobileData| IWEBGood) : number {
+export function MDataBitMap(el:IMobileData| IWEBGood) : number {
   
   let result = 0;
   result = result | ((el.mType & 0b1111) << 17); // 21-18  mType - 4bit - parent 
@@ -36,6 +38,27 @@ function MDataBitMap(el:IMobileData| IWEBGood) : number {
   return result;
 }
 
+function CompareByNumberCategory(el1:IMobileGood,el2:IMobileGood): number {
+  if (el1.mCategory>el2.mCategory)  {
+    return 1;
+  }
+
+  if (el1.mCategory==el2.mCategory) {
+    if (el1.mNumber>el2.mNumber) {
+      return 1;
+    }
+    if (el1.mNumber==el2.mNumber) {
+      return 0;
+    }
+    if (el1.mNumber<el2.mNumber) {
+      return -1;
+    }
+  }
+
+  if (el1.mCategory<el2.mCategory) {
+    return -1;
+  }
+}
 
 @Injectable({
   providedIn: 'root'
@@ -45,22 +68,14 @@ export class MobileService {
   constructor(private idb: LocalDBService, private fdb: AngularFireDatabase) { }
 
   async UpdateMobileData() : Promise<any>  {
-    const shablonsize = new RegExp(/\d\d\sСМ/, 'ig');
-    const shablonsizeshort = new RegExp(/\d\dСМ/, 'ig');
-    const shabloncat  = new RegExp(/.ЦМ./, 'ig');
-    const shablon34  = new RegExp(/\"/, 'ig');
-    const shablonfit  = new RegExp(/ФІТ/, 'ig');
-    const shablonleft  = new RegExp(/\(/, 'ig');
-    const shablonright  = new RegExp(/\)/, 'ig');
-    const shablondot  = new RegExp(/\./, 'ig');
-    const shablonpiza  = new RegExp(/ПІЦА/, 'ig');
 
     let WebGoods: IWEBGood[] = await this.idb.GetWebGoodsByIndex();
     
-    let mData: IMobileData[] = WebGoods.filter(el => el.isFolder == false)
-      .filter(el => el.mShowOnMobile == true)
+    let mData: IMobileData[] = WebGoods.filter(el => el.mShowOnMobile == true)
       .map(el => { return {id:        el.id,
-                           name:      el.name,
+                           isFolder:  el.isFolder,
+                           parentid:  DefoultIfEMpty(el.parentid,""),
+                           mName:     DefoultIfEMpty(el.mName,el.name),
                            mCategory: DefoultIfEMpty(el.mCategory,0),
                            mType:     DefoultIfEMpty(el.mType,0),
                            mNumber:   DefoultIfEMpty(el.mNumber,0),
@@ -72,59 +87,40 @@ export class MobileService {
                           } });
 
                               
-    mData = mData.map(el => 
-      {
-        return{...el, name : el.name.toUpperCase()
-                                    .replace(shablonsize,'')
-                                    .replace(shabloncat,'')
-                                    .replace(shablonsizeshort,'')
-                                    .replace(shablon34,'')
-                                    .replace(shablonfit,'')
-                                    .replace(shablonleft,'')
-                                    .replace(shablonright,'')
-                                    .replace(shablondot,'')
-                                    .replace(shablonpiza,'')
-                                  } 
-      });
 
     let mGoods : IMobileGood[] = [];
     let mPrice : IMobilePriceElement[] = [];
-    
+    let mGoodElement: IMobileGood ;
+    let mGoodIndex: number ;                      
+
     mData.forEach(mdel => {
-      mPrice.push({id: mdel.id, bitmap: mdel.bitmap, price: mdel.price });
-      if (mGoods.find(mgel=> {return (mgel.mCategory == mdel.mCategory && mgel.mNumber == mdel.mNumber)}) == undefined) {
-        mGoods.push({name: mdel.name,
+      if(mdel.isFolder == false ) {
+        mPrice.push({id: mdel.id, bitmap: mdel.bitmap, price: mdel.price });  
+      }
+      
+      mGoodElement = mGoods.find(mgel=> {return (mgel.mCategory == mdel.mCategory && mgel.mNumber == mdel.mNumber)})
+
+      if (mGoodElement == undefined) {
+        mGoods.push({mName: mdel.mName,
           picture:mdel.picture,
           mCategory:mdel.mCategory,
-          mNumber:mdel.mNumber})}});
+          mNumber:mdel.mNumber,
+          isFolder:mdel.isFolder,
+          parentid:mdel.parentid,
+          id: mdel.isFolder ? mdel.id : ""
+        })} else {
+          mGoodIndex = mGoods.indexOf(mGoodElement);
+          const  newEl : IMobileGood  = {...mGoodElement,
+            picture : mGoodElement.picture == "" &&  mdel.picture != "" ? mdel.picture : mGoodElement.picture,
+            mName :   mdel.mName != "" ? mdel.mName : mGoodElement.mName    
+           }
+          mGoods[mGoodIndex] = newEl;
+        }
+      });
 
     let tasks : Promise<any>[] = [];
     
-    mGoods.sort((el1,el2)=> {
-      if (el1.mCategory>el2.mCategory)  {
-        return 1;
-      }
-
-      if (el1.mCategory==el2.mCategory) {
-        if (el1.mNumber>el2.mNumber) {
-          return 1;
-        }
-        if (el1.mNumber==el2.mNumber) {
-          return 0;
-        }
-        if (el1.mNumber<el2.mNumber) {
-          return -1;
-        }
-
-
-      }
-
-      if (el1.mCategory<el2.mCategory) {
-        return -1;
-      }
-
-    })
-
+    mGoods.sort((el1,el2)=> CompareByNumberCategory(el1,el2));
 
     tasks.push(this.fdb.database.ref('goods').set(mGoods));
     tasks.push(this.fdb.database.ref('price').set(mPrice));      
@@ -132,5 +128,61 @@ export class MobileService {
     return Promise.all(tasks);
 
   }
+
+  DeleteMobileElement(webelement : IWEBGood) : Observable<any> {
+
+
+    let mGood : IMobileGood = {mName: webelement.mName,
+      picture:webelement.picture,
+      mCategory:webelement.mCategory,
+      mNumber:webelement.mNumber,
+      isFolder:webelement.isFolder,
+      parentid:webelement.parentid,
+      id:webelement.id
+      };
+
+
+    let mPrice : IMobilePriceElement = {id: webelement.id,
+                                        bitmap: MDataBitMap(webelement),
+                                        price: webelement.price };
+
+    //let refGood  =  this.fdb.database.ref('goods').orderByChild('mCategory').equalTo(webelement.mCategory).orderByChild('mNumber').equalTo(webelement.mNumber).limitToFirst(1).ref;
+    let refPrice =  this.fdb.database.ref('price').orderByChild('id').equalTo(webelement.id).limitToFirst(1).ref;
+    return from(refPrice.remove());
+      
+
+  }  
+
+
+  UpdateMobileElement(webelement : IWEBGood) : Observable<any> {
+    let mGood : IMobileGood = {mName: webelement.mName,
+      picture:webelement.picture,
+      mCategory:webelement.mCategory,
+      mNumber:webelement.mNumber,
+      isFolder:webelement.isFolder,
+      parentid:webelement.parentid,
+      id:webelement.id
+
+    };
+
+
+    let mPrice : IMobilePriceElement = {id: webelement.id,
+                                        bitmap: MDataBitMap(webelement),
+                                        price: webelement.price };
+
+
+    let tasks : Promise<any>[] = [];  
+    let refGood  =  this.fdb.database.ref('goods').orderByChild('mCategory').equalTo(webelement.mCategory).orderByChild('mNumber').equalTo(webelement.mNumber).limitToFirst(1).ref;
+    let refPrice =  this.fdb.database.ref('price').orderByChild('id').equalTo(webelement.id).limitToFirst(1).ref;
+    
+    
+    tasks.push(refGood.update(mGood));
+    tasks.push(refPrice.update(mPrice));
+    
+    return from(Promise.all(tasks));
+
+
+  }
+
 
 }

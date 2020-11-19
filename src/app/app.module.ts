@@ -1,3 +1,4 @@
+import { MobileModule } from './mobile/mobile.module';
 import { OrderModule } from './order/order.module';
 import { MaterialsModule } from './materials/materials.module';
 import { BrowserModule } from '@angular/platform-browser';
@@ -14,7 +15,7 @@ import { reducers, metaReducers } from './reducers';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import {RouterState, StoreRouterConnectingModule, routerReducer} from '@ngrx/router-store';
+import { RouterState, StoreRouterConnectingModule, routerReducer} from '@ngrx/router-store';
 import { NgxIndexedDBModule  } from 'ngx-indexed-db';
 import { NgxMaskModule, IConfig } from 'ngx-mask'
 
@@ -71,7 +72,8 @@ import { StreetsModule } from './streets/streets.module';
     ExchangeModule,
     IdbModule,
     OrderModule,
-    StreetsModule
+    StreetsModule,
+    MobileModule
     
     
 

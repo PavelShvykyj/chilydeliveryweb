@@ -78,23 +78,21 @@ export const selectWebGoodsByCategoty = createSelector(
     selectAllWebGoods,
     (goods:IWEBGood[],  props) =>
     {
-        let catgoods : IWEBGood[] = goods.filter(el => {return (el.mCategory == props.mCategory) && !el.isFolder});
-        catgoods = catgoods.filter(el => {return (el.name.toUpperCase().search(props.name)!=-1)});
         
-        catgoods = catgoods.sort((el1,el2)=>{
-             if (el1.mNumber>el2.mNumber) {
-                 return -1
-             }   
+        const catgoods : IWEBGood[] = goods.filter(el => {return (el.mCategory == props.mCategory) && !el.isFolder})
+                                         .sort((el1,el2)=>{
+                                            if (el1.mNumber>el2.mNumber) {
+                                                return -1
+                                            }   
 
-             if (el1.mNumber==el2.mNumber) {
-                return 0
-            }   
+                                            if (el1.mNumber==el2.mNumber) {
+                                                return 0
+                                            }   
 
-            if (el1.mNumber<el2.mNumber) {
-                return 1
-            }   
-
-        })
+                                            if (el1.mNumber<el2.mNumber) {
+                                                return 1
+                                            }   
+                                        });
 
         return catgoods
 
