@@ -93,14 +93,32 @@ export class MobileService {
     let mGoodElement: IMobileGood ;
     let mGoodIndex: number ;                      
 
+    
+
     mData.forEach(mdel => {
       if(mdel.isFolder == false ) {
-        mPrice.push({id: mdel.id, bitmap: mdel.bitmap, price: mdel.price });  
-      }
-      
-      mGoodElement = mGoods.find(mgel=> {return (mgel.mCategory == mdel.mCategory && mgel.mNumber == mdel.mNumber)})
-
-      if (mGoodElement == undefined) {
+        mPrice.push({id: mdel.id, bitmap: mdel.bitmap, price: mdel.price });
+        mGoodElement = mGoods.find(mgel=> {return (mgel.mCategory == mdel.mCategory && mgel.mNumber == mdel.mNumber)})
+        if (mGoodElement == undefined) {
+          mGoods.push({mName: mdel.mName,
+            picture:mdel.picture,
+            mCategory:mdel.mCategory,
+            mNumber:mdel.mNumber,
+            isFolder:mdel.isFolder,
+            parentid:mdel.parentid,
+            id: mdel.isFolder ? mdel.id : ""
+          })
+        } 
+         else {
+            mGoodIndex = mGoods.indexOf(mGoodElement);
+            const  newEl : IMobileGood  = {...mGoodElement,
+              picture : mGoodElement.picture == "" &&  mdel.picture != "" ? mdel.picture : mGoodElement.picture,
+              mName :   mdel.mName != "" ? mdel.mName : mGoodElement.mName    
+             }
+            mGoods[mGoodIndex] = newEl;
+        }
+    
+      } else {
         mGoods.push({mName: mdel.mName,
           picture:mdel.picture,
           mCategory:mdel.mCategory,
@@ -108,14 +126,10 @@ export class MobileService {
           isFolder:mdel.isFolder,
           parentid:mdel.parentid,
           id: mdel.isFolder ? mdel.id : ""
-        })} else {
-          mGoodIndex = mGoods.indexOf(mGoodElement);
-          const  newEl : IMobileGood  = {...mGoodElement,
-            picture : mGoodElement.picture == "" &&  mdel.picture != "" ? mdel.picture : mGoodElement.picture,
-            mName :   mdel.mName != "" ? mdel.mName : mGoodElement.mName    
-           }
-          mGoods[mGoodIndex] = newEl;
-        }
+      })}
+      
+
+        
       });
 
     let tasks : Promise<any>[] = [];
