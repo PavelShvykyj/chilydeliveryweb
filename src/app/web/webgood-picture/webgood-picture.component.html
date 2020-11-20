@@ -1,20 +1,39 @@
 <div class="container">
 
-    <div class="c-elemnt-1" *ngIf="(downloadURL$ | async) as URL">
-        <!--<span> {{URL}} </span> -->            
-         <img class="picture" [src]="URL">
-    </div>
+  <div class="c-elemnt-1" *ngIf="(downloadURL$ | async) as URL">
+    <!--<span> {{URL}} </span> -->
+    <img class="picture" [src]="URL">
+  </div>
 
-    <div class="c-elemnt-2">
-        
-        <input #fileInput hidden type="file" (change)="UploadFile($event)" id="picture">
-        <button type="button" mat-raised-button (click)="fileInput.click()">Choose File</button>
-        
-       
-        <div  *ngIf="(uploadPercent$ | async) as percent"  >
-            <span> load:  {{percent / 100 | percent}} </span>
-            <mat-progress-bar color='warn' mode="determinate" [value]="percent"></mat-progress-bar>
-        </div>
+  <div class="c-elemnt-2">
+
+    <input #fileInput hidden type="file" (change)="UploadFile($event)" id="picture">
+    <button type="button" mat-raised-button (click)="fileInput.click()">Choose File</button>
+
+
+    <div *ngIf="(uploadPercent$ | async) as percent">
+      <span> load: {{percent / 100 | percent}} </span>
+      <mat-progress-bar color='warn' mode="determinate" [value]="percent"></mat-progress-bar>
     </div>
+  </div>
+
+  <ng-container *ngIf="(fileList$ | async) as files  " >
+    <div *ngIf="(urls$ | async) as urls" class="c-elemnt-2" >
+      <button mat-raised-button [matMenuTriggerFor]="menu">
+        select file
+      </button>
+      <mat-menu #menu="matMenu">
+        <button *ngFor="let item of files" mat-menu-item (click)=SelectFile(item)>
+            
+            <img class="picture-small" [src]="urls[item.idx]">
+            
+          <span> {{item.name}}</span>
+        </button>
+      </mat-menu>
+
+
+    </div>
+  </ng-container>
+
 
 </div>

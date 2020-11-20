@@ -1,10 +1,17 @@
-import { Observable, of } from 'rxjs';
+import { select } from '@ngrx/store';
+import {  Observable, of, combineLatest, from } from 'rxjs';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { last, concatMap, tap } from 'rxjs/operators';
+import { last, concatMap, tap, map, take } from 'rxjs/operators';
+import * as firebase from 'firebase/app';
+import 'firebase/storage';
+import { environment } from 'src/environments/environment';
 
 
 const PATH: string = "webgoodpicures";
+
+firebase.initializeApp(environment.firebase);
+let fstorage = firebase.storage();
 
 @Component({
   selector: 'webgood-picture',
@@ -18,10 +25,18 @@ export class WebgoodPictureComponent implements OnInit {
 
   uploadPercent$: Observable<number>;
   downloadURL$: Observable<string>;
+  fileList$ = from(fstorage.ref(PATH).listAll()).pipe( map(res=> {
+    return res.items.map(el =>  { return {ref: el, name: el.name, idx: res.items.indexOf(el)}})
+  }))
+
+  urls$ = this.fileList$.pipe( concatMap(items => combineLatest(items.map(el => el.ref.getDownloadURL() ))))
 
   constructor(private storage: AngularFireStorage) { }
 
   ngOnInit() {
+   
+    
+    
     if (this.name == undefined || this.name == "") {
       
     } else {
@@ -29,11 +44,20 @@ export class WebgoodPictureComponent implements OnInit {
     }
   }
 
+ 
+
+  SelectFile(item) {
+    
+    
+    this.downloadURL$ = this.storage.ref(`${PATH}/${item.name}`).getDownloadURL().pipe(tap(res=>
+      
+      this.FileUploaded.emit(res as string))
+    
+      );
+  }  
+  
   UploadFile(event) {
-    
-    
     const file: File  = event.target.files[0];
-    
     const filePath = `${PATH}/${file.name}`;
     const task = this.storage.upload(filePath,file);
     this.uploadPercent$ = task.percentageChanges();     

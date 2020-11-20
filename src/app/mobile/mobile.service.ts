@@ -1,3 +1,4 @@
+import { element } from 'protractor';
 
 import { IMobileGood, IMobilePriceElement ,IMobileData } from './../models/mobile.good';
 import { IWEBGood } from 'src/app/models/web.good';
@@ -20,7 +21,7 @@ function DataIsEqual(el:Object,uel:Object) : boolean {
 
 
 export function DefoultIfEMpty(val,defoult) : any {
-  if (val == undefined) {
+  if (val == undefined || val == 0 || val =="" || val == null) {
     return defoult
   } else {
     return val;
@@ -92,45 +93,61 @@ export class MobileService {
     let mPrice : IMobilePriceElement[] = [];
     let mGoodElement: IMobileGood ;
     let mGoodIndex: number ;                      
+ 
+    let Folders = mData.filter(el=> el.isFolder);
+    Folders.forEach(mdel =>{
+      mGoods.push(
+        {
+        mName: mdel.mName,
+        picture:mdel.picture,
+        mCategory:mdel.mCategory,
+        mNumber:mdel.mNumber,
+        isFolder:mdel.isFolder,
+        parentid:mdel.parentid,
+        id: mdel.isFolder ? mdel.id : ""
+    })});
 
-    
+    let elements = mData.filter(el=> !el.isFolder);
 
-    mData.forEach(mdel => {
-      if(mdel.isFolder == false ) {
+
+    elements.forEach(mdel => {
+          
         mPrice.push({id: mdel.id, bitmap: mdel.bitmap, price: mdel.price });
+        
         mGoodElement = mGoods.find(mgel=> {return (mgel.mCategory == mdel.mCategory && mgel.mNumber == mdel.mNumber)})
+        
         if (mGoodElement == undefined) {
-          mGoods.push({mName: mdel.mName,
+          ///// ЕЩЕ Такого не было просто добавляем
+          mGoods.push(
+            {
+            mName: mdel.mName,
             picture:mdel.picture,
             mCategory:mdel.mCategory,
             mNumber:mdel.mNumber,
             isFolder:mdel.isFolder,
-            parentid:mdel.parentid,
-            id: mdel.isFolder ? mdel.id : ""
+            parentid: Folders.find(el => el.id==mdel.parentid)!=undefined ? mdel.parentid : ""  ,
+            id:  ""
           })
         } 
-         else {
+        else {
+            //// перезаполним картинку и имя по аналогу если не пустые
             mGoodIndex = mGoods.indexOf(mGoodElement);
             const  newEl : IMobileGood  = {...mGoodElement,
               picture : mGoodElement.picture == "" &&  mdel.picture != "" ? mdel.picture : mGoodElement.picture,
-              mName :   mdel.mName != "" ? mdel.mName : mGoodElement.mName    
+              mName :   mdel.mName != "" ? mdel.mName : mGoodElement.mName,
+              parentid: mGoodElement.parentid == "" ? mdel.parentid : mGoodElement.parentid 
+
              }
             mGoods[mGoodIndex] = newEl;
         }
     
-      } else {
-        mGoods.push({mName: mdel.mName,
-          picture:mdel.picture,
-          mCategory:mdel.mCategory,
-          mNumber:mdel.mNumber,
-          isFolder:mdel.isFolder,
-          parentid:mdel.parentid,
-          id: mdel.isFolder ? mdel.id : ""
-      })}
+       
       
 
         
       });
+
+    console.log('piza ',mGoods.filter(el => {return el.mCategory==1}));  
 
     let tasks : Promise<any>[] = [];
     

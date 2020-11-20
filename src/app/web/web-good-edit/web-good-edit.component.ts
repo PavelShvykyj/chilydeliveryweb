@@ -26,6 +26,7 @@ export class WebGoodEditComponent implements OnInit {
 
   constructor(
     private store: Store<AppState>,
+    
     public dialogRef: MatDialogRef<WebGoodEditComponent>,
     @Inject(MAT_DIALOG_DATA) public data : {item: IWEBGoodWithFilials, parentel: IBaseGood},
     public dialog: MatDialog) { 
