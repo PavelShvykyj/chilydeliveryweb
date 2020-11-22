@@ -9,6 +9,10 @@ import { environment } from 'src/environments/environment';
 
 
 const PATH: string = "webgoodpicures";
+const METADATA = {
+  cacheControl: 'public,max-age=2628000',
+}
+
 
 firebase.initializeApp(environment.firebase);
 let fstorage = firebase.storage();
@@ -48,11 +52,16 @@ export class WebgoodPictureComponent implements OnInit {
 
   SelectFile(item) {
     
-    
-    this.downloadURL$ = this.storage.ref(`${PATH}/${item.name}`).getDownloadURL().pipe(tap(res=>
+
+    let ref = this.storage.ref(`${PATH}/${item.name}`);
+
+    let fref = fstorage.ref(`${PATH}/${item.name}`);
+    fref.updateMetadata(METADATA).then(res => console.log(res));
+
+    this.downloadURL$ = ref.getDownloadURL().pipe(tap(res=>
       
-      this.FileUploaded.emit(res as string))
-    
+      this.FileUploaded.emit(res as string)),
+      
       );
   }  
   
@@ -63,6 +72,7 @@ export class WebgoodPictureComponent implements OnInit {
     this.uploadPercent$ = task.percentageChanges();     
     this.downloadURL$ = task.snapshotChanges().pipe(
       last(),
+      concatMap(() => this.storage.ref(filePath).updateMetadata(METADATA)),
       concatMap(() => this.storage.ref(filePath).getDownloadURL()),
       tap(URL => {this.FileUploaded.emit(URL)})
     );
