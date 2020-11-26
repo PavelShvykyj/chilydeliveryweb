@@ -28,13 +28,30 @@ export function DefoultIfEMpty(val,defoult) : any {
   }
 }
 
+const sizeNumbers = {
+  0 : 0,
+  30 : 1,
+  40 : 2,
+  50 : 3
+}
+
+
+
+
 export function MDataBitMap(el:IMobileData| IWEBGood) : number {
   
   let result = 0;
-  result = result | ((el.mType & 0b1111) << 17); // 21-18  mType - 4bit - parent 
-  result = result | ((el.mType & 0b1111111111) << 7) // 17-8  mNumber - 10bit - num in type
-  result = result | ((el.mCategory & 0b1111) << 3) // 7-4  mCategory - 4bit - Category (non-0)
-  result = result | (el.mSize & 0b111)  // 3-1  mSize - 3bit - 50cm-3 40cm-2 30cm-1 non-0
+  // console.log(el.mName);
+  
+  result = result | ((el.mCategory & 0b1111) << 17); // 21-18  mCategory - 4bit Category (non-0)
+  // console.log('mCategory',el.mCategory,(el.mCategory & 0b1111).toString(2) , result.toString(2));
+  result = result | ((el.mNumber & 0b1111111111) << 7) // 17-8  mNumber - 10bit - num in Category
+  // console.log('mNumber',el.mNumber,(el.mNumber & 0b1111111111).toString(2) ,result.toString(2));
+  result = result | ((el.mType & 0b1111) << 3) // 7-4  mType - 4bit - fitnnes \ simple \ non (non-0)
+  // console.log('mType',el.mType,(el.mType & 0b1111).toString(2) ,result.toString(2));
+  result = result | (sizeNumbers[el.mSize] & 0b111)  // 3-1  mSize - 3bit - 50cm-3 40cm-2 30cm-1 non-0
+  // console.log('mSize',el.mSize,(sizeNumbers[el.mSize] & 0b111).toString(2) ,result.toString(2));
+
   //console.log('bit map',result, result.toString(2));
   return result;
 }

@@ -65,6 +65,11 @@ export class WebgoodPictureComponent implements OnInit {
       );
   }  
   
+  Clear() {
+    this.FileUploaded.emit("");
+    this.downloadURL$ = of("");
+  }
+
   UploadFile(event) {
     const file: File  = event.target.files[0];
     const filePath = `${PATH}/${file.name}`;
