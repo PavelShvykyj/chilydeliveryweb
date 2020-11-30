@@ -15,10 +15,10 @@ export class MobileEffects {
             ofType(UpdateMobileData),
             concatMap(action => {
                 return from(this.MobileServise.UpdateMobileData()).pipe(
-                    tap(() => {this.snackBar.open("Данные обновлены", "OK",{duration: 1000})}),
+                    tap(() => {this.snackBar.open("Данные обновлены", "OK",{duration: 1000, panelClass: ['snack-info']})}),
                     map(() =>mobileUpdated()),
                     catchError(err => { console.log('mobile update ', err);
-                                        this.snackBar.open("Данные не обновлены", "OK",{duration: 1000});
+                                        this.snackBar.open("Данные не обновлены", "OK",{duration: 1000, panelClass: ['snack-err']});
                                         return of(mobileNotUpdated())})
                 )
             }),

@@ -11,3 +11,4 @@ export const DeleteOrderRecord    = createAction("[EDIT ORDER COMPONENT] Delete 
 export const CreateOrder    = createAction("[EDIT ORDER COMPONENT] Create new orders",props<{order: IOrderWithDirty}>());
 export const OrderCreated   = createAction("[EDIT ORDER EFFECT] Order are created");
 export const OrderCreatedErr   = createAction("[EDIT ORDER EFFECT] Order are not created");
+export const SelectOrder = createAction("[BLOCK ORDER EFFECT] select order to edit",props<{order: IOrder}>());

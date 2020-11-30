@@ -100,7 +100,8 @@ export class MobileService {
                            mSize:     DefoultIfEMpty(el.mSize,0),
                            price:     DefoultIfEMpty(el.price,0),
                            picture:   DefoultIfEMpty(el.picture,""),
-                           bitmap:    MDataBitMap(el)
+                           bitmap:    MDataBitMap(el),
+                           dirtyid:   el.filials
                           
                           } });
 
@@ -129,7 +130,7 @@ export class MobileService {
 
     elements.forEach(mdel => {
           
-        mPrice.push({id: mdel.id, bitmap: mdel.bitmap, price: mdel.price });
+        mPrice.push({id: mdel.id, bitmap: mdel.bitmap, price: mdel.price, dirtyid:mdel.dirtyid  });
         
         mGoodElement = mGoods.find(mgel=> {return (mgel.mCategory == mdel.mCategory && mgel.mNumber == mdel.mNumber)})
         
@@ -192,7 +193,9 @@ export class MobileService {
 
     let mPrice : IMobilePriceElement = {id: webelement.id,
                                         bitmap: MDataBitMap(webelement),
-                                        price: webelement.price };
+                                        price: webelement.price,
+                                        dirtyid: webelement.filials
+                                        };
 
     //let refGood  =  this.fdb.database.ref('goods').orderByChild('mCategory').equalTo(webelement.mCategory).orderByChild('mNumber').equalTo(webelement.mNumber).limitToFirst(1).ref;
     let refPrice =  this.fdb.database.ref('price').orderByChild('id').equalTo(webelement.id).limitToFirst(1).ref;
@@ -216,7 +219,9 @@ export class MobileService {
 
     let mPrice : IMobilePriceElement = {id: webelement.id,
                                         bitmap: MDataBitMap(webelement),
-                                        price: webelement.price };
+                                        price: webelement.price,
+                                        dirtyid: webelement.filials
+                                      };
 
 
     let tasks : Promise<any>[] = [];  

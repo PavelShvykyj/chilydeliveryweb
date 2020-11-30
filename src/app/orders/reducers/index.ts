@@ -29,6 +29,11 @@ export const OrderAdapter = createEntityAdapter<IOrder>();
 /// allOrdersLoaded - сразу ставим в истина ресолвер пропустит без обращения а первые изменения мы должы
 /// получить в подписке на изменения
 export const initialStateOrders = OrderAdapter.getInitialState({allOrdersLoaded:true});
+// allOrdersLoaded - устанавливаем в истина так как прослушка изменений повторно считывает данные
+//  после полной загрузкии
+//  лишний параметр УДАЛИТЬ
+
+
 export const OrderReducer = createReducer(
   initialStateOrders,
   on(OrderActions.OrdersUpdated, (state,action)=> OrderAdapter.upsertMany(action.orders,state)),

@@ -16,6 +16,7 @@ import * as firebase from 'firebase/app';
 import 'firebase/database';
 import { OrderActions } from './order.action.types';
 import { Itparams } from '../models/telegram';
+import { selectLoggedEmail } from '../auth/auth.selectors';
 
 
 
@@ -46,15 +47,20 @@ export class OrdersDatasourseService {
     return from(this.db.database.ref('orders').once('value'))
       .pipe(map(orderssnap => {
         const orders: IOrder[] = [];
-        console.clear();
-        console.log('GetOrders',orderssnap);
+        //console.clear();
+        //console.log('GetOrders',orderssnap);
         orderssnap.forEach(childSnapshot => {
-          console.log('Order',{ ...childSnapshot.val(), id: childSnapshot.key });
+          //console.log('Order',{ ...childSnapshot.val(), id: childSnapshot.key });
           orders.push({ ...childSnapshot.val(), id: childSnapshot.key })
         });
+        
+
         return orders;
-      }), take(1));
+      }),
+      take(1));
   }
+
+
 
   CreateOrder(neworder) {
     
@@ -71,8 +77,26 @@ export class OrdersDatasourseService {
   }
 
 
+  BlockOrder(id:string) : Observable<any> {
+    console.log('BlockOrder',id);
+    return this.store.pipe(select(selectLoggedEmail),
+    take(1),
+    concatMap(Email => {
+      return  from(this.db.database.ref(`orders/${id}/externalid`).transaction(
+        function(currentData) {
+          
+          if (currentData != null && (currentData != "" ||  currentData == Email) ) {
+            console.log('return nothing'); 
+            return 
+          }            
+          return Email
+        }))})
+        );
+  }
 
-
+  ReleaseOrder(id:string) : Observable<any> {
+    return    from(this.db.database.ref(`orders/${id}/externalid`).set("")); 
+  }
 
 
   /// наращиаем счетчик в тарнзакции на выходе имеем новый счетчик 

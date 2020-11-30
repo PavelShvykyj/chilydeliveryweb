@@ -52,14 +52,13 @@
         </mat-header-cell>
         <mat-cell class="table-cell" *matCellDef="let order">
 
-            <button [matTooltip]="GetTooltipText(order)" matTooltipPosition='left' matTooltipClass="order-tooltip" (click)="AddComent(order)" mat-button>
+            <button [matTooltip]="GetTooltipText(order)" matTooltipPosition='left' matTooltipClass="order-tooltip" (click)="Release(order.id)" mat-button>
                 <mat-icon>edit</mat-icon>
             </button>
             <button (click)="Remove(order.id)" mat-button>
                 <mat-icon>delete</mat-icon>
             </button>
-
-
+            
         </mat-cell>
 
     </ng-container>

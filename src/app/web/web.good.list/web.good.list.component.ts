@@ -318,7 +318,7 @@ export class WebGoodListComponent implements OnInit {
       selection.web.length != 0 &&
       element.owner[0].id == selection.web[0].id);
     if (incorrectdirty != undefined) {
-      this.snackBar.open("Некорректное выделение", "OK",{duration: 1000});  
+      this.snackBar.open("Некорректное выделение", "OK",{duration: 1000, panelClass: ['snack-err']});  
       return false
     }
 
@@ -332,7 +332,7 @@ export class WebGoodListComponent implements OnInit {
     /// так нельзя сначала нужно отвязать старый.
     const incorrectweb = web.filialElements.find(filialel => selection.dirty.find(el => el.filial == filialel.filial && el.id != filialel.id) != undefined)
     if (incorrectweb != undefined) {
-      this.snackBar.open("Некорректное выделение", "OK",{duration: 1000});  
+      this.snackBar.open("Некорректное выделение", "OK",{duration: 1000, panelClass: ['snack-err']});  
       return false
     }
 

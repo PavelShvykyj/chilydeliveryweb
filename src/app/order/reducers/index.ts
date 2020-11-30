@@ -48,26 +48,37 @@ export const EditOrderInitialState = {
   goods: EditOrderGoodsAdapter.getInitialState()
 }
 
+function OnOrderSelected(state: EditOrderState,action) {
+  const selectedOrder : IOrder = action.order;
+  let newState : EditOrderState = {...state};
+  newState.addres = selectedOrder.addres;
+  newState.phone = selectedOrder.phone;
+  newState.creation = selectedOrder.creation;
+  newState.filial = selectedOrder.filial;
+  newState.desk = selectedOrder.desk;
+  newState.comment = selectedOrder.comment;
+  newState.goods = EditOrderGoodsAdapter.getInitialState();
+  newState.goods = EditOrderGoodsAdapter.addMany(selectedOrder.goods,newState.goods);
+
+  return newState;
+
+}
+
 function UpsertOrderRecord(state: EditOrderState ,action) {
   let record : IOrderGoodsRecord = action.record;
   if ((state.goods.ids as string[]).indexOf(record.id)  == -1) {
     return {...state,goods: EditOrderGoodsAdapter.upsertOne(action.record,state.goods) }  
-  } else {
-
+  } 
+  else {
     const findedrecord   = state.goods.entities[record.id];
     if (findedrecord.quantity+record.quantity > 0) {
       record.quantity = findedrecord.quantity+record.quantity;
       return {...state,goods: EditOrderGoodsAdapter.upsertOne(record,state.goods) }  
-      
-    } else {
+    } 
+    else {
       return {...state,goods: EditOrderGoodsAdapter.removeOne(action.record,state.goods) }  
-
     }
-
-
   }
-
-  
 }
 
 function OnOrderCreatedErr(state,action) {
@@ -83,7 +94,8 @@ export const EditOrderReducer = createReducer(
   on(EditOrderActions.UpsertOrderRecord, (state,action)=> UpsertOrderRecord(state,action)),
   on(EditOrderActions.DeleteOrderRecord, (state,action)=> {return {...state,goods: EditOrderGoodsAdapter.removeOne(action.recordid,state.goods) } }),
   on(EditOrderActions.OrderCreatedErr, (state,action)=> OnOrderCreatedErr(state,action)),
-
+  on(EditOrderActions.SelectOrder,(state,action)=> OnOrderSelected(state,action)),
+ 
   
 );
 

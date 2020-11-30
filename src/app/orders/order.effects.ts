@@ -9,11 +9,13 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AppState } from '../reducers';
 import { Update } from '@ngrx/entity';
 
-import { concatMap, map } from 'rxjs/operators';
+import { catchError, concatMap, map, tap } from 'rxjs/operators';
 import { of, from } from 'rxjs';
 import { OrderActions } from './order.action.types';
-import { allOrdersLoaded } from './order.actions';
+import { allOrdersLoaded, OrderBlockErr, ReleaseOrder } from './order.actions';
 import { OrdersDatasourseService } from './orders.datasourse.service';
+import { SelectOrder } from '../order/editorder.actions';
+import { MatSnackBar } from '@angular/material';
 
 
 
@@ -22,17 +24,36 @@ import { OrdersDatasourseService } from './orders.datasourse.service';
 export class OrderEffects {
 
     loadOrders$ = createEffect(() => this.actions$.pipe(
-        ofType(OrderActions.loadAllOrders),
-        concatMap(action =>   this.OrdersServise.GetOrders()),
-        map(orders => allOrdersLoaded({orders}))
-    ) );
-        
+        ofType(OrderActions.loadAllOrders, OrderActions.loadAllOrdersOnAppInit),
+        concatMap(action => this.OrdersServise.GetOrders()),
 
+        map(orders => allOrdersLoaded({ orders }))
+    ));
 
-    constructor(private actions$: Actions, 
+    BlockOrder$ = createEffect(() => this.actions$.pipe(
+        ofType(OrderActions.BlockOrder),
+        concatMap(action => this.OrdersServise.BlockOrder(action.order.id).pipe(map(email => { return { ...action.order, externalid: email } }))),
+        map(order => SelectOrder({ order }),
+        catchError(err => { this.OnOrderBlockError(err); return of(OrderBlockErr())}
+        )
+    )));
+
+    ReleaseOrder$ = createEffect(() => this.actions$.pipe(
+        ofType(OrderActions.ReleaseOrder),
+        concatMap(action => this.OrdersServise.ReleaseOrder(action.id)),
+        catchError(err => { this.OnOrderBlockError(err); return of(OrderBlockErr())}),
+
+    ), { dispatch: false });
+
+    constructor(private actions$: Actions,
         private OrdersServise: OrdersDatasourseService,
+        private snackBar: MatSnackBar,
         private idb: LocalDBService,
-        private store : Store<AppState>) {
-}
+        private store: Store<AppState>) {
+    }
 
+    OnOrderBlockError(err) {
+        console.log('block order error',err);
+        this.snackBar.open("ЗАКАЗ НЕ ВЫБРАН", "ОШИБКА БЛОКИРОВКИ",{duration: 2000,panelClass: ['snack-err']});
+    }
 }

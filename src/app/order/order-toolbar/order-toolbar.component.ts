@@ -33,7 +33,7 @@ export class OrderToolbarComponent implements OnInit {
       
       return true
     } else {
-      this.snackBar.open("НЕКОРРЕКТНЫЙ ЗАКАЗ", "OK",{duration: 2000});
+      this.snackBar.open("НЕКОРРЕКТНЫЙ ЗАКАЗ", "OK",{duration: 2000, panelClass: ['snack-err']});
       return false;
     }
 
@@ -57,7 +57,7 @@ export class OrderToolbarComponent implements OnInit {
       ).subscribe(
         res=> {},
         err=>{
-          this.snackBar.open("Что то  пошло не так","OK")
+          this.snackBar.open("Что то  пошло не так","OK",{duration: 2000, panelClass: ['snack-err']})
           
          }
 

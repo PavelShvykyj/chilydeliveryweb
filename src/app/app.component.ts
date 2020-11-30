@@ -1,20 +1,21 @@
 import { IOrderChanges, IOrder } from './models/order';
 import { async } from '@angular/core/testing';
 import { selectIsLoggedIn, selectUserData } from './auth/auth.selectors';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { LoadOptions } from './option.reducer';
 import { Store, select } from '@ngrx/store';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AppState } from './reducers';
 import { AuthService } from './auth/auth.service';
-import { map, first, take } from 'rxjs/operators';
+import { map, first, take, tap, filter } from 'rxjs/operators';
 import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
 import { LocalDBService } from './idb/local-db.service';
 import { WebGoodsDatasourseService } from './web/web.goods.datasourse.service';
 import { updateWebgoodByExternalData, updateDirtyWebgoodByExternalData } from './web/web.actions';
 import { element } from 'protractor';
 import { OrdersDatasourseService } from './orders/orders.datasourse.service';
-import { OrdersUpdated, OrdersDeleted } from './orders/order.actions';
+import { OrdersUpdated, OrdersDeleted, loadAllOrders, loadAllOrdersOnAppInit } from './orders/order.actions';
+import { AreOrdesLoaded } from './orders/order.selectors';
 
 
 @Component({
@@ -26,6 +27,8 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'deliveryonec';
   isLoggedIn$: Observable<boolean>;
   pictureUrl$: Observable<string>;
+  private destroySubs: Subject<boolean> = new Subject<boolean>();
+  
   fbgoodschangessubs: Subscription;
   dateuptsubs: Subscription;
   auditgoodsubs: Subscription;
@@ -42,7 +45,7 @@ export class AppComponent implements OnInit, OnDestroy {
     public idb: LocalDBService) {
     this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.pictureUrl$ = this.store.pipe(select(selectUserData), map(userdata => userdata.avatar));
-    console.log(this.idb.DB);
+    
   }
 
   LogOut() {
@@ -114,6 +117,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.store.dispatch(LoadOptions());
+    /// напрямую включаем прослушку изменений они затянут начальное значение
+    /// поетому УДАЛИТЬ actions LoadAllOrders, LoadAllOrdersOnAppInit, и все что с ними связано ефект переменную состояния и акшн OrdersLoaded
     this.fdborders.OdrdersChangesStart();
     //this.UpdateChangesAsync();
     this.idb.UpdateErrorIdsCount();
@@ -128,6 +133,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   Unsubscribe() {
+    this.destroySubs.next(true);
+    this.destroySubs.unsubscribe();
+    
     if (this.fbgoodschangessubs) {
       this.fbgoodschangessubs.unsubscribe();
     }

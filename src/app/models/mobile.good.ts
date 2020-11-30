@@ -13,7 +13,8 @@ export interface IMobileGood  {
 export interface IMobilePriceElement {
     id:string,
     price:number,
-    bitmap:number
+    bitmap:number,
+    dirtyid:string[]
 }
 
 export interface IMobileData {
@@ -27,7 +28,8 @@ export interface IMobileData {
     price:number
     bitmap?:number
     mName?:string,
-    picture?:string
+    picture?:string,
+    dirtyid:string[]
 }
 
 

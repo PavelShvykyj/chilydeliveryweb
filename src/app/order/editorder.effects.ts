@@ -24,7 +24,7 @@ export class EditOrderEffects {
         ofType(CreateOrder),
         concatMap(action => this.OrdersServise.AddOrder(action.order).pipe(
             tap(neworder => {
-                this.snackBar.open("ЗАКАЗ СОЗДАН", "OK",{duration: 2000})
+                this.snackBar.open("ЗАКАЗ СОЗДАН", "OK",{duration: 2000,panelClass: ['snack-info'] } )
                 this.telegram.SendMessage(neworder.filial, this.GetTformatedMessage(neworder))
             }),
             map(() => OrderCreated()),

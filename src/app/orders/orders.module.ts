@@ -10,13 +10,15 @@ import { OrdersDatasourseService } from './orders.datasourse.service';
 import { OrderslistComponent } from './orderslist/orderslist.component';
 import { CtrlStatusDirective } from './ctrldown.directive';
 import { OrdesResolver } from './orderslist/orders.resolver';
+import { MobileQueueComponent } from './mobile-queue/mobile-queue.component';
+
 
 
 
 
 @NgModule({
-  declarations: [OrderslistComponent, CtrlStatusDirective],
-  exports:[OrderslistComponent,CtrlStatusDirective],
+  declarations: [OrderslistComponent, CtrlStatusDirective, MobileQueueComponent],
+  exports:[OrderslistComponent,CtrlStatusDirective,MobileQueueComponent],
   imports: [
     CommonModule,
     MaterialsModule,

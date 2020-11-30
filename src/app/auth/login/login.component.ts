@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit {
   }
 
   async OnLoginSucsess(resoult) {
-    this._snackBar.open("Login successful", "OK",{duration: 2000});  
+    this._snackBar.open("Login successful", "OK",{duration: 2000, panelClass: ['snack-info']});  
     this.ngZone.run(() => this.router.navigateByUrl("orders"));
     
     //  let NewUsersAllowed : boolean = await this.db.NewUsersAllowed();
