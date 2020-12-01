@@ -27,6 +27,7 @@ export interface OrderGoodssState extends EntityState<IOrderGoodsRecord> {
 }
 
 export interface EditOrderState {
+  id?:string,
   addres:string,
   phone:string,
   creation:Date,
@@ -39,6 +40,7 @@ export interface EditOrderState {
 export const EditOrderGoodsAdapter = createEntityAdapter<IOrderGoodsRecord>();
 
 export const EditOrderInitialState = {
+  id:"",
   addres:"",
   phone:"",
   creation: new Date(),
@@ -51,6 +53,7 @@ export const EditOrderInitialState = {
 function OnOrderSelected(state: EditOrderState,action) {
   const selectedOrder : IOrder = action.order;
   let newState : EditOrderState = {...state};
+  newState.id = selectedOrder.id;
   newState.addres = selectedOrder.addres;
   newState.phone = selectedOrder.phone;
   newState.creation = selectedOrder.creation;

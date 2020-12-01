@@ -17,6 +17,7 @@ import 'firebase/database';
 import { OrderActions } from './order.action.types';
 import { Itparams } from '../models/telegram';
 import { selectLoggedEmail } from '../auth/auth.selectors';
+import { DefoultIfEMpty } from '../mobile/mobile.service';
 
 
 
@@ -76,6 +77,19 @@ export class OrdersDatasourseService {
     );
   }
 
+  SaveOrder(neworder:IOrderWithDirty) {
+    return from(this.db.database.ref(`orders/${neworder.id}`).set({...neworder}))
+    .pipe(
+      
+      catchError(err => {
+      neworder.comment = JSON.stringify(err);
+      return throwError(neworder)}
+      ),
+    map(()=>neworder)
+    );
+
+
+  }
 
   BlockOrder(id:string) : Observable<any> {
     console.log('BlockOrder',id);
@@ -109,11 +123,12 @@ export class OrdersDatasourseService {
       return this.CreateOrder(data);
     } else {
       
-      const neworder = {
+      const neworder :IOrderWithDirty = {
+        id: DefoultIfEMpty(data.id,""),
         externalid:data.externalid,
         addres:data.addres,
         phone:data.phone,
-        creation:"",
+        creation: DefoultIfEMpty(data.creation,""),
         filial:data.filial,
         desk:data.desk,
         comment:data.comment,  
@@ -168,7 +183,13 @@ export class OrdersDatasourseService {
           
         concatMap(res => {
           neworder.externalid=res.snapshot.val();
-          return this.CreateOrder(neworder);
+          if (neworder.id == "") {
+            return this.CreateOrder(neworder);  
+          } 
+          else {
+            return this.SaveOrder(neworder);  
+          }
+          
 
       }))
       

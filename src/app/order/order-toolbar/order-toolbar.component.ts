@@ -51,7 +51,7 @@ export class OrderToolbarComponent implements OnInit {
       
       map(order =>{
          
-        this.store.dispatch(CreateOrder({order: {...order, goods: order.entities.map(el => {return {...el, dirtyid:el.good.filials }}),  id:"",externalid:"",isSelected:false}}))
+        this.store.dispatch(CreateOrder({order: {...order, goods: order.entities.map(el => {return {...el, dirtyid:el.good.filials }}), id:order.id ,externalid:"",isSelected:false}}))
       } ),
      
       ).subscribe(
