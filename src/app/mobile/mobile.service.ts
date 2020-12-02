@@ -90,7 +90,8 @@ export class MobileService {
     let WebGoods: IWEBGood[] = await this.idb.GetWebGoodsByIndex();
     
     let mData: IMobileData[] = WebGoods.filter(el => el.mShowOnMobile == true)
-      .map(el => { return {id:        el.id,
+      .map(el => { console.log('el.mDescription',el.mDescription);
+                    return {id:        el.id,
                            isFolder:  el.isFolder,
                            parentid:  DefoultIfEMpty(el.parentid,""),
                            mName:     DefoultIfEMpty(el.mName,el.name),
@@ -98,6 +99,7 @@ export class MobileService {
                            mType:     DefoultIfEMpty(el.mType,0),
                            mNumber:   DefoultIfEMpty(el.mNumber,0),
                            mSize:     DefoultIfEMpty(el.mSize,0),
+                           mDescription:DefoultIfEMpty(el.mDescription,""),
                            price:     DefoultIfEMpty(el.price,0),
                            picture:   DefoultIfEMpty(el.picture,""),
                            bitmap:    MDataBitMap(el),
@@ -119,6 +121,7 @@ export class MobileService {
         mName: mdel.mName,
         picture:mdel.picture,
         mCategory:mdel.mCategory,
+        mDescription:mdel.mDescription,
         mNumber:mdel.mNumber,
         isFolder:mdel.isFolder,
         parentid:mdel.parentid,
@@ -141,6 +144,7 @@ export class MobileService {
             mName: mdel.mName,
             picture:mdel.picture,
             mCategory:mdel.mCategory,
+            mDescription:mdel.mDescription,
             mNumber:mdel.mNumber,
             isFolder:mdel.isFolder,
             parentid: Folders.find(el => el.id==mdel.parentid)!=undefined ? mdel.parentid : ""  ,
@@ -153,6 +157,7 @@ export class MobileService {
             const  newEl : IMobileGood  = {...mGoodElement,
               picture : mGoodElement.picture == "" &&  mdel.picture != "" ? mdel.picture : mGoodElement.picture,
               mName :   mdel.mName != "" ? mdel.mName : mGoodElement.mName,
+              mDescription:mdel.mDescription != "" ? mdel.mDescription : mGoodElement.mDescription,
               parentid: mGoodElement.parentid == "" ? mdel.parentid : mGoodElement.parentid 
 
              }
@@ -210,6 +215,7 @@ export class MobileService {
       picture:webelement.picture,
       mCategory:webelement.mCategory,
       mNumber:webelement.mNumber,
+      mDescription:webelement.mDescription,
       isFolder:webelement.isFolder,
       parentid:webelement.parentid,
       id:webelement.id

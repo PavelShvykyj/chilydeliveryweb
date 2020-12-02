@@ -10,6 +10,7 @@ export interface IWEBGood extends IBaseGood {
     mNumber?:number,
     mSize?:number,
     mName?:string,
+    mDescription?:string,
     filials: string[]
 }
 

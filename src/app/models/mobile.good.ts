@@ -7,7 +7,8 @@ export interface IMobileGood  {
     mName: string,
     picture?:string,
     mCategory?:number,
-    mNumber?:number
+    mNumber?:number,
+    mDescription?:string
 }
 
 export interface IMobilePriceElement {
@@ -25,6 +26,7 @@ export interface IMobileData {
     mType:number,
     mNumber:number,
     mSize:number,
+    mDescription:string,
     price:number
     bitmap?:number
     mName?:string,
