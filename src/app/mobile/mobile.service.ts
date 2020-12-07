@@ -90,7 +90,7 @@ export class MobileService {
     let WebGoods: IWEBGood[] = await this.idb.GetWebGoodsByIndex();
     
     let mData: IMobileData[] = WebGoods.filter(el => el.mShowOnMobile == true)
-      .map(el => { console.log('el.mDescription',el.mDescription);
+      .map(el => { 
                     return {id:        el.id,
                            isFolder:  el.isFolder,
                            parentid:  DefoultIfEMpty(el.parentid,""),

@@ -42,6 +42,29 @@
             <mat-checkbox formControlName="mShowOnMobile"> Show in mobile</mat-checkbox>
           </mat-list-item>
 
+          <mat-list-item >
+            <mat-form-field >
+              <!--<input matInput (change) = "OnCategoryChange()" type="number" placeholder="П-1; С-2; К-3; Б-4; У-5" formControlName="mCategory">-->
+              <!-- <mat-hint> Отредактировать цену </mat-hint> -->
+              <mat-label>Категория</mat-label>
+              <mat-select formControlName="mCategory" (change)=OnCategoryChange()>
+                
+                <mat-option  [value]="0">  Без категории </mat-option>
+                <mat-option  [value]="1">  Пицца </mat-option>
+                <mat-option  [value]="2">  Суши </mat-option>
+                <mat-option  [value]="3">  Кухня </mat-option>
+                <mat-option  [value]="4">  Бар </mat-option>
+                <mat-option  [value]="5">  Услуги </mat-option>
+                <mat-option  [value]="6">  Соуса </mat-option>
+                <mat-option  [value]="7">  Добавки </mat-option>
+                
+              </mat-select>
+            
+            
+            </mat-form-field>
+          </mat-list-item>
+
+
           <mat-list-item>
             <mat-form-field >
               <input matInput type="string" placeholder="Короткое имя в категории" formControlName="mName" (change)="OnMobileNameChange()">
@@ -90,27 +113,6 @@
           </mat-list-item>
     
     
-          <mat-list-item *ngIf="!isFolder">
-            <mat-form-field >
-              <!--<input matInput (change) = "OnCategoryChange()" type="number" placeholder="П-1; С-2; К-3; Б-4; У-5" formControlName="mCategory">-->
-              <!-- <mat-hint> Отредактировать цену </mat-hint> -->
-              <mat-label>Категория</mat-label>
-              <mat-select formControlName="mCategory" (change)=OnCategoryChange()>
-                
-                <mat-option  [value]="0">  Без категории </mat-option>
-                <mat-option  [value]="1">  Пицца </mat-option>
-                <mat-option  [value]="2">  Суши </mat-option>
-                <mat-option  [value]="3">  Кухня </mat-option>
-                <mat-option  [value]="4">  Бар </mat-option>
-                <mat-option  [value]="5">  Услуги </mat-option>
-                <mat-option  [value]="6">  Соуса </mat-option>
-                <mat-option  [value]="7">  Добавки </mat-option>
-                
-              </mat-select>
-            
-            
-            </mat-form-field>
-          </mat-list-item>
     
           <mat-list-item *ngIf="!isFolder">
             <mat-form-field >
