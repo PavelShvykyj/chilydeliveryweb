@@ -17,6 +17,7 @@ import { environment } from 'src/environments/environment';
 import { Update } from '@ngrx/entity';
 import { LocalDBService } from '../idb/local-db.service';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { DefoultIfEMpty } from '../mobile/mobile.service';
 
 
 
@@ -317,17 +318,17 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
       return from(this.db.collection('web.goods').add({
         name: webgood.name,
         price:webgood.price,
-        mCategory: webgood.mCategory,
-        mType: webgood.mType,
-        mShowOnMobile: webgood.mShowOnMobile,
-        mNumber: webgood.mNumber,
-        mSize: webgood.mSize,
-        mDescription:webgood.mDescription,
-        mName: webgood.mName,
+        picture: DefoultIfEMpty(webgood.picture,''),
+        mCategory: DefoultIfEMpty(webgood.mCategory,0),
+        mType: DefoultIfEMpty(webgood.mType,0),
+        mSize: DefoultIfEMpty(webgood.mSize,0),
+        mDescription: DefoultIfEMpty(webgood.mDescription,""),
+        mName: DefoultIfEMpty(webgood.mName,''),
+        mShowOnMobile: DefoultIfEMpty(webgood.mShowOnMobile,false),
+        mNumber: DefoultIfEMpty(webgood.mNumber,0),
         parentid: webgood.parentid,
         isFolder: webgood.isFolder,
         filials: webgood.filials,
-        picture:"",
         isDeleted: false,
         lastmodified: this.timestamp
       })).pipe(
@@ -352,14 +353,14 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
           parentid: webgood.parentid,
           isFolder: webgood.isFolder,
           filials: webgood.filials,
-          picture: webgood.picture,
-          mCategory: webgood.mCategory,
-          mType: webgood.mType,
-          mSize: webgood.mSize,
-          mDescription:webgood.mDescription,
-          mName: webgood.mName,
-          mShowOnMobile: webgood.mShowOnMobile,
-          mNumber: webgood.mNumber,
+          picture: DefoultIfEMpty(webgood.picture,''),
+          mCategory: DefoultIfEMpty(webgood.mCategory,0),
+          mType: DefoultIfEMpty(webgood.mType,0),
+          mSize: DefoultIfEMpty(webgood.mSize,0),
+          mDescription: DefoultIfEMpty(webgood.mDescription,""),
+          mName: DefoultIfEMpty(webgood.mName,''),
+          mShowOnMobile: DefoultIfEMpty(webgood.mShowOnMobile,false),
+          mNumber: DefoultIfEMpty(webgood.mNumber,0),
           isDeleted: false,
           lastmodified: this.timestamp
         }

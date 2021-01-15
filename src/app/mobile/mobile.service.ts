@@ -116,6 +116,7 @@ export class MobileService {
  
     let Folders = mData.filter(el=> el.isFolder);
     Folders.forEach(mdel =>{
+      
       mGoods.push(
         {
         mName: mdel.mName,
@@ -126,6 +127,7 @@ export class MobileService {
         isFolder:mdel.isFolder,
         parentid:mdel.parentid,
         id: mdel.isFolder ? mdel.id : ""
+    
     })});
 
     let elements = mData.filter(el=> !el.isFolder);
@@ -137,6 +139,7 @@ export class MobileService {
         
         mGoodElement = mGoods.find(mgel=> {return (mgel.mCategory == mdel.mCategory && mgel.mNumber == mdel.mNumber)})
         
+
         if (mGoodElement == undefined) {
           ///// ЕЩЕ Такого не было просто добавляем
           mGoods.push(
@@ -152,25 +155,21 @@ export class MobileService {
           })
         } 
         else {
-            //// перезаполним картинку и имя по аналогу если не пустые
+          //// перезаполним картинку и имя по аналогу если не пустые
             mGoodIndex = mGoods.indexOf(mGoodElement);
             const  newEl : IMobileGood  = {...mGoodElement,
               picture : mGoodElement.picture == "" &&  mdel.picture != "" ? mdel.picture : mGoodElement.picture,
               mName :   mdel.mName != "" ? mdel.mName : mGoodElement.mName,
               mDescription:mdel.mDescription != "" ? mdel.mDescription : mGoodElement.mDescription,
-              parentid: mGoodElement.parentid == "" ? mdel.parentid : mGoodElement.parentid 
+              parentid: mGoodElement.parentid == "" ? Folders.find(el => el.id==mdel.parentid)!=undefined ? mdel.parentid : "" : 
+                mGoodElement.parentid 
 
              }
             mGoods[mGoodIndex] = newEl;
         }
-    
-       
-      
-
-        
       });
 
-    console.log('piza ',mGoods.filter(el => {return el.mCategory==1}));  
+    
 
     let tasks : Promise<any>[] = [];
     
