@@ -112,6 +112,7 @@ export const {selectAll, selectEntities} = WebAdapter.getSelectors();
 export const selectDirtyAll = DirtyWebAdapter.getSelectors().selectAll;
 export const selectDirtyAllEntities = DirtyWebAdapter.getSelectors().selectEntities;;
 
+
 export function reducer(state: WebState | undefined, action: Action) {
   return WebReducer(state, action);
 }

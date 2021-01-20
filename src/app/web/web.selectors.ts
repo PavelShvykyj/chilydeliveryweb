@@ -35,6 +35,12 @@ export const selectAllWebEntities = createSelector(
     fromWeb.selectEntities // встроеный в адаптер селектор мы его експортировали в файле reducers/index 
 )
 
+export const selectWebGoodByID = createSelector(
+    selectAllWebEntities,
+    (WebEntities: Dictionary<IWEBGood>,id:string) => {
+        console.log('selectWebGoodByID', id, WebEntities[id])
+        return WebEntities[id]})
+
 export const selectAllDirtyWebEntities = createSelector(
     DirtyGoodsState,
     fromWeb.selectDirtyAllEntities // встроеный в адаптер селектор мы его експортировали в файле reducers/index 

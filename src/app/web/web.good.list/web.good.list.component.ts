@@ -1,6 +1,6 @@
 import { UpdateMobileData } from './../../mobile/mobile.actions';
 import { IONECGood, IONECGoodWithOwner } from './../../models/onec.good';
-import { selectGoodsByParent, selectGoodBySelection, selectGoodByName, selectAllBySelection } from './../web.selectors';
+import { selectGoodsByParent, selectGoodBySelection, selectGoodByName, selectAllBySelection, selectWebGoodByID } from './../web.selectors';
 import { IWEBGood, IWEBGoodWithFilials } from './../../models/web.good';
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { WebGoodsDatasourseService } from '../web.goods.datasourse.service';
@@ -75,7 +75,7 @@ export class WebGoodListComponent implements OnInit {
   elements$: Observable<IWEBGoodWithFilials[]>;
   allelements$: Observable<IWEBGoodWithFilials[]>;
   selectedelements$: Observable<IWEBGoodWithFilials[]>;
-  blocklenth: number = 15;
+  blocklenth: number = 10;
   startindex: number = 0;
   blocks: number[] = [0];
 
@@ -270,15 +270,22 @@ export class WebGoodListComponent implements OnInit {
   }
 
   OnGoodEdit(item: IWEBGoodWithFilials) {
-    if (this.NameFilterValue.length != 0) {
-      return;
-    }
+    // if (this.NameFilterValue.length != 0) {
+    //   return;
+    // }
+    console.log('on EditItem');
     this.EditItem(item);
 
   }
 
   EditItem(item: IWEBGoodWithFilials) {
-    const parentel: IBaseGood | undefined = this.GetCurrentParent();
+    //const parentel: IBaseGood | undefined = this.GetCurrentParent();
+    // получить назначенный по ид
+    console.log('EditItem');
+    this.store.pipe(select(selectWebGoodByID, item.parentid),
+    first()).subscribe(el =>{
+      console.log('parentel', el);
+    const parentel: IBaseGood | undefined = el;
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.minHeight = "500px";
@@ -290,10 +297,12 @@ export class WebGoodListComponent implements OnInit {
       if (res.answer != 'save') {
         return;
       }
-      console.log(res);
+      
 
       this.store.dispatch(updateWebgood({ good: res.data }));
     });
+  })
+
 
   }
 
