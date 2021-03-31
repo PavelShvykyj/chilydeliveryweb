@@ -1,0 +1,23 @@
+<div class="container">
+
+
+    <mat-form-field color='accent'>
+        <input #inputfilter  matInput (keyup)="applyFilter($event.target.value)"  type="text" placeholder="поиск по имени" [(ngModel)]="filter">
+ 
+   </mat-form-field>
+
+
+    <mat-action-list >
+        <button mat-list-item (click)="select('')"> 
+            
+            <span> отмена </span>
+        </button>
+
+        <button *ngFor="let item of fpicts" mat-list-item (click)="select(item.fname)"> 
+            <img class="picture-small" [src]="item.src">
+            <span> {{item.name}}</span>
+        </button>
+    </mat-action-list>
+
+
+</div>

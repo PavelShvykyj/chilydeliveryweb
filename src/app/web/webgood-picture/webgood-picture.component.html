@@ -7,7 +7,7 @@
 
   <div class="c-elemnt-2">
 
-    <input #fileInput hidden type="file" (change)="UploadFile($event)" id="picture">
+    <input #fileInput accept=".jpeg"  hidden type="file" (change)="UploadFile($event)" id="picture">
     <button type="button" mat-raised-button (click)="fileInput.click()">Choose File</button>
 
 
@@ -22,6 +22,8 @@
       <button mat-raised-button [matMenuTriggerFor]="menu">
         select file
       </button>
+
+
       <mat-menu #menu="matMenu">
         <button *ngFor="let item of files" mat-menu-item (click)=SelectFile(item)>
             
@@ -37,5 +39,6 @@
 
   <button type="button" mat-raised-button (click)="Clear()"><mat-icon>delete</mat-icon></button>
 
-
+  <button type="button" mat-raised-button (click)="Choise()"> Choice</button>
+  
 </div>

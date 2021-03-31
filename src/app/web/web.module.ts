@@ -16,11 +16,19 @@ import { SelectparentComponent } from './selectparent/selectparent.component';
 import { WebFolderListComponent } from './web.folder.list/web.folder.list.component';
 import {AngularFireStorageModule} from '@angular/fire/storage';
 import { WebgoodPictureComponent } from './webgood-picture/webgood-picture.component';
+import { SelectpictureComponent } from './selectpicture/selectpicture.component';
+import { PictServiseService } from './pict-servise.service';
 
 
 
 @NgModule({
-  declarations: [WebGoodListComponent,WebFolderListComponent, WebDirtyGoodListComponent, WebGoodEditComponent, SelectparentComponent, WebgoodPictureComponent],
+  declarations: [WebGoodListComponent,
+                WebFolderListComponent, 
+                WebDirtyGoodListComponent, 
+                WebGoodEditComponent, 
+                SelectparentComponent, 
+                WebgoodPictureComponent, 
+                SelectpictureComponent],
   imports: [
     CommonModule,
     BaseelementsModule,
@@ -31,8 +39,8 @@ import { WebgoodPictureComponent } from './webgood-picture/webgood-picture.compo
     EffectsModule.forFeature([WebEffects]),
     StoreModule.forFeature(fromWeb.webFeatureKey, reducer , { metaReducers: fromWeb.metaReducers })
   ],
-  entryComponents: [WebGoodEditComponent,SelectparentComponent,WebgoodPictureComponent],
-  providers: [WebGoodsDatasourseService],
+  entryComponents: [WebGoodEditComponent,SelectparentComponent,WebgoodPictureComponent,SelectpictureComponent],
+  providers: [WebGoodsDatasourseService, PictServiseService],
   exports: [WebGoodListComponent,WebDirtyGoodListComponent]
 })
 export class WebModule { }
