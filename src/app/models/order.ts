@@ -44,6 +44,7 @@ export interface IOrderChanges {
 } 
 
 export interface IOrderWithDirty extends IBaseElement, IOrderHeader, IOrderOnecData {
+    testMode: boolean,
     goods: IOrderGoodsRecordWithDirty[]
 }
 

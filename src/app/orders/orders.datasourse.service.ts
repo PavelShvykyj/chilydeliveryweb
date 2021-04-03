@@ -131,6 +131,7 @@ export class OrdersDatasourseService {
         creation: DefoultIfEMpty(data.creation,""),
         filial:data.filial,
         desk:data.desk,
+        testMode: data.testMode,
         comment:data.comment,  
         goods:data.goods.map(good=> {return {id:good.id,dirtyid:good.dirtyid , comment:good.comment,quantity: good.quantity }})
         };

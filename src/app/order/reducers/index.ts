@@ -34,6 +34,7 @@ export interface EditOrderState {
   filial:string,
   desk:string,
   comment:string,
+  testMode:boolean,
   goods: OrderGoodssState
 }
 
@@ -44,6 +45,7 @@ export const EditOrderInitialState = {
   addres:"",
   phone:"",
   creation: new Date(),
+  testMode:false,
   filial:"",
   desk:"",
   comment:"",
@@ -62,7 +64,7 @@ function OnOrderSelected(state: EditOrderState,action) {
   newState.comment = selectedOrder.comment;
   newState.goods = EditOrderGoodsAdapter.getInitialState();
   newState.goods = EditOrderGoodsAdapter.addMany(selectedOrder.goods,newState.goods);
-
+  newState.testMode = true
   return newState;
 
 }
