@@ -19,6 +19,14 @@ $config: mat-typography-config($title: mat-typography-level(12px, 12px, 400),
   color: red;
 }
 
+.mobile-list-item {
+  color: map-get($mat-blue, 800);
+}
+
+.mobile-list-item-nopicture {
+  color:map-get($mat-indigo, 200);
+}
+
 .price-in-list {
   color: map-get($mat-light-blue, 700);
   margin-right: 2px;

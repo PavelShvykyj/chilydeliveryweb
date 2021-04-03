@@ -1,13 +1,13 @@
 import { UpdateMobileData } from './../../mobile/mobile.actions';
-import { IONECGood, IONECGoodWithOwner } from './../../models/onec.good';
+import {  IONECGoodWithOwner } from './../../models/onec.good';
 import { selectGoodsByParent, selectGoodBySelection, selectGoodByName, selectAllBySelection, selectWebGoodByID } from './../web.selectors';
 import { IWEBGood, IWEBGoodWithFilials } from './../../models/web.good';
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { WebGoodsDatasourseService } from '../web.goods.datasourse.service';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
 
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ITolbarCommandsList } from 'src/app/models/toolbar.commandslist';
 import { IBaseGood } from 'src/app/models/base.good';
 import { MatCheckboxChange } from '@angular/material/checkbox';
@@ -19,6 +19,7 @@ import { MatDialog, MatDialogConfig, MatDialogRef, MatSnackBar } from '@angular/
 import { WebGoodEditComponent } from '../web-good-edit/web-good-edit.component';
 import { MobileService } from 'src/app/mobile/mobile.service';
 import { selectMObileDataUpdated } from 'src/app/mobile/mobile.selectors';
+
 
 
 export const commandshablon : ITolbarCommandsList[] = [
@@ -71,6 +72,9 @@ export class WebGoodListComponent implements OnInit {
 
   @Input('onlyfolders')
   onlyfolders: boolean = false
+
+  @Output('ShowFilials')
+  ShowFilials = new EventEmitter();
 
   elements$: Observable<IWEBGoodWithFilials[]>;
   allelements$: Observable<IWEBGoodWithFilials[]>;
@@ -394,6 +398,10 @@ export class WebGoodListComponent implements OnInit {
     // this.ms.UpdateMobileData()
     //  .then(()=> this.snackBar.open("Данные обновлены", "OK",{duration: 1000}))
     //  .catch(err=>{console.log('err',err); this.snackBar.open("Ошибки при обновлении мобильных данных", "OK",{duration: 1000})})
+  }
+
+  ChangeShowFilial(event) {
+    this.ShowFilials.emit(event.checked);
   }
 
 }

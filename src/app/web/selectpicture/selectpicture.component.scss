@@ -3,6 +3,34 @@
     height: 25px !important;    
 }
 
-mat-action-list {
-    overflow: auto;
-} 
+mat-card-header {
+    padding: 0px !important;
+    margin: 0px !important;
+}
+
+mat-card {
+    padding: 0px !important;
+    margin: 0px !important;
+}
+
+.card {
+    min-height: 150px !important;
+    height: 150px !important;
+}
+
+.img-card {
+    min-height: 130px !important;
+    height: 130px !important;
+
+}
+
+.scr{
+    height: 60vh;
+    overflow-y: scroll;
+    
+}
+
+.grid-container {
+    height: 60vh;
+    
+}

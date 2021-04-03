@@ -102,6 +102,7 @@ export class WebgoodPictureComponent implements OnInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.minHeight = "500px";
+    dialogConfig.maxHeight = "500px";
     dialogConfig.minWidth = "30vw"
 
 

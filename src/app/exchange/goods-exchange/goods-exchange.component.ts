@@ -7,9 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GoodsExchangeComponent implements OnInit {
 
+  showfilials : boolean = false
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  OnShowFilialsChange(status) {
+    this.showfilials = status;
   }
 
 }

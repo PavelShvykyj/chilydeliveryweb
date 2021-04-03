@@ -25,6 +25,8 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatSelectModule} from '@angular/material/select';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 @NgModule({
   declarations: [],
@@ -56,7 +58,9 @@ import {MatSelectModule} from '@angular/material/select';
     MatProgressBarModule,
     MatTabsModule,
     MatMenuModule,
-    MatSelectModule
+    MatSelectModule,
+    MatSlideToggleModule,
+    ScrollingModule
   ]
 })
 export class MaterialsModule { }

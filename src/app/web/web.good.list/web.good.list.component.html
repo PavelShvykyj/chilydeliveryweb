@@ -22,11 +22,13 @@
       </button>
 
     </mat-form-field>
+    <mat-slide-toggle checked=false (change)="ChangeShowFilial($event)">Филиалы</mat-slide-toggle>
+
   </mat-card-header>
   <mat-card-content>
     <mat-list>
       <ng-container *ngFor="let item of (elements$ | async)">
-      <mat-list-item >
+      <mat-list-item [ngClass]="{'mobile-list-item-nopicture': !item.picture && item.mShowOnMobile, 'mobile-list-item': item.mShowOnMobile}">
         <!-- <mat-icon *ngIf="item.isFolder"  mat-list-icon (click)="OnGoodClicked(item)">folder</mat-icon> -->
         <mat-checkbox color='warn' [checked]="item.isSelected"   *ngIf="!item.isFolder" (change)="OnGoodCheked($event,item)">
         </mat-checkbox>

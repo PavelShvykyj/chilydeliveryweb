@@ -29,6 +29,7 @@ export class SelectpictureComponent implements OnInit {
   applyFilter(filter: string) {
     this.fpicts = [];
     if (filter=="") {
+      this.fpicts = this.picts
       return;
     }
     const filterexp =  ".*"+this.filter.trim().toUpperCase().replace(/\s+/g, ".*")+".*";

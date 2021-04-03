@@ -1,10 +1,11 @@
 
 
-<mat-grid-list cols="4" gutterSize="0px" rowHeight="fit" class="grid-container">
-    <mat-grid-tile><webdirtygoodlist filialname='vopak'  class="fullbox"></webdirtygoodlist></mat-grid-tile>
-    <mat-grid-tile><webdirtygoodlist filialname='luxor'  class="fullbox"></webdirtygoodlist></mat-grid-tile>
-    <mat-grid-tile><webdirtygoodlist filialname='dastor' class="fullbox"></webdirtygoodlist></mat-grid-tile>
-    <mat-grid-tile><webgoodlist class="fullbox"></webgoodlist></mat-grid-tile>
+<mat-grid-list [cols]="showfilials ?  4 : 1" gutterSize="0px" rowHeight="fit" class="grid-container">
+    <mat-grid-tile *ngIf="showfilials"><webdirtygoodlist filialname='vopak'  class="fullbox"></webdirtygoodlist></mat-grid-tile>
+    <mat-grid-tile *ngIf="showfilials"><webdirtygoodlist filialname='luxor'  class="fullbox"></webdirtygoodlist></mat-grid-tile>
+    <mat-grid-tile *ngIf="showfilials"><webdirtygoodlist filialname='dastor' class="fullbox"></webdirtygoodlist></mat-grid-tile>
+    <mat-grid-tile><webgoodlist [ngClass]="{'fullbox': showfilials, 'halfbox': !showfilials}"  (ShowFilials) = "OnShowFilialsChange($event)" ></webgoodlist></mat-grid-tile>
+
 </mat-grid-list>
 
 

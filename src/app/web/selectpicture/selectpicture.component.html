@@ -1,23 +1,25 @@
 <div class="container">
+  <mat-form-field color='accent'>
+    <input #inputfilter matInput (keyup)="applyFilter($event.target.value)" type="text" placeholder="поиск по имени"
+      [(ngModel)]="filter">
+  </mat-form-field>
 
+  <mat-action-list>
+    <button mat-list-item (click)="select('')">
+      <span> отмена </span>
+    </button>
+  </mat-action-list>
 
-    <mat-form-field color='accent'>
-        <input #inputfilter  matInput (keyup)="applyFilter($event.target.value)"  type="text" placeholder="поиск по имени" [(ngModel)]="filter">
- 
-   </mat-form-field>
-
-
-    <mat-action-list >
-        <button mat-list-item (click)="select('')"> 
-            
-            <span> отмена </span>
-        </button>
-
-        <button *ngFor="let item of fpicts" mat-list-item (click)="select(item.fname)"> 
-            <img class="picture-small" [src]="item.src">
-            <span> {{item.name}}</span>
-        </button>
-    </mat-action-list>
-
-
+  <mat-grid-list cols="2" rowHeight="200px" class="grid-container">
+    
+    <mat-grid-tile *ngFor="let item of fpicts" >
+        <mat-card (click)="select(item.fname)">
+            <mat-card-header>
+              <mat-card-subtitle><small>{{item.name}}</small></mat-card-subtitle>
+            </mat-card-header>
+            <img class="img-card" mat-card-image [src]="item.src">
+        </mat-card>
+    </mat-grid-tile>
+    
+  </mat-grid-list>
 </div>
