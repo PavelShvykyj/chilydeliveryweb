@@ -1,8 +1,8 @@
-import { first } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 import { UpsertOrderRecord, DeleteOrderRecord, UpdateOrderfilial } from './../editorder.actions';
-import { IOrderGoodsRecord, IOrderGoodsRecordWithEntity } from './../../models/order';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatSort, MatDialogConfig, MatDialogRef, MatDialog } from '@angular/material';
+import { IOrderGoodsRecord, IOrderGoodsWievRecordWithEntity,  IDictionary } from './../../models/order';
+import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { MatTableDataSource, MatPaginator, MatSort, MatDialogConfig, MatDialogRef, MatDialog, MatInput } from '@angular/material';
 import { IOrder } from 'src/app/models/order';
 import { Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
@@ -16,10 +16,16 @@ import { DialogstringinputComponent } from 'src/app/baseelements/dialogstringinp
   templateUrl: './order-goods-list.component.html',
   styleUrls: ['./order-goods-list.component.scss']
 })
-export class OrderGoodsListComponent implements OnInit {
+export class OrderGoodsListComponent implements OnInit  {
 
   displayedColumns : string[] = ['good' ,'quantity','price' ,'comment','buttonsgroup'];
-  dataSource : MatTableDataSource<IOrderGoodsRecordWithEntity>  = new MatTableDataSource([]);
+
+  EditCellsChain : IDictionary<string> = {
+    'quantity':'comment',
+    'comment':''
+  };
+
+  dataSource : MatTableDataSource<IOrderGoodsWievRecordWithEntity>  = new MatTableDataSource([]);
   ordersusbs:Subscription;
   filial : string = '';
   filialsubs : Subscription;
@@ -27,17 +33,28 @@ export class OrderGoodsListComponent implements OnInit {
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
-  
+
+  @ViewChild("inputCell",{static:false}) inputCell: TemplateRef<any>;
+  @ViewChild('outputCell',{static:false}) outputCell: TemplateRef<any>;
+
+  @ViewChild('editmatinput',{static:false}) editmatinput: MatInput;
+
   constructor(private store: Store<AppState>,
               public dialog: MatDialog ) { }
 
   ngOnInit() {
-    this.ordersusbs = this.store.pipe(select(selectAllOrderGoodsWithEntity))
+    this.ordersusbs = this.store.pipe(select(selectAllOrderGoodsWithEntity),
+    map(orderrecords=> {
+      let wievorderrecords : Array<IOrderGoodsWievRecordWithEntity> = orderrecords.map(el => {
+        return {...el, EditCellName : "", NextCellEdit: ""}
+      })
+      return wievorderrecords;
+    })
+    )
     .subscribe(orderrecords=>{
-      
+
       this.dataSource.data=orderrecords;
       this.total = this.GetOrderTotal();
-
     });
 
     this.filialsubs = this.store.pipe(select(selectOrderFilial))
@@ -45,12 +62,12 @@ export class OrderGoodsListComponent implements OnInit {
       this.filial = filial;
     });
   }
-  
+
   GetOrderTotal():number {
     let total = 0;
     this.dataSource.data.forEach(record => total=total+record.quantity*record.good.price);
     return total;
-  } 
+  }
 
   get goodsvalid() {
     return true
@@ -82,7 +99,7 @@ export class OrderGoodsListComponent implements OnInit {
     dialogConfig.autoFocus=true;
     dialogConfig.minHeight="25wh"
     dialogConfig.minWidth="25wv"
-    
+
     dialogConfig.data = {title: `Комментарий для : ${record.good.name}` , answer:record.comment}
 
     const DialogRef : MatDialogRef<DialogstringinputComponent>  = this.dialog.open(
@@ -90,7 +107,7 @@ export class OrderGoodsListComponent implements OnInit {
       dialogConfig);
       DialogRef.afterClosed().pipe(first()).subscribe(res =>{
       record.comment = res.answer;
-      record.quantity = 0; 
+      record.quantity = 0;
       this.store.dispatch(UpsertOrderRecord({record}));
     });
 
@@ -105,4 +122,42 @@ export class OrderGoodsListComponent implements OnInit {
     this.store.dispatch(DeleteOrderRecord({recordid:record.id}));
   }
 
-}
+
+  OnCellClick(record:IOrderGoodsWievRecordWithEntity,cellName:string) {
+    record.EditCellName = cellName;
+    record.NextCellEdit = cellName === "" ? "" : this.EditCellsChain[cellName];
+    setTimeout(()=>{
+      if (this.editmatinput != undefined) {
+        if (!this.editmatinput.focused) {
+
+          this.editmatinput.focus();
+        }
+      }
+    });
+
+
+  }
+
+  OnEditFocus(event) {
+    console.log("event",event);
+    setTimeout(()=>event.target.select(),20);
+  }
+
+  OnEditLeave(record:IOrderGoodsWievRecordWithEntity) {
+
+
+    this.OnCellClick(record,record.NextCellEdit);
+
+
+  }
+
+
+
+
+  }
+
+
+
+
+
+

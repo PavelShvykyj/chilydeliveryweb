@@ -11,6 +11,14 @@ export interface IOrderGoodsRecordWithEntity extends IOrderGoodsRecord {
     good:IWEBGood
 }
 
+export interface IOrderGoodsWievRecordWithEntity extends IOrderGoodsRecordWithEntity,IWievRecord  {
+}
+
+export interface IWievRecord {
+  EditCellName:string,
+  NextCellEdit : string
+}
+
 export interface IOrderGoodsRecordWithDirty {
     id:string,
     dirtyid:string[],
@@ -41,7 +49,7 @@ export interface IOrderOnecData {
 export interface IOrderChanges {
     type:string,
     order:IOrder
-} 
+}
 
 export interface IOrderWithDirty extends IBaseElement, IOrderHeader, IOrderOnecData {
     testMode: boolean,
@@ -54,4 +62,8 @@ export interface IOrder extends IBaseElement, IOrderHeader, IOrderOnecData {
 
 export interface IOrderWithGoods extends IBaseElement, IOrderHeader, IOrderOnecData {
     goods: IOrderGoodsRecordWithEntity[]
+}
+
+export interface IDictionary<TValue> {
+  [id: string]: TValue;
 }

@@ -27,13 +27,16 @@ mat-form-field {
     align-content: center !important;
     align-self: center !important;
     max-height: 30px !important;
-    height: 30px !important; 
+    height: 30px !important;
     min-height: 30px !important;
     border-right: 1px solid;
     border-right-color:  rgba(0, 0, 0, 0.12);
-    text-align: center !important;  
+    text-align: center !important;
 }
 
+.tab-icon {
+  margin-right: 8px;
+}
 // .mat-column-buttonsgroup {
 //     flex: 0 0 24% !important;
 // }
@@ -72,14 +75,14 @@ mat-form-field {
 
 .table-row {
     max-height: 30px !important;
-    height: 30px !important;   
+    height: 30px !important;
     text-align: center !important;
     min-height: 30px !important;
 }
 
 .radio-lable {
     font-weight: 900 !important;
-    
+
 }
 
 .radio-group {
