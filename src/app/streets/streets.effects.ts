@@ -39,7 +39,7 @@ export class StreetEffects {
         return this.WebServise.UpsertByName(action.streetName);
        }),
        tap(streets=> {
-          this.snackBar.open("Сохранен",'',{duration:2000})
+          this.snackBar.open("Сохранен",'',{duration:2000 })
       }),
        map(streets =>savedStreet({streets:streets})),
 

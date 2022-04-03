@@ -35,6 +35,7 @@ export interface  IOrderHeader {
     addres:string,
     phone:string,
     comment?:string,
+    paytype?:string
 }
 
 
@@ -53,15 +54,28 @@ export interface IOrderChanges {
 
 export interface IOrderWithDirty extends IBaseElement, IOrderHeader, IOrderOnecData {
     testMode: boolean,
-    goods: IOrderGoodsRecordWithDirty[]
+    goods: IOrderGoodsRecordWithDirty[],
+    cutlery?:string
 }
 
 export interface IOrder extends IBaseElement, IOrderHeader, IOrderOnecData {
-    goods: IOrderGoodsRecord[]
+  cutlery?:string,
+  goods: IOrderGoodsRecord[]
 }
 
 export interface IOrderWithGoods extends IBaseElement, IOrderHeader, IOrderOnecData {
     goods: IOrderGoodsRecordWithEntity[]
+}
+
+export interface IOrderCutlery {
+  id:string,
+  name : string,
+  quantity:number
+}
+
+export interface IOrderWievCutlery extends IOrderCutlery,IWievRecord  {
+
+
 }
 
 export interface IDictionary<TValue> {

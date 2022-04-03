@@ -6,6 +6,8 @@ import { Update } from '@ngrx/entity';
 
 export const UpdateOrderHeader    = createAction("[EDIT ORDER COMPONENT] Update order in memoty",props<{header:IOrderHeader}>());
 export const UpdateOrderfilial    = createAction("[EDIT ORDER COMPONENT] Update order filial in memoty",props<{filial:string}>());
+export const UpdateOrderpaytype   = createAction("[EDIT ORDER COMPONENT] Update order paytype in memoty",props<{paytype:string}>());
+export const UpdateOrdercutlery   = createAction("[EDIT ORDER COMPONENT] Update order cutlery in memoty",props<{cutlery:string}>());
 export const UpsertOrderRecord    = createAction("[EDIT ORDER COMPONENT] Update order goods in memoty",props<{record:IOrderGoodsRecord}>());
 export const DeleteOrderRecord    = createAction("[EDIT ORDER COMPONENT] Delete order goods record in memoty",props<{recordid: string}>());
 export const CreateOrder    = createAction("[EDIT ORDER COMPONENT] Create new orders",props<{order: IOrderWithDirty}>());

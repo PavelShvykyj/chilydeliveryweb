@@ -25,7 +25,7 @@
       <small class="small">РАССЧЕТ:</small>
       <span class="spacer"></span>
 
-      <mat-radio-group class="radio-group" color='warn' >
+      <mat-radio-group class="radio-group" color='warn' [(ngModel)]="paytype" (change)="OnPaytypeChange()">
       <!-- <mat-radio-button value="empty">
           <span class="radio-lable">Не выбран</span>
       </mat-radio-button> -->
@@ -61,7 +61,7 @@
 </ng-template>
 
 <mat-tab-group backgroundColor="primary">
-  <mat-tab>
+  <mat-tab #GoodsTab>
     <ng-template mat-tab-label>
       <mat-icon class="tab-icon">fastfood</mat-icon>
       Goods
@@ -142,7 +142,43 @@
       <mat-icon class="tab-icon">local_dining</mat-icon>
       Cutlery
     </ng-template>
-    cutlery
+
+
+    <mat-table [dataSource]="cutleryDataSourse" >
+      <ng-container matColumnDef="name">
+          <mat-header-cell class="table-cell table-left-cell table-header-cell" *matHeaderCellDef > Прибор </mat-header-cell>
+          <mat-cell class="table-cell table-left-cell" *matCellDef="let record"> <small
+                  class="GoodNameInTable">{{record.name}} </small></mat-cell>
+
+      </ng-container>
+
+      <ng-container matColumnDef="quantity">
+          <mat-header-cell class="table-cell table-header-cell" *matHeaderCellDef > Количество </mat-header-cell>
+          <mat-cell  (click)="OnCutleryCellClick(record,'quantity')"  class="table-cell" *matCellDef="let record">
+            <!-- <ng-container *ngTemplateOutlet= inputCell;context:{edit:record}></ng-container> -->
+            <!-- <ng-container *ngTemplateOutlet= outputCell;context:{ShowData:record.quantity}></ng-container> -->
+            <ng-container
+            [ngTemplateOutlet] = "record.EditCellName === 'quantity' ? inputCell : outputCell"
+            [ngTemplateOutletContext]="record.EditCellName === 'quantity' ? {edit:record } : {show:record.quantity}">
+            </ng-container>
+
+
+          </mat-cell>
+
+      </ng-container>
+
+
+
+
+
+      <mat-header-row class="table-row" *matHeaderRowDef="displayedCutleryColumns ; sticky: true"></mat-header-row>
+
+      <mat-row *matRowDef="let row; columns: displayedCutleryColumns" class="table-row"></mat-row>
+
+    </mat-table>
+
+
+
   </mat-tab>
 
 </mat-tab-group>

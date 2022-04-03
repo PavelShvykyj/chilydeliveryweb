@@ -38,7 +38,7 @@ export class OrdersDatasourseService {
   async GetTelegramParams() {
     const snapparams = await this.db.database.ref('telegram').once('value');
     let tparams : Itparams = {};
-    
+
     snapparams.forEach(snap => { tparams[snap.key]=snap.val()}  );
     return tparams
 
@@ -54,7 +54,7 @@ export class OrdersDatasourseService {
           //console.log('Order',{ ...childSnapshot.val(), id: childSnapshot.key });
           orders.push({ ...childSnapshot.val(), id: childSnapshot.key })
         });
-        
+
 
         return orders;
       }),
@@ -64,11 +64,11 @@ export class OrdersDatasourseService {
 
 
   CreateOrder(neworder) {
-    
-    
+
+
     return from(this.db.database.ref('orders').push({...neworder, creation: this.timestamp}))
     .pipe(
-      
+
       catchError(err => {
       neworder.comment = JSON.stringify(err);
       return throwError(neworder)}
@@ -80,7 +80,7 @@ export class OrdersDatasourseService {
   SaveOrder(neworder:IOrderWithDirty) {
     return from(this.db.database.ref(`orders/${neworder.id}`).set({...neworder}))
     .pipe(
-      
+
       catchError(err => {
       neworder.comment = JSON.stringify(err);
       return throwError(neworder)}
@@ -98,22 +98,22 @@ export class OrdersDatasourseService {
     concatMap(Email => {
       return  from(this.db.database.ref(`orders/${id}/externalid`).transaction(
         function(currentData) {
-          
+
           if (currentData != null && (currentData != "" ||  currentData == Email) ) {
-            console.log('return nothing'); 
-            return 
-          }            
+            console.log('return nothing');
+            return
+          }
           return Email
         }))})
         );
   }
 
   ReleaseOrder(id:string) : Observable<any> {
-    return    from(this.db.database.ref(`orders/${id}/externalid`).set("")); 
+    return    from(this.db.database.ref(`orders/${id}/externalid`).set(""));
   }
 
 
-  /// наращиаем счетчик в тарнзакции на выходе имеем новый счетчик 
+  /// наращиаем счетчик в тарнзакции на выходе имеем новый счетчик
   /// инжектируем в данные заказа и пробуем создать его
   AddOrder(data : IOrderWithDirty) : Observable<any> {
     //return throwError(data);
@@ -122,7 +122,7 @@ export class OrdersDatasourseService {
       /// повторная попытка после неудачи данные уже заполнен
       return this.CreateOrder(data);
     } else {
-      
+
       const neworder :IOrderWithDirty = {
         id: DefoultIfEMpty(data.id,""),
         externalid:data.externalid,
@@ -130,39 +130,41 @@ export class OrdersDatasourseService {
         phone:data.phone,
         creation: DefoultIfEMpty(data.creation,""),
         filial:data.filial,
+        paytype:data.paytype,
         desk:data.desk,
         testMode: data.testMode,
-        comment:data.comment,  
+        comment:data.comment,
+        cutlery:data.cutlery,
         goods:data.goods.map(good=> {return {id:good.id,dirtyid:good.dirtyid , comment:good.comment,quantity: good.quantity }})
         };
 
 
-      
+
       return from(this.db.database.ref('orderscounter').transaction(
         function(currentData) {
-        
-        
-        /// currentData = "202042-1" => "202042-2" 
+
+
+        /// currentData = "202042-1" => "202042-2"
         /// счетчик обнуляется каждый день
         const spliter = "-";
         const today = new Date();
         const prefix : string =  today.getFullYear().toString()+
                                  (today.getMonth()+1).toString()+
                                  today.getDate().toString();
-        
-        
+
+
 
 
         if (currentData==null) {
           return prefix+spliter+"1";
         }
-        
-        
-        
+
+
+
         const conter : string = currentData as string;
         const counterparts : string[] =  conter.split(spliter);
-        
-        
+
+
 
 
 
@@ -173,7 +175,7 @@ export class OrdersDatasourseService {
 
         } else {
           return prefix+spliter+"1"
-        }                                 
+        }
 
 
       }))
@@ -181,22 +183,22 @@ export class OrdersDatasourseService {
         catchError(err => {
           neworder.comment = JSON.stringify(err);
           return throwError(neworder)}),
-          
+
         concatMap(res => {
           neworder.externalid=res.snapshot.val();
           if (neworder.id == "") {
-            return this.CreateOrder(neworder);  
-          } 
-          else {
-            return this.SaveOrder(neworder);  
+            return this.CreateOrder(neworder);
           }
-          
+          else {
+            return this.SaveOrder(neworder);
+          }
+
 
       }))
-      
+
 
     }
-    
+
   }
 
   async RemoveOrder(id:string) : Promise<void> {

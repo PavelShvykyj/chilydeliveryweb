@@ -3,7 +3,7 @@ import { IStreet } from './../../models/street';
 import { tap, map, take } from 'rxjs/operators';
 import { AppState } from './../../reducers/index';
 import { Store, select } from '@ngrx/store';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ViewContainerRef, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { selectOrderHeader } from '../editorder.selectors';
 import { IOrderHeader } from 'src/app/models/order';
@@ -22,6 +22,8 @@ export class OrderHeaderComponent implements OnInit, OnDestroy {
   headersubs: Subscription;
   streetsByname$ : Observable<IStreet[]> = of([]);
 
+  @ViewChild("#inputadress",{static:false, read: ViewContainerRef})
+  InputAddres: ViewContainerRef
 
   constructor(private store: Store<AppState>,private snackBar: MatSnackBar) {
     this.form = new FormGroup({
@@ -87,7 +89,7 @@ export class OrderHeaderComponent implements OnInit, OnDestroy {
 
         this.store.dispatch(saveStreet({streetName:this.addres}));
       } else {
-        this.snackBar.open("Есть аналог не сохраняем",'',{ duration: 2000});
+        this.snackBar.open("Есть аналог не сохраняем",'',{ duration: 2000, viewContainerRef: this.InputAddres} );
       }
 
     })

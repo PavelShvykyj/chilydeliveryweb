@@ -6,7 +6,7 @@
 
 
         <mat-form-field id='fieldadress'   color='accent' class="w-fill" appearance="outline">
-            <input [matAutocomplete]="auto" required formControlName='addres' #inputadress matInput (input)="OnAddresInput()" (blur)="UpdateHeader()">
+            <input  [matAutocomplete]="auto" required formControlName='addres' #inputadress matInput (input)="OnAddresInput()" (blur)="UpdateHeader()">
             <!-- <mat-hint> Заполнить обязательно </mat-hint> -->
             <mat-label>Адресс </mat-label>
             <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="ClearAdress()">

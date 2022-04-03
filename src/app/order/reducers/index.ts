@@ -1,5 +1,5 @@
 import { initialState } from './../../option.reducer';
-import { IOrder, IOrderGoodsRecord, IOrderCommentRecord } from './../../models/order';
+import { IOrder, IOrderGoodsRecord, IOrderCommentRecord, IOrderCutlery } from './../../models/order';
 import { IONECGood } from './../../models/onec.good';
 import { IWEBGood } from './../../models/web.good';
 import {
@@ -21,9 +21,21 @@ import { EditOrderActions } from '../editorder.action.types';
 
 export const editorderFeatureKey = 'editorder';
 
+export function GetInitCutleryString() : string {
+  let cutlery : IOrderCutlery[] = [];
+  cutlery.push( {id: "1" , name : 'Вилка' , quantity : 0 });
+  cutlery.push( {id: "2" , name : 'Ложка' , quantity : 0 });
+  cutlery.push( {id: "3" , name : 'Тарелка' , quantity : 0 });
+  cutlery.push( {id: "4" , name : 'дес. Ложка' , quantity : 0 });
+  cutlery.push( {id: "5" , name : 'дес. Вилка' , quantity : 0 });
+  cutlery.push( {id: "6" , name : 'Без приборов' , quantity : 0 });
+
+
+  return JSON.stringify(cutlery);
+}
 
 export interface OrderGoodssState extends EntityState<IOrderGoodsRecord> {
- 
+
 }
 
 export interface EditOrderState {
@@ -32,10 +44,12 @@ export interface EditOrderState {
   phone:string,
   creation:Date,
   filial:string,
+  paytype:string,
   desk:string,
   comment:string,
   testMode:boolean,
-  goods: OrderGoodssState
+  goods: OrderGoodssState,
+  cutlery?:string
 }
 
 export const EditOrderGoodsAdapter = createEntityAdapter<IOrderGoodsRecord>();
@@ -47,8 +61,10 @@ export const EditOrderInitialState = {
   creation: new Date(),
   testMode:false,
   filial:"",
+  paytype:"",
   desk:"",
   comment:"",
+  cutlery:GetInitCutleryString(),
   goods: EditOrderGoodsAdapter.getInitialState()
 }
 
@@ -65,6 +81,7 @@ function OnOrderSelected(state: EditOrderState,action) {
   newState.goods = EditOrderGoodsAdapter.getInitialState();
   newState.goods = EditOrderGoodsAdapter.addMany(selectedOrder.goods,newState.goods);
   newState.testMode = true
+  newState.cutlery = selectedOrder.cutlery
   return newState;
 
 }
@@ -72,16 +89,16 @@ function OnOrderSelected(state: EditOrderState,action) {
 function UpsertOrderRecord(state: EditOrderState ,action) {
   let record : IOrderGoodsRecord = action.record;
   if ((state.goods.ids as string[]).indexOf(record.id)  == -1) {
-    return {...state,goods: EditOrderGoodsAdapter.upsertOne(action.record,state.goods) }  
-  } 
+    return {...state,goods: EditOrderGoodsAdapter.upsertOne(action.record,state.goods) }
+  }
   else {
     const findedrecord   = state.goods.entities[record.id];
     if (findedrecord.quantity+record.quantity > 0) {
       record.quantity = findedrecord.quantity+record.quantity;
-      return {...state,goods: EditOrderGoodsAdapter.upsertOne(record,state.goods) }  
-    } 
+      return {...state,goods: EditOrderGoodsAdapter.upsertOne(record,state.goods) }
+    }
     else {
-      return {...state,goods: EditOrderGoodsAdapter.removeOne(action.record,state.goods) }  
+      return {...state,goods: EditOrderGoodsAdapter.removeOne(action.record,state.goods) }
     }
   }
 }
@@ -96,12 +113,14 @@ export const EditOrderReducer = createReducer(
   on(EditOrderActions.OrderCreated, (state,action)=> EditOrderInitialState),
   on(EditOrderActions.UpdateOrderHeader, (state,action)=> {return {...state, ...action.header}}),
   on(EditOrderActions.UpdateOrderfilial, (state,action)=> {return {...state, filial: action.filial}}),
+  on(EditOrderActions.UpdateOrderpaytype,(state,action)=> {return {...state, paytype: action.paytype}}),
+  on(EditOrderActions.UpdateOrdercutlery,(state,action)=> {return {...state, cutlery: action.cutlery}}),
   on(EditOrderActions.UpsertOrderRecord, (state,action)=> UpsertOrderRecord(state,action)),
   on(EditOrderActions.DeleteOrderRecord, (state,action)=> {return {...state,goods: EditOrderGoodsAdapter.removeOne(action.recordid,state.goods) } }),
   on(EditOrderActions.OrderCreatedErr, (state,action)=> OnOrderCreatedErr(state,action)),
   on(EditOrderActions.SelectOrder,(state,action)=> OnOrderSelected(state,action)),
- 
-  
+
+
 );
 
 export function editorderreducer(state: EditOrderState | undefined, action: Action) {

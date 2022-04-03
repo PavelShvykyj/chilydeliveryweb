@@ -9,7 +9,7 @@ import { state } from '@angular/animations';
 import { selectAllWebEntities } from '../web/web.selectors';
 
 
-/// ОБЩИЕ 
+/// ОБЩИЕ
 
 export const selectEditOrderState = createFeatureSelector<EditOrderState>(fromEditOrder.editorderFeatureKey);
 
@@ -22,7 +22,7 @@ export const GoodsState = createSelector(
 
 export const selectAllOrderGoods = createSelector(
     GoodsState,
-    fromEditOrder.selectAll // встроеный в адаптер селектор мы его експортировали в файле reducers/index 
+    fromEditOrder.selectAll // встроеный в адаптер селектор мы его експортировали в файле reducers/index
 )
 
 export const selectAllOrderGoodsWithEntity = createSelector(
@@ -57,7 +57,12 @@ export const selectOrderOnecData = createSelector(
 
 export const selectOrderFilial = createSelector(
     selectEditOrderState,
-    state => state.filial
+    state => {return {filial : state.filial, paytype : state.paytype} }
+)
+
+export const selectOrderCutlery = createSelector(
+  selectEditOrderState,
+  state => state.cutlery
 )
 
 export const EditingOrder = createSelector(
