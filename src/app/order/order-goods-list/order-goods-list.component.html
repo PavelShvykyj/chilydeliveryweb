@@ -48,8 +48,8 @@
     matInput
     #editmatinput="matInput"
     (focus)="OnEditFocus($event)"
-    (blur)="OnEditLeave(edit)"
-    (keyup.enter)="OnEditLeave(edit)"
+    (blur)="OnEditLeave(edit,'blur')"
+    (keyup.enter)="OnEditLeave(edit,'enter')"
     [(ngModel)]="edit[edit.EditCellName]"
     type="text"
     style="width: 95px; background-color: grey; color: white; padding: 2px; border: 2px; border-radius: 2%; border-color: red;">
