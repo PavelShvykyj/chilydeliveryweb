@@ -19,6 +19,14 @@
                 </mat-option>
             </mat-autocomplete>
 
+            <button class="inpupsuffix" mat-button matSuffix mat-icon-button aria-label="Save" (click)="SaveAddres()" >
+              <mat-icon>save</mat-icon>
+            </button>
+
+            <button class="inpupsuffix" mat-button matSuffix mat-icon-button aria-label="Refresh" (click)="RefreshAddres()">
+            <mat-icon>refresh</mat-icon>
+            </button>
+
 
         </mat-form-field>
 
@@ -26,7 +34,7 @@
 
         <mat-form-field [matTooltip]="getErrorMessage('phone')" matTooltipClass="error-tooltip" matTooltipPosition='above' id='fieldphone'  color='accent' class="w-fill" appearance="outline">
             <input prefix="+38 " mask="(000) 000 00 00"  required formControlName='phone' #inputphone matInput (blur)="UpdateHeader()">
-            
+
             <!-- <mat-hint> поиск по всем столбцам </mat-hint> -->
             <mat-label>Телефон</mat-label>
             <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="ClearPhone()">
@@ -43,7 +51,8 @@
             <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="ClearComment()">
                 <mat-icon>close</mat-icon>
             </button>
-        </mat-form-field>
+
+    </mat-form-field>
 
 
     </form>

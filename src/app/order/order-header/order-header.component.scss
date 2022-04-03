@@ -73,6 +73,10 @@ mat-card-subtitle {
   max-height: 100% !important;
 }
 
+.inpupsuffix {
+  display: inline !important;
+}
+
 ::ng-deep .error-tooltip {
   background-color: red !important;
 }

@@ -1,5 +1,5 @@
 import { state } from '@angular/animations';
-import { allStreetsLoaded } from './../streets.actions';
+import { allStreetsLoaded, savedStreet, saveStreet } from './../streets.actions';
 
 import { environment } from './../../../environments/environment';
 import {
@@ -32,13 +32,14 @@ function LoadAllStreets(state:StreetsState,action):StreetsState  {
 export const StreetReducer = createReducer(
   initialState,
   on(allStreetsLoaded,(state,action)=> LoadAllStreets(state,action)),
+  on(savedStreet,(state,action)=> {console.log('state update street'); return StreetAdapter.addMany(action.streets,{...state})})
   );
 
 
   export function streetreducer(state: StreetsState | undefined, action: Action) {
     return StreetReducer(state, action);
   }
-  
+
   export const {selectAll, selectEntities} = StreetAdapter.getSelectors();
 
 

@@ -1,5 +1,6 @@
+import { loadAllStreets, savedStreet, saveStreet } from './../../streets/streets.actions';
 import { IStreet } from './../../models/street';
-import { tap } from 'rxjs/operators';
+import { tap, map, take } from 'rxjs/operators';
 import { AppState } from './../../reducers/index';
 import { Store, select } from '@ngrx/store';
 import { Component, OnInit, OnDestroy } from '@angular/core';
@@ -9,6 +10,7 @@ import { IOrderHeader } from 'src/app/models/order';
 import { UpdateOrderHeader } from '../editorder.actions';
 import { Subscription, Observable, of } from 'rxjs';
 import { selectByName } from 'src/app/streets/streets.selectors';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'order-header',
@@ -21,14 +23,14 @@ export class OrderHeaderComponent implements OnInit, OnDestroy {
   streetsByname$ : Observable<IStreet[]> = of([]);
 
 
-  constructor(private store: Store<AppState>) {
+  constructor(private store: Store<AppState>,private snackBar: MatSnackBar) {
     this.form = new FormGroup({
       addres: new FormControl("", Validators.required),
       phone: new FormControl("", [Validators.required, Validators.minLength(10), Validators.maxLength(10)]),
       comment: new FormControl("")
     });
 
-    
+
 
   }
 
@@ -37,15 +39,15 @@ export class OrderHeaderComponent implements OnInit, OnDestroy {
     this.headersubs =  this.store.pipe(
       select(selectOrderHeader),
       tap(header=>{
-        
+
           this.addres=header.addres;
-        
-        
+
+
           this.phone=header.phone;
-        
-        
+
+
           this.comment=header.comment;
-        
+
       })).subscribe();
   }
 
@@ -63,7 +65,7 @@ export class OrderHeaderComponent implements OnInit, OnDestroy {
   }
 
   OnAddresInput() {
- 
+
     if (this.addres.trim().length==0) {
       this.streetsByname$ = of([]);
     } else {
@@ -75,6 +77,28 @@ export class OrderHeaderComponent implements OnInit, OnDestroy {
   ClearAdress() {
     this.addres="";
     this.UpdateHeader();
+  }
+
+  SaveAddres( ) {
+    const reg = ".*"+this.addres.trim().toUpperCase().replace(/\s+/g, ".*")+".*";
+    this.store.pipe(select(selectByName, {filter: reg }),take(1)).subscribe(adr=>{
+      console.log(adr, adr.length);
+      if (adr.length == 0) {
+
+        this.store.dispatch(saveStreet({streetName:this.addres}));
+      } else {
+        this.snackBar.open("Есть аналог не сохраняем",'',{ duration: 2000});
+      }
+
+    })
+
+  }
+
+  RefreshAddres() {
+    let snack = this.snackBar.open("Для полного обновления нажмите -->", "OK", { duration: 2000, panelClass: ['mat-toolbar', 'snack-info'] });
+    snack.onAction().subscribe(res => {
+      this.store.dispatch(loadAllStreets());
+    })
   }
 
   ClearPhone() {
@@ -116,16 +140,16 @@ export class OrderHeaderComponent implements OnInit, OnDestroy {
 
   set addres(value: string) {
     this.form.get('addres').setValue(value);
-    
+
   }
 
   set phone(value: string) {
     this.form.get('phone').setValue(value);
-    
+
   }
 
   set comment(value: string) {
     this.form.get('comment').setValue(value);
-    
+
   }
 }
