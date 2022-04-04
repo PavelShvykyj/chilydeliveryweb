@@ -30,11 +30,11 @@
           <span class="radio-lable">Не выбран</span>
       </mat-radio-button> -->
 
-      <mat-radio-button value=1>
+      <mat-radio-button value="1">
           <span class="radio-lable">ГОТІВКА</span>
       </mat-radio-button>
 
-      <mat-radio-button value=2>
+      <mat-radio-button value="2">
           <span class="radio-lable">ТЕРМІНАЛ</span>
       </mat-radio-button>
   </mat-radio-group>
@@ -60,8 +60,8 @@
     {{show}}
 </ng-template>
 
-<mat-tab-group backgroundColor="primary">
-  <mat-tab #GoodsTab>
+<mat-tab-group backgroundColor="primary" (selectedTabChange)="OnTabChange($event)">
+  <mat-tab #GoodsTab ariaLabel="fastfood">
     <ng-template mat-tab-label>
       <mat-icon class="tab-icon">fastfood</mat-icon>
       Goods
@@ -137,7 +137,7 @@
 
   </mat-tab>
 
-  <mat-tab>
+  <mat-tab >
     <ng-template mat-tab-label>
       <mat-icon class="tab-icon">local_dining</mat-icon>
       Cutlery

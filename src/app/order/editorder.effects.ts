@@ -47,7 +47,7 @@ export class EditOrderEffects {
         let message: string = `<b>ЗАКАЗ : ${shortid}</b> <i>Адрес: </i> ${order.addres} <i>Тел. : </i> ${order.phone} <b>Филиал : </b> ${order.filial}  <i>Коммент : </i> ${order.comment}`;
 
         if (Object.keys(order).find(el => el == 'paytype') != undefined) {
-          message = message + `<b> Тип оплаты : </b> ${order.paytype = 1 ? ' нал.' : ' терминал '}`;
+          message = message + `<b> Тип оплаты : </b> ${order.paytype = "1" ? ' нал.' : ' терминал '}`;
         }
 
         if (Object.keys(order).find(el => el == 'cutlery') != undefined) {

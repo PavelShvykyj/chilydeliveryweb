@@ -23,12 +23,13 @@ export const editorderFeatureKey = 'editorder';
 
 export function GetInitCutleryString() : string {
   let cutlery : IOrderCutlery[] = [];
-  cutlery.push( {id: "1" , name : 'Вилка' , quantity : 0 });
-  cutlery.push( {id: "2" , name : 'Ложка' , quantity : 0 });
-  cutlery.push( {id: "3" , name : 'Нож' , quantity : 0 });
-  cutlery.push( {id: "4" , name : 'Палочки' , quantity : 0 });
-  cutlery.push( {id: "5" , name : 'Соевый соус' , quantity : 0 });
-  cutlery.push( {id: "6" , name : 'Без приборов' , quantity : 0 });
+  cutlery.push( {id: "1" , name : 'Без приборов' , quantity : 0 });
+  cutlery.push( {id: "2" , name : 'Вилка' , quantity : 0 });
+  cutlery.push( {id: "3" , name : 'Ложка' , quantity : 0 });
+  cutlery.push( {id: "4" , name : 'Нож' , quantity : 0 });
+  cutlery.push( {id: "5" , name : 'Палочки' , quantity : 0 });
+  cutlery.push( {id: "6" , name : 'Соевый соус' , quantity : 0 });
+
 
 
   return JSON.stringify(cutlery);

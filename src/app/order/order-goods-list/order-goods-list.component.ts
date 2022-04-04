@@ -3,7 +3,7 @@ import { first, map } from 'rxjs/operators';
 import { UpsertOrderRecord, DeleteOrderRecord, UpdateOrderfilial, UpdateOrderpaytype, UpdateOrdercutlery, UpsertOrderRecordForse } from './../editorder.actions';
 import { IOrderGoodsRecord, IOrderGoodsWievRecordWithEntity, IDictionary, IOrderCutlery, IOrderWievCutlery } from './../../models/order';
 import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatSort, MatDialogConfig, MatDialogRef, MatDialog, MatInput, MatTab } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort, MatDialogConfig, MatDialogRef, MatDialog, MatInput, MatTab, MatTabChangeEvent } from '@angular/material';
 import { IOrder } from 'src/app/models/order';
 import { Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
@@ -157,7 +157,16 @@ export class OrderGoodsListComponent implements OnInit {
   OnCellClick(record: IOrderGoodsWievRecordWithEntity, cellName: string) {
     record.EditCellName = cellName;
     record.NextCellEdit = cellName === "" ? "" : this.EditCellsChain[cellName];
-    record.quantity = parseInt( record.quantity.toString());
+    try
+    {
+      record.quantity = parseInt( record.quantity.toString());
+    }
+    catch (error)
+    {
+      record.quantity = 0;
+    }
+
+
     setTimeout(() => {
       if (this.editmatinput != undefined) {
         if (!this.editmatinput.focused) {
@@ -180,6 +189,8 @@ export class OrderGoodsListComponent implements OnInit {
     // goNext - только на клавишу  ентер и первый клик переход по ячейкам и строкам
     // nextRow=false - на первый клик переход на следующую строку не выполняем
 
+
+
     // not enter
     if (!goNext) {
       //  ушли из редактирования обнудяем редактируемость и сохраняем таблицу
@@ -187,11 +198,23 @@ export class OrderGoodsListComponent implements OnInit {
         element.EditCellName = "";
         element.NextCellEdit = "";
 
+        try {
+          element.quantity = parseInt(element.quantity.toString());
+        } catch (error) {
+          element.quantity = 0;
+        }
+
+
         return element;
       });
 
       //  вызов сохранения в стейт
-      this.store.dispatch(UpdateOrdercutlery({cutlery: JSON.stringify(this.cutleryDataSourse.data)}));
+      console.log('goNext false state')
+      setTimeout(() => {
+        this.store.dispatch(UpdateOrdercutlery({cutlery: JSON.stringify(this.cutleryDataSourse.data)}));
+      }, 5);
+
+
       return;
     }
 
@@ -206,6 +229,13 @@ export class OrderGoodsListComponent implements OnInit {
     let GoNextRow = (nextRow && NextCellEdit == "" && cellName == "" && record.id != lastID && dataLenth >= nextId);
 
     this.cutleryDataSourse.data = this.cutleryDataSourse.data.map(element => {
+
+      try {
+        element.quantity = parseInt(element.quantity.toString());
+      } catch (error) {
+        element.quantity = 0;
+      }
+
       if (element.id == record.id) {
         element.EditCellName = cellName;
         element.NextCellEdit = NextCellEdit;
@@ -224,10 +254,13 @@ export class OrderGoodsListComponent implements OnInit {
       return element;
     });
 
-    if (!GoNextRow && NextCellEdit == "") {
-      //  вызов сохранения в стейт
-      this.store.dispatch(UpdateOrdercutlery({cutlery: JSON.stringify(this.cutleryDataSourse.data)}));
-    }
+    // if (!GoNextRow && NextCellEdit == "") {
+    //   //  вызов сохранения в стейт
+    //   console.log('last record state')
+    //   setTimeout(() => {
+    //     this.store.dispatch(UpdateOrdercutlery({cutlery: JSON.stringify(this.cutleryDataSourse.data)}));
+    //   }, 5000);
+    // }
 
     setTimeout(() => {
       if (this.editmatinput != undefined) {
@@ -237,6 +270,9 @@ export class OrderGoodsListComponent implements OnInit {
         }
       }
     });
+
+
+
   }
 
   OnEditFocus(event) {
@@ -263,6 +299,17 @@ export class OrderGoodsListComponent implements OnInit {
 
   }
 
+  OnTabChange(event : MatTabChangeEvent) {
+    if (event.index !=0) {
+      this.cutleryDataSourse.data = this.cutleryDataSourse.data.map(el=> {
+        el.EditCellName = '';
+        el.NextCellEdit = '';
+        return el
+      })
+      this.OnCutleryCellClick(this.cutleryDataSourse.data[0],'quantity',true,false);
+    }
+
+  }
 
 }
 
