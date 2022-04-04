@@ -1,3 +1,4 @@
+import { IOrderCutlery } from './../models/order';
 import { CreateOrder, OrderCreated, OrderCreatedErr } from './editorder.actions';
 import { Injectable } from '@angular/core';
 
@@ -43,7 +44,24 @@ export class EditOrderEffects {
 
     GetTformatedMessage(order): string {
         const shortid : string = (order.externalid as string).split("-")[1];
-        let message: string = `<b>ЗАКАЗ : ${shortid}</b> <i>Адрес: </i> ${order.addres} <i>Тел. : </i> ${order.phone} <b>Филиал : </b> ${order.filial} <i>Коммент : </i> ${order.comment}`;
+        let message: string = `<b>ЗАКАЗ : ${shortid}</b> <i>Адрес: </i> ${order.addres} <i>Тел. : </i> ${order.phone} <b>Филиал : </b> ${order.filial}  <i>Коммент : </i> ${order.comment}`;
+
+        if (Object.keys(order).find(el => el == 'paytype') != undefined) {
+          message = message + `<b> Тип оплаты : </b> ${order.paytype = 1 ? ' нал.' : ' терминал '}`;
+        }
+
+        if (Object.keys(order).find(el => el == 'cutlery') != undefined) {
+          let cutlery : IOrderCutlery[] = JSON.parse(order.cutlery);
+          let FilledCutlery : IOrderCutlery[] = cutlery.filter(el => el.quantity!=0);
+          if (FilledCutlery.length !=0) {
+            message = message + `<b> Приборы : </b> `
+            FilledCutlery.forEach(el => {
+              message = message + ` ${el.name} : ${el.quantity} `;
+            })
+          }
+        }
+
+
         // <i>ТОВАРЫ : </i>
         // `;
 
@@ -73,7 +91,7 @@ export class EditOrderEffects {
 
         return DialogRef.afterClosed().pipe(first()).subscribe(
              res => {
-                
+
                 if (res.answer) {
                     console.log('err',err);
                     this.store.dispatch(CreateOrder({order:err}))

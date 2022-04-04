@@ -30,12 +30,12 @@
           <span class="radio-lable">Не выбран</span>
       </mat-radio-button> -->
 
-      <mat-radio-button value="1">
-          <span class="radio-lable">Наличными</span>
+      <mat-radio-button value=1>
+          <span class="radio-lable">ГОТІВКА</span>
       </mat-radio-button>
 
-      <mat-radio-button value="2">
-          <span class="radio-lable">Безналичными</span>
+      <mat-radio-button value=2>
+          <span class="radio-lable">ТЕРМІНАЛ</span>
       </mat-radio-button>
   </mat-radio-group>
 </mat-card-subtitle>
@@ -51,7 +51,7 @@
     (blur)="OnEditLeave(edit,'blur')"
     (keyup.enter)="OnEditLeave(edit,'enter')"
     [(ngModel)]="edit[edit.EditCellName]"
-    type="text"
+    [type]="GetInputType(edit, edit.EditCellName)"
     style="width: 95px; background-color: grey; color: white; padding: 2px; border: 2px; border-radius: 2%; border-color: red;">
 
 </ng-template>
@@ -92,7 +92,7 @@
 
       <ng-container matColumnDef="price">
           <mat-header-cell class="table-cell table-header-cell" *matHeaderCellDef mat-sort-header> Цена </mat-header-cell>
-          <mat-cell  class="table-cell" *matCellDef="let record; first as isFirst" >{{isFirst}} {{record.good.price}}</mat-cell>
+          <mat-cell  class="table-cell" *matCellDef="let record" > {{record.good.price}}</mat-cell>
           <mat-footer-cell *matFooterCellDef></mat-footer-cell>
       </ng-container>
 
@@ -133,7 +133,7 @@
       <mat-row *matRowDef="let row; columns: displayedColumns" class="table-row"></mat-row>
 
     </mat-table>
-  <mat-paginator [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons></mat-paginator>
+  <mat-paginator [pageSizeOptions]="[4, 6, 8]" showFirstLastButtons></mat-paginator>
 
   </mat-tab>
 

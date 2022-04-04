@@ -9,6 +9,7 @@ export const UpdateOrderfilial    = createAction("[EDIT ORDER COMPONENT] Update 
 export const UpdateOrderpaytype   = createAction("[EDIT ORDER COMPONENT] Update order paytype in memoty",props<{paytype:string}>());
 export const UpdateOrdercutlery   = createAction("[EDIT ORDER COMPONENT] Update order cutlery in memoty",props<{cutlery:string}>());
 export const UpsertOrderRecord    = createAction("[EDIT ORDER COMPONENT] Update order goods in memoty",props<{record:IOrderGoodsRecord}>());
+export const UpsertOrderRecordForse    = createAction("[EDIT ORDER COMPONENT] Update order goods in memoty forse",props<{record:IOrderGoodsRecord}>());
 export const DeleteOrderRecord    = createAction("[EDIT ORDER COMPONENT] Delete order goods record in memoty",props<{recordid: string}>());
 export const CreateOrder    = createAction("[EDIT ORDER COMPONENT] Create new orders",props<{order: IOrderWithDirty}>());
 export const OrderCreated   = createAction("[EDIT ORDER EFFECT] Order are created");

@@ -1,4 +1,4 @@
-import { IOrderGoodsRecordWithDirty, IOrderGoodsRecord } from './../../models/order';
+import { IOrderGoodsRecordWithDirty, IOrderGoodsRecord, IOrderCutlery } from './../../models/order';
 import { TelegramService } from './../telegram.service';
 import { tap, map, first, filter, concatMap } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
@@ -17,9 +17,9 @@ import { YndialogComponent } from 'src/app/baseelements/yndialog/yndialog.compon
 })
 export class OrderToolbarComponent implements OnInit {
 
-  
 
-  constructor(private snackBar: MatSnackBar, 
+
+  constructor(private snackBar: MatSnackBar,
               private store: Store<AppState>,
               public dialog: MatDialog
     ) { }
@@ -27,10 +27,35 @@ export class OrderToolbarComponent implements OnInit {
   ngOnInit() {
   }
 
+  GetCutleryTotal(cutleryStr : string) : number {
+    if (cutleryStr == undefined) {
+      return 0
+    }
+    console.log(cutleryStr);
+    if (cutleryStr.length == 0) {
+      return 0
+    }
+
+    let cutlery : IOrderCutlery[] = JSON.parse(cutleryStr);
+    let total = 0;
+    cutlery.forEach(element => {
+      total = total + element.quantity;
+    });
+
+    return total;
+  }
+
   OrderValid(EditingOrder ) {
-    
-    if (EditingOrder.addres.length>1 && EditingOrder.phone.length==10 && EditingOrder.goods.length>0 && EditingOrder.filial.length>0)  {
-      
+
+    if (EditingOrder.addres.length>1
+       && EditingOrder.phone.length==10
+       && EditingOrder.goods.length>0
+       && EditingOrder.filial.length>0
+       && this.GetCutleryTotal(EditingOrder.cutlery)
+
+
+       )  {
+
       return true
     } else {
       this.snackBar.open("НЕКОРРЕКТНЫЙ ЗАКАЗ", "OK",{duration: 2000, panelClass: ['snack-err']});
@@ -43,27 +68,28 @@ export class OrderToolbarComponent implements OnInit {
   CreateOrder() {
 
     this.store.pipe(
-      
+
       select(EditingOrder),
       first(),
       filter(EditingOrder=> this.OrderValid(EditingOrder)==true),
-      
-      
+
+
       map(order =>{
-         
-        this.store.dispatch(CreateOrder({order: {...order, testMode:order.testMode , goods: order.entities.map(el => {return {...el, dirtyid:el.good.filials }}), id:order.id ,externalid:"",isSelected:false}}))
+
+        this.store.dispatch(CreateOrder({order: {...order, paytype : order.paytype , cutlery: order.cutlery, testMode:order.testMode , goods: order.entities.map(el => {return {...el, dirtyid:el.good.filials }}), id:order.id ,externalid:"",isSelected:false}}))
       } ),
-     
+
       ).subscribe(
         res=> {},
-        err=>{
-          this.snackBar.open("Что то  пошло не так","OK",{duration: 2000, panelClass: ['snack-err']})
-          
-         }
+        // err=>{
+
+        //   this.snackBar.open("Что то  пошло не так","OK",{duration: 2000, panelClass: ['snack-err']})
+
+        //  }
 
 
       );
   }
 
-  //this.snackBar.open("Login successful", "OK",{duration: 2000}); 
+  //this.snackBar.open("Login successful", "OK",{duration: 2000});
 }

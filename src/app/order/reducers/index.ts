@@ -25,9 +25,9 @@ export function GetInitCutleryString() : string {
   let cutlery : IOrderCutlery[] = [];
   cutlery.push( {id: "1" , name : 'Вилка' , quantity : 0 });
   cutlery.push( {id: "2" , name : 'Ложка' , quantity : 0 });
-  cutlery.push( {id: "3" , name : 'Тарелка' , quantity : 0 });
-  cutlery.push( {id: "4" , name : 'дес. Ложка' , quantity : 0 });
-  cutlery.push( {id: "5" , name : 'дес. Вилка' , quantity : 0 });
+  cutlery.push( {id: "3" , name : 'Нож' , quantity : 0 });
+  cutlery.push( {id: "4" , name : 'Палочки' , quantity : 0 });
+  cutlery.push( {id: "5" , name : 'Соевый соус' , quantity : 0 });
   cutlery.push( {id: "6" , name : 'Без приборов' , quantity : 0 });
 
 
@@ -75,13 +75,15 @@ function OnOrderSelected(state: EditOrderState,action) {
   newState.addres = selectedOrder.addres;
   newState.phone = selectedOrder.phone;
   newState.creation = selectedOrder.creation;
-  newState.filial = selectedOrder.filial;
+  newState.filial  = selectedOrder.filial;
+  newState.paytype = selectedOrder.paytype;
+  newState.cutlery = selectedOrder.cutlery
   newState.desk = selectedOrder.desk;
   newState.comment = selectedOrder.comment;
   newState.goods = EditOrderGoodsAdapter.getInitialState();
   newState.goods = EditOrderGoodsAdapter.addMany(selectedOrder.goods,newState.goods);
   newState.testMode = true
-  newState.cutlery = selectedOrder.cutlery
+
   return newState;
 
 }
@@ -116,6 +118,7 @@ export const EditOrderReducer = createReducer(
   on(EditOrderActions.UpdateOrderpaytype,(state,action)=> {return {...state, paytype: action.paytype}}),
   on(EditOrderActions.UpdateOrdercutlery,(state,action)=> {return {...state, cutlery: action.cutlery}}),
   on(EditOrderActions.UpsertOrderRecord, (state,action)=> UpsertOrderRecord(state,action)),
+  on(EditOrderActions.UpsertOrderRecordForse, (state,action)=> {return {...state,goods: EditOrderGoodsAdapter.upsertOne(action.record,state.goods) } }),
   on(EditOrderActions.DeleteOrderRecord, (state,action)=> {return {...state,goods: EditOrderGoodsAdapter.removeOne(action.recordid,state.goods) } }),
   on(EditOrderActions.OrderCreatedErr, (state,action)=> OnOrderCreatedErr(state,action)),
   on(EditOrderActions.SelectOrder,(state,action)=> OnOrderSelected(state,action)),

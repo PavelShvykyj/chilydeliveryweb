@@ -1,6 +1,6 @@
 import { ofType } from '@ngrx/effects';
 import { first, map } from 'rxjs/operators';
-import { UpsertOrderRecord, DeleteOrderRecord, UpdateOrderfilial, UpdateOrderpaytype } from './../editorder.actions';
+import { UpsertOrderRecord, DeleteOrderRecord, UpdateOrderfilial, UpdateOrderpaytype, UpdateOrdercutlery, UpsertOrderRecordForse } from './../editorder.actions';
 import { IOrderGoodsRecord, IOrderGoodsWievRecordWithEntity, IDictionary, IOrderCutlery, IOrderWievCutlery } from './../../models/order';
 import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort, MatDialogConfig, MatDialogRef, MatDialog, MatInput, MatTab } from '@angular/material';
@@ -157,6 +157,7 @@ export class OrderGoodsListComponent implements OnInit {
   OnCellClick(record: IOrderGoodsWievRecordWithEntity, cellName: string) {
     record.EditCellName = cellName;
     record.NextCellEdit = cellName === "" ? "" : this.EditCellsChain[cellName];
+    record.quantity = parseInt( record.quantity.toString());
     setTimeout(() => {
       if (this.editmatinput != undefined) {
         if (!this.editmatinput.focused) {
@@ -166,14 +167,20 @@ export class OrderGoodsListComponent implements OnInit {
       }
     });
 
+    if(record.EditCellName == "" && record.NextCellEdit == "") {
+
+
+
+      this.store.dispatch(UpsertOrderRecordForse({ record }));
+    }
 
   }
 
   OnCutleryCellClick(record, cellName: string, goNext = true,nextRow=false) {
     // goNext - только на клавишу  ентер и первый клик переход по ячейкам и строкам
     // nextRow=false - на первый клик переход на следующую строку не выполняем
-    
-    // not enter 
+
+    // not enter
     if (!goNext) {
       //  ушли из редактирования обнудяем редактируемость и сохраняем таблицу
       this.cutleryDataSourse.data = this.cutleryDataSourse.data.map(element => {
@@ -182,14 +189,14 @@ export class OrderGoodsListComponent implements OnInit {
 
         return element;
       });
-      
+
       //  вызов сохранения в стейт
-      
+      this.store.dispatch(UpdateOrdercutlery({cutlery: JSON.stringify(this.cutleryDataSourse.data)}));
       return;
     }
 
     // enter
-    
+
     let lastID = this.cutleryDataSourse.data[this.cutleryDataSourse.data.length - 1].id
     let nextId = (parseInt(record.id) + 1);
     let nextIdStr = nextId.toString();
@@ -219,6 +226,7 @@ export class OrderGoodsListComponent implements OnInit {
 
     if (!GoNextRow && NextCellEdit == "") {
       //  вызов сохранения в стейт
+      this.store.dispatch(UpdateOrdercutlery({cutlery: JSON.stringify(this.cutleryDataSourse.data)}));
     }
 
     setTimeout(() => {
@@ -247,7 +255,13 @@ export class OrderGoodsListComponent implements OnInit {
     }
   }
 
+  GetInputType(edit  , EditCellName: string) : string {
 
+
+    return (typeof edit[EditCellName]).toString();
+
+
+  }
 
 
 }
