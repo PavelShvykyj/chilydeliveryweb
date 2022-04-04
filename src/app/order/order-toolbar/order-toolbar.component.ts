@@ -31,7 +31,7 @@ export class OrderToolbarComponent implements OnInit {
     if (cutleryStr == undefined) {
       return 0
     }
-    console.log(cutleryStr);
+    
     if (cutleryStr.length == 0) {
       return 0
     }
@@ -47,11 +47,14 @@ export class OrderToolbarComponent implements OnInit {
 
   OrderValid(EditingOrder ) {
 
+    console.log("On OrderValid ",EditingOrder);
+    
+
     if (EditingOrder.addres.length>1
        && EditingOrder.phone.length==10
        && EditingOrder.goods.length>0
        && EditingOrder.filial.length>0
-       && this.GetCutleryTotal(EditingOrder.cutlery)
+       && this.GetCutleryTotal(EditingOrder.cutlery)>0
 
 
        )  {

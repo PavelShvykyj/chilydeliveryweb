@@ -43,7 +43,7 @@
 
 
 <ng-template #inputCell let-edit="edit">
-
+  
   <input
     matInput
     #editmatinput="matInput"
@@ -52,8 +52,8 @@
     (keyup.enter)="OnEditLeave(edit,'enter')"
     [(ngModel)]="edit[edit.EditCellName]"
     [type]="GetInputType(edit, edit.EditCellName)"
-    style="width: 95px; background-color: grey; color: white; padding: 2px; border: 2px; border-radius: 2%; border-color: red;">
-
+    style=" width: 95%; background-color: grey; color: white; padding: 1px; border: 1px; border-radius: 5%; ">
+  
 </ng-template>
 
 <ng-template #outputCell let-show="show">
@@ -64,7 +64,7 @@
   <mat-tab #GoodsTab ariaLabel="fastfood">
     <ng-template mat-tab-label>
       <mat-icon class="tab-icon">fastfood</mat-icon>
-      Goods
+      Товари
     </ng-template>
 
     <mat-table [dataSource]="dataSource" matSort>
@@ -140,7 +140,7 @@
   <mat-tab >
     <ng-template mat-tab-label>
       <mat-icon class="tab-icon">local_dining</mat-icon>
-      Cutlery
+      Прибори
     </ng-template>
 
 
@@ -167,6 +167,21 @@
 
       </ng-container>
 
+      <ng-container matColumnDef="buttonsgroup">
+        <mat-header-cell class="table-cell table-header-cell" *matHeaderCellDef> Действия</mat-header-cell>
+
+        <mat-cell class="table-cell" *matCellDef="let record">
+            <button color='warn' mat-icon-button (click)="IncrCutleryQuantity(record)">
+                <mat-icon>add</mat-icon>
+            </button>
+            <button (click)="DecrCutleryQuantity(record)" mat-icon-button>
+                <mat-icon>remove</mat-icon>
+            </button>
+           
+
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+    </ng-container>
 
 
 

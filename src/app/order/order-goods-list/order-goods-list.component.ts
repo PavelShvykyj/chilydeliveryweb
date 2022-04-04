@@ -20,7 +20,7 @@ import { DialogstringinputComponent } from 'src/app/baseelements/dialogstringinp
 export class OrderGoodsListComponent implements OnInit {
 
   displayedColumns: string[] = ['good', 'quantity', 'price', 'comment', 'buttonsgroup'];
-  displayedCutleryColumns: string[] = ['name', 'quantity'];
+  displayedCutleryColumns: string[] = ['name', 'quantity', 'buttonsgroup'];
 
   EditCellsChain: IDictionary<string> = {
     'quantity': 'comment',
@@ -111,6 +111,19 @@ export class OrderGoodsListComponent implements OnInit {
   IncrQuantity(record: IOrderGoodsRecord) {
     record.quantity = 1;
     this.store.dispatch(UpsertOrderRecord({ record }));
+  }
+
+  IncrCutleryQuantity(record) {
+    record.quantity = record.quantity + 1;
+    this.store.dispatch(UpdateOrdercutlery({cutlery: JSON.stringify(this.cutleryDataSourse.data)}));
+  }
+
+  DecrCutleryQuantity(record) {
+    if (record.quantity != 0) {
+      record.quantity = record.quantity - 1;
+      this.store.dispatch(UpdateOrdercutlery({cutlery: JSON.stringify(this.cutleryDataSourse.data)}));    
+    }
+    
   }
 
   DecrQuantity(record) {
@@ -209,7 +222,7 @@ export class OrderGoodsListComponent implements OnInit {
       });
 
       //  вызов сохранения в стейт
-      console.log('goNext false state')
+      
       setTimeout(() => {
         this.store.dispatch(UpdateOrdercutlery({cutlery: JSON.stringify(this.cutleryDataSourse.data)}));
       }, 5);
@@ -254,13 +267,14 @@ export class OrderGoodsListComponent implements OnInit {
       return element;
     });
 
-    // if (!GoNextRow && NextCellEdit == "") {
-    //   //  вызов сохранения в стейт
-    //   console.log('last record state')
-    //   setTimeout(() => {
-    //     this.store.dispatch(UpdateOrdercutlery({cutlery: JSON.stringify(this.cutleryDataSourse.data)}));
-    //   }, 5000);
-    // }
+    // была попытка на новую строку но не прошла и вышли из редактирования
+    if (!GoNextRow && NextCellEdit == "" && nextRow) {
+      //  вызов сохранения в стейт
+      console.log('last record state')
+      setTimeout(() => {
+        this.store.dispatch(UpdateOrdercutlery({cutlery: JSON.stringify(this.cutleryDataSourse.data)}));
+      }, 5);
+    }
 
     setTimeout(() => {
       if (this.editmatinput != undefined) {
