@@ -121,9 +121,9 @@ export class OrderGoodsListComponent implements OnInit {
   DecrCutleryQuantity(record) {
     if (record.quantity != 0) {
       record.quantity = record.quantity - 1;
-      this.store.dispatch(UpdateOrdercutlery({cutlery: JSON.stringify(this.cutleryDataSourse.data)}));    
+      this.store.dispatch(UpdateOrdercutlery({cutlery: JSON.stringify(this.cutleryDataSourse.data)}));
     }
-    
+
   }
 
   DecrQuantity(record) {
@@ -222,7 +222,7 @@ export class OrderGoodsListComponent implements OnInit {
       });
 
       //  вызов сохранения в стейт
-      
+
       setTimeout(() => {
         this.store.dispatch(UpdateOrdercutlery({cutlery: JSON.stringify(this.cutleryDataSourse.data)}));
       }, 5);
@@ -314,6 +314,7 @@ export class OrderGoodsListComponent implements OnInit {
   }
 
   OnTabChange(event : MatTabChangeEvent) {
+
     if (event.index !=0) {
       this.cutleryDataSourse.data = this.cutleryDataSourse.data.map(el=> {
         el.EditCellName = '';
@@ -322,6 +323,10 @@ export class OrderGoodsListComponent implements OnInit {
       })
       this.OnCutleryCellClick(this.cutleryDataSourse.data[0],'quantity',true,false);
     }
+
+
+
+
 
   }
 

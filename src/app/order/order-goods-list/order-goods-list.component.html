@@ -43,7 +43,7 @@
 
 
 <ng-template #inputCell let-edit="edit">
-  
+
   <input
     matInput
     #editmatinput="matInput"
@@ -53,14 +53,14 @@
     [(ngModel)]="edit[edit.EditCellName]"
     [type]="GetInputType(edit, edit.EditCellName)"
     style=" width: 95%; background-color: grey; color: white; padding: 1px; border: 1px; border-radius: 5%; ">
-  
+
 </ng-template>
 
 <ng-template #outputCell let-show="show">
     {{show}}
 </ng-template>
 
-<mat-tab-group backgroundColor="primary" (selectedTabChange)="OnTabChange($event)">
+<mat-tab-group mat-stretch-tabs animationDuration="0ms" backgroundColor="primary" (selectedTabChange)="OnTabChange($event)">
   <mat-tab #GoodsTab ariaLabel="fastfood">
     <ng-template mat-tab-label>
       <mat-icon class="tab-icon">fastfood</mat-icon>
@@ -147,14 +147,14 @@
     <mat-table [dataSource]="cutleryDataSourse" >
       <ng-container matColumnDef="name">
           <mat-header-cell class="table-cell table-left-cell table-header-cell" *matHeaderCellDef > Прибор </mat-header-cell>
-          <mat-cell class="table-cell table-left-cell" *matCellDef="let record"> <small
+          <mat-cell [ngClass]="{'font-acent': record.quantity > 0}" class="table-cell table-left-cell" *matCellDef="let record"> <small
                   class="GoodNameInTable">{{record.name}} </small></mat-cell>
 
       </ng-container>
 
       <ng-container matColumnDef="quantity">
           <mat-header-cell class="table-cell table-header-cell" *matHeaderCellDef > Количество </mat-header-cell>
-          <mat-cell  (click)="OnCutleryCellClick(record,'quantity')"  class="table-cell" *matCellDef="let record">
+          <mat-cell  [ngClass]="{'font-acent': record.quantity > 0}" (click)="OnCutleryCellClick(record,'quantity')"  class="table-cell" *matCellDef="let record">
             <!-- <ng-container *ngTemplateOutlet= inputCell;context:{edit:record}></ng-container> -->
             <!-- <ng-container *ngTemplateOutlet= outputCell;context:{ShowData:record.quantity}></ng-container> -->
             <ng-container
@@ -177,7 +177,7 @@
             <button (click)="DecrCutleryQuantity(record)" mat-icon-button>
                 <mat-icon>remove</mat-icon>
             </button>
-           
+
 
         </mat-cell>
         <mat-footer-cell *matFooterCellDef></mat-footer-cell>
