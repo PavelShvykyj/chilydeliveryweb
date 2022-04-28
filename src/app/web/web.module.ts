@@ -18,19 +18,24 @@ import {AngularFireStorageModule} from '@angular/fire/storage';
 import { WebgoodPictureComponent } from './webgood-picture/webgood-picture.component';
 import { SelectpictureComponent } from './selectpicture/selectpicture.component';
 import { PictServiseService } from './pict-servise.service';
-
+import { ChoiceService } from './choiceservise.service';
+import { HttpClientModule } from '@angular/common/http';
+import { ChoicegoodsComponent } from './choicegoods/choicegoods.component';
+import { ChoiceGoodsResolver } from './choice.goods.resolver';
 
 
 @NgModule({
   declarations: [WebGoodListComponent,
-                WebFolderListComponent, 
-                WebDirtyGoodListComponent, 
-                WebGoodEditComponent, 
-                SelectparentComponent, 
-                WebgoodPictureComponent, 
-                SelectpictureComponent],
+                WebFolderListComponent,
+                WebDirtyGoodListComponent,
+                WebGoodEditComponent,
+                SelectparentComponent,
+                WebgoodPictureComponent,
+                SelectpictureComponent,
+                ChoicegoodsComponent],
   imports: [
     CommonModule,
+    HttpClientModule,
     BaseelementsModule,
     FormsModule,
     ReactiveFormsModule,
@@ -40,7 +45,7 @@ import { PictServiseService } from './pict-servise.service';
     StoreModule.forFeature(fromWeb.webFeatureKey, reducer , { metaReducers: fromWeb.metaReducers })
   ],
   entryComponents: [WebGoodEditComponent,SelectparentComponent,WebgoodPictureComponent,SelectpictureComponent],
-  providers: [WebGoodsDatasourseService, PictServiseService],
+  providers: [WebGoodsDatasourseService, PictServiseService,ChoiceService,ChoiceGoodsResolver],
   exports: [WebGoodListComponent,WebDirtyGoodListComponent]
 })
 export class WebModule { }

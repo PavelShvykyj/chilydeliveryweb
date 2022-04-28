@@ -1,0 +1,40 @@
+@import '~@angular/material/theming';
+
+$dark : map-get($mat-light-blue, 700);
+$light : map-get($mat-grey, 400);
+
+.fullbox-left {
+    height: 100%;
+    width: 100%;
+    padding-left: 3px;
+}
+.fullbox {
+    height: 100%;
+    width: 100%;
+}
+
+.halfbox {
+    height: 100%;
+    width: 50%;
+}
+
+
+webgoodlist  {
+    padding-top: 3px;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+webdirtygoodlist {
+    padding-top: 3px;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+mat-grid-list {
+    background-color: map-get($mat-grey, 400);
+}
+
+.grid-container {
+    height: 90vh;
+}

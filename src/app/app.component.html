@@ -1,68 +1,162 @@
-<mat-toolbar color='primary'>
-  <span >Simple delivery  </span>
+<mat-sidenav-container fullscreen>
+  <mat-sidenav
+    #drawer
+    fixedInViewport
+    attr.role="navigation"
+    mode="side"
+    [opened]="false"
+  >
+    <mat-toolbar color="primary">
 
-  <span class="spacer"> </span>
-  <mat-spinner diameter=40 color='accent' *ngIf="loading"></mat-spinner>
-  <span class="spacer"> </span>
+      <button
+        color="accent"
+        class="secondary mx-2 my-2 height-70"
+        mat-raised-button
+        (click)="UpdateChangesAsync()"
+      >
+        <mat-list-item class="title-small lentacontainer">
+          <p class="title-small my-2">
+            {{ idb.lastupdate$ | async | date: "dd/MM/yyyy" }}
+          </p>
+          <p class="my-2">
+            <small class="subheading-1">
+              {{ idb.lastupdate$ | async | date: "HH:mm:ss" }}
+            </small>
+          </p>
+          <small class="subheading-1"> Обновить товары </small>
+        </mat-list-item>
+      </button>
 
-  <button color='accent' class="secondary" mat-stroked-button (click)="UpdateChangesAsync()">
-    <mat-list-item class="title-small lentacontainer">
-      <p class="title-small my-2"> {{ idb.lastupdate$ | async | date: 'dd/MM/yyyy' }} </p>
-      <p class="my-2"><small class="subheading-1"> {{ idb.lastupdate$ | async | date: 'HH:mm:ss' }} </small></p> 
-      <small class="subheading-1"> Обновить товары </small> 
-    </mat-list-item>
-  </button>
-
-  <button *ngIf="(idb.errorIdCount$ | async)>0" color='warn' class="secondary" mat-stroked-button (click)="UpdateErrors()">
-    <mat-list-item class="title-small lentacontainer">
-      <p class="title-small my-2"> {{ idb.errorIdCount$ | async }} </p>
-      <p class="my-2"><small class="subheading-1"> Не переданные товары </small></p> 
-      <small class="subheading-1"> Передать товары </small> 
-    </mat-list-item>
-  </button>
-  
-
-  
-
-  <span class="spacer"> </span>
-  
-  <mat-nav-list  fxLayout="row">
-    <mat-list-item fxFlex="1 1 auto"  >
-      <mobile-queue>  </mobile-queue>
-      
-    </mat-list-item>
-
-    <mat-list-item fxFlex="1 1 auto"  *ngIf="!(isLoggedIn$ | async)">
-      <a matLine routerLink="/login" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><mat-icon>info</mat-icon> Login  </a>
-    </mat-list-item>
-
-    <mat-list-item *ngIf="(isLoggedIn$ | async)" fxFlex="1 1 auto">
-      <a matLine routerLink="/order" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><mat-icon>info</mat-icon> new order </a>
-    </mat-list-item>
+      <mat-chip-list>
+        <mat-chip
+        color="accent"
+        class="secondary"
+        selected
+        (click)="DeleteChoiseLog()">
+          <mat-icon>delete</mat-icon>
+          choice логг
+        </mat-chip>
+      </mat-chip-list>
 
 
-    <mat-list-item *ngIf="(isLoggedIn$ | async)" fxFlex="1 1 auto">
-      <a matLine routerLink="/goods" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><mat-icon>info</mat-icon> Goods  </a>
-    </mat-list-item>
+      <button
+        *ngIf="(idb.errorIdCount$ | async) > 0"
+        color="warn"
+        class="secondary"
+        mat-stroked-button
+        (click)="UpdateErrors()"
+      >
+        <mat-list-item class="title-small lentacontainer">
+          <p class="title-small my-2">{{ idb.errorIdCount$ | async }}</p>
+          <p class="my-2">
+            <small class="subheading-1"> Не переданные товары </small>
+          </p>
+          <small class="subheading-1"> Передать товары </small>
+        </mat-list-item>
+      </button>
+    </mat-toolbar>
 
-    <mat-list-item *ngIf="(isLoggedIn$ | async)" fxFlex="1 1 auto">
-      <a matLine routerLink="/orders" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><mat-icon>info</mat-icon> Orders </a>
-    </mat-list-item>
-  </mat-nav-list>
+    <mat-nav-list>
+      <mat-list-item *ngIf="isLoggedIn$ | async">
+        <a
+          matLine
+          routerLink="/goods"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          ><mat-icon>fastfood</mat-icon> Наши товары
+        </a>
+      </mat-list-item>
+
+      <mat-list-item *ngIf="isLoggedIn$ | async">
+        <a
+          matLine
+          routerLink="/choicegoods"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          ><mat-icon>fastfood</mat-icon> Choice товары
+        </a>
+      </mat-list-item>
 
 
-  
-  <button *ngIf="(isLoggedIn$ | async)" color='accent' mat-raised-button (click)="LogOut()"> Logout </button>
 
-  <ng-container *ngIf="(pictureUrl$ | async) as pictureUrl" >
-    <img [src]="pictureUrl" class="avatar" >
-  </ng-container>
+    </mat-nav-list>
 
 
-</mat-toolbar>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="foolheight">
+    <mat-toolbar color="primary">
+      <button
+        class="no-outline"
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+      >
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+
+      <span>Simple delivery </span>
+
+      <span class="spacer"> </span>
+      <mat-spinner diameter="40" color="accent" *ngIf="loading"></mat-spinner>
+      <span class="spacer"> </span>
 
 
 
-<router-outlet></router-outlet>
+      <span class="spacer"> </span>
+
+      <mat-nav-list fxLayout="row">
+        <mat-list-item fxFlex="1 1 auto">
+          <mobile-queue> </mobile-queue>
+        </mat-list-item>
+
+        <mat-list-item fxFlex="1 1 auto" *ngIf="!(isLoggedIn$ | async)">
+          <a
+            matLine
+            routerLink="/login"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            ><mat-icon>info</mat-icon> Login
+          </a>
+        </mat-list-item>
+
+        <mat-list-item *ngIf="isLoggedIn$ | async" fxFlex="1 1 auto">
+          <a
+            matLine
+            routerLink="/order"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            ><mat-icon>shopping_cart</mat-icon> Новый заказ
+          </a>
+        </mat-list-item>
 
 
+        <mat-list-item *ngIf="isLoggedIn$ | async" fxFlex="1 1 auto">
+          <a
+            matLine
+            routerLink="/orders"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            ><mat-icon>subject</mat-icon> Заказы список
+          </a>
+        </mat-list-item>
+      </mat-nav-list>
+
+      <button
+        *ngIf="isLoggedIn$ | async"
+        color="accent"
+        mat-raised-button
+        (click)="LogOut()"
+      >
+        Logout
+      </button>
+
+      <ng-container *ngIf="pictureUrl$ | async as pictureUrl">
+        <img [src]="pictureUrl" class="avatar" />
+      </ng-container>
+    </mat-toolbar>
+
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -30,7 +30,7 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 .item-text {
     line-height: 25px;
     font-size: inherit;
-    font-weight: inherit; 
+    font-weight: inherit;
 }
 
 .avatar {
@@ -41,11 +41,20 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 .title-small {
   font-size: mat-font-size($config, title);
   line-height: mat-line-height($config, title);
-} 
+}
 
 .my-2 {
   margin-top: 2px;
   margin-bottom: 2px;
+}
+.mx-2 {
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.height-70 {
+  min-height: 70%;
+
 }
 
 mat-icon {
@@ -58,4 +67,10 @@ mat-nav-list {
 
 mat-list-item {
   min-width: 200px;
+}
+
+.stickycontainertop {
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }

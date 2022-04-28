@@ -99,12 +99,16 @@
 
       <ng-container matColumnDef="comment">
           <mat-header-cell class="table-cell table-header-cell" *matHeaderCellDef mat-sort-header> Коментарий </mat-header-cell>
-          <mat-cell (click)="OnCellClick(record,'comment')"  class="table-cell" *matCellDef="let record" >
+          <!-- <mat-cell (click)="OnCellClick(record,'comment')"  class="table-cell" *matCellDef="let record" >
             <ng-container
               [ngTemplateOutlet] = "record.EditCellName === 'comment' ? inputCell : outputCell"
               [ngTemplateOutletContext]="record.EditCellName === 'comment' ? {edit:record} : {show:record.comment}">
             </ng-container>
+          </mat-cell> -->
+          <mat-cell (click)="OnRecordClick(record)"  class="table-cell" *matCellDef="let record" >
+              {{record.comment }}
           </mat-cell>
+
 
           <mat-footer-cell *matFooterCellDef></mat-footer-cell>
       </ng-container>

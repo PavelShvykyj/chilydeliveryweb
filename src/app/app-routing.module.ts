@@ -8,6 +8,8 @@ import { IsLoggedInGuard } from './isloged.guard';
 import { OrderEditComponent } from './order/order-edit/order-edit.component';
 import { OrdesResolver } from './orders/orderslist/orders.resolver';
 import { StreetsResolver } from './streets/streets.resolver';
+import { ChoicegoodsComponent } from './web/choicegoods/choicegoods.component';
+import { ChoiceGoodsResolver } from './web/choice.goods.resolver';
 
 const routes: Routes = [
   {
@@ -23,12 +25,21 @@ const routes: Routes = [
   },
 
   {
+    path: 'choicegoods',
+    component: ChoicegoodsComponent,
+    resolve : {goods : ChoiceGoodsResolver},
+    canActivate:[IsLoggedInGuard]
+  },
+
+
+
+  {
     path: 'orders',
     component: OrdersExchangeComponent,
     resolve : {goods : GoodsResolver, orders: OrdesResolver},
     canActivate:[IsLoggedInGuard]
   },
-  
+
   {
     path: 'order',
     component: OrderEditComponent,
@@ -36,7 +47,7 @@ const routes: Routes = [
     canActivate:[IsLoggedInGuard]
   },
 
-  { path: '**', 
+  { path: '**',
     component: LoginComponent
   }
 

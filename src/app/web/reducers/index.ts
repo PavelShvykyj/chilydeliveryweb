@@ -22,7 +22,8 @@ export const webFeatureKey = 'web';
 export interface DirtyWebGoods extends EntityState<IONECGood> {}
 export interface WebGoods extends EntityState<IWEBGood> {}
 export interface WebState  {
-  allGoodsLoaded: boolean
+  allGoodsLoaded: boolean,
+  choiceGoodsLoaded: boolean,
   webGoods:WebGoods,
   dirtywebGoods:DirtyWebGoods,
 }
@@ -33,8 +34,9 @@ export const DirtyWebAdapter = createEntityAdapter<IONECGood>();
 export const initialStateWeb = WebAdapter.getInitialState();
 export const initialStateDirtyWeb = DirtyWebAdapter.getInitialState();
 
-export const initialState = { 
+export const initialState = {
   allGoodsLoaded: false,
+  choiceGoodsLoaded: false,
   webGoods:initialStateWeb,
   dirtywebGoods:initialStateDirtyWeb
 }
@@ -48,6 +50,17 @@ export const initialState = {
   } ;
 
 }
+
+function LoadAllChoiceGoods(state:WebState, action) : WebState {
+
+  return  {
+    ...state,
+    dirtywebGoods: DirtyWebAdapter.addMany(action.dirtygoods,state.dirtywebGoods),
+    choiceGoodsLoaded: true
+  } ;
+
+}
+
 
  function StatusWebSelectedGanged(state:WebState,action) : WebState {
   return {
@@ -98,6 +111,7 @@ function WebgoodDeleted(state,action) : WebState {
 export const WebReducer = createReducer(
   initialState,
   on(WebActions.allWebGoodsLoaded ,(state,action)=> LoadAllGoods(state,action)),
+  on(WebActions.allChoiceGoodsLoaded ,(state,action)=> LoadAllChoiceGoods(state,action)),
   on(WebActions.statusWebSelectedGanged,  (state,action)=> StatusWebSelectedGanged(state,action)),
   on(WebActions.statusDirtyWebSelectedGanged,  (state,action)=> StatusDirtyWebSelectedGanged(state,action)),
   on(WebActions.onecSelectedUploaded,  (state,action)=> OneCGoodUploded(state,action)),

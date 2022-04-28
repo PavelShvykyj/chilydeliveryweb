@@ -22,9 +22,13 @@ export class OrderGoodsListComponent implements OnInit {
   displayedColumns: string[] = ['good', 'quantity', 'price', 'comment', 'buttonsgroup'];
   displayedCutleryColumns: string[] = ['name', 'quantity', 'buttonsgroup'];
 
+  // EditCellsChain: IDictionary<string> = {
+  //   'quantity': 'comment',
+  //   'comment': ''
+  // };
+
   EditCellsChain: IDictionary<string> = {
-    'quantity': 'comment',
-    'comment': ''
+    'quantity': ''
   };
 
   EditCutleryCellsChain: IDictionary<string> = {

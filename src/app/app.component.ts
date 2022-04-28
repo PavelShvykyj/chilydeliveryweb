@@ -1,3 +1,4 @@
+import { ChoiceService } from './web/choiceservise.service';
 import { IOrderChanges, IOrder } from './models/order';
 import { async } from '@angular/core/testing';
 import { selectIsLoggedIn, selectUserData } from './auth/auth.selectors';
@@ -28,7 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
   isLoggedIn$: Observable<boolean>;
   pictureUrl$: Observable<string>;
   private destroySubs: Subject<boolean> = new Subject<boolean>();
-  
+
   fbgoodschangessubs: Subscription;
   dateuptsubs: Subscription;
   auditgoodsubs: Subscription;
@@ -40,12 +41,13 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(private store: Store<AppState>,
     private fdb: WebGoodsDatasourseService,
     private fdborders: OrdersDatasourseService,
+    private chservise: ChoiceService,
     private auth: AuthService,
     private router: Router,
     public idb: LocalDBService) {
     this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
     this.pictureUrl$ = this.store.pipe(select(selectUserData), map(userdata => userdata.avatar));
-    
+
   }
 
   LogOut() {
@@ -135,7 +137,7 @@ export class AppComponent implements OnInit, OnDestroy {
   Unsubscribe() {
     this.destroySubs.next(true);
     this.destroySubs.unsubscribe();
-    
+
     if (this.fbgoodschangessubs) {
       this.fbgoodschangessubs.unsubscribe();
     }
@@ -184,5 +186,11 @@ export class AppComponent implements OnInit, OnDestroy {
     const errors = await this.idb.GetErrors();
     errors.forEach(element => this.RetryUpsert(element))
   }
+
+  DeleteChoiseLog() {
+    this.chservise.DeleteOrders();
+  }
+
+
 
 }

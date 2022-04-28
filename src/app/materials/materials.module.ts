@@ -27,6 +27,7 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {ScrollingModule} from '@angular/cdk/scrolling';
+import {MatSidenavModule} from '@angular/material/sidenav';
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import {ScrollingModule} from '@angular/cdk/scrolling';
     CommonModule
   ],
   exports: [
+    MatSidenavModule,
     MatButtonModule,
     MatCardModule,
     MatToolbarModule,
