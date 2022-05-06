@@ -45,7 +45,7 @@ export const initialState = {
   return  {
     ...state,
     webGoods: WebAdapter.addAll(action.goods,state.webGoods),
-    dirtywebGoods: DirtyWebAdapter.addAll(action.dirtygoods,state.dirtywebGoods),
+    dirtywebGoods: DirtyWebAdapter.addMany(action.dirtygoods,state.dirtywebGoods),
     allGoodsLoaded:true
   } ;
 

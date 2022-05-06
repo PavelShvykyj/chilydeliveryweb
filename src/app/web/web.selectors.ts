@@ -15,9 +15,9 @@ export const areAllWebGoodsLoaded = createSelector(
     state => state.allGoodsLoaded);
 
 
-    export const areAllChoiceGoodsLoaded  = createSelector(
-      selectWebState,
-      state => state.choiceGoodsLoaded);
+export const areAllChoiceGoodsLoaded  = createSelector(
+  selectWebState,
+  state => state.choiceGoodsLoaded);
 
 export const GoodsState = createSelector(
     selectWebState,

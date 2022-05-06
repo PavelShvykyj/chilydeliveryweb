@@ -202,6 +202,9 @@ export class OrdersDatasourseService {
   }
 
   async RemoveOrder(id:string) : Promise<void> {
+
+
+
     return this.db.database.ref('orders/'+id).remove();
   }
 
@@ -224,6 +227,8 @@ export class OrdersDatasourseService {
     this.db.database.ref('orders').off('child_changed');
     this.db.database.ref('orders').off('child_added');
   }
+
+
 
 
 }

@@ -43,7 +43,9 @@ export class ChoiceService {
           externalid: element._id,
           isSelected: false,
           filial: 'choice',
-          name:element.name,
+          name:element.name.concat(" (")
+                           .concat((element.price as number)/100)
+                           .concat("грн.)"),
           parentid: element.category,
           isFolder:false
         });
@@ -57,7 +59,11 @@ export class ChoiceService {
               externalid: listelement._id,
               isSelected: false,
               filial: 'choice',
-              name:listelement.name,
+              name:  element.name.concat(" ")
+                                 .concat(listelement.name)
+                                 .concat(" (")
+                                 .concat((listelement.price as number)/100)
+                                 .concat("грн.)"),
               parentid: element.category,
               isFolder:false
             });
@@ -90,7 +96,7 @@ export class ChoiceService {
 
   GetAllGoods(): Observable<Array<IONECGood>> {
 
-    return of([]);
+    // return of([]);
 
     // return this.GetToken().pipe(
     //   concatMap(token => {
@@ -100,6 +106,25 @@ export class ChoiceService {
     //   }),
     //   map(choicemenu=>  this.ConvertCoiceMenu(choicemenu))
     // )
+
+    return this.GetToken().pipe(
+      concatMap(token => {
+        const uRL = 'http://localhost:3000/menu/ua/full/list';
+        const headers = new HttpHeaders({"Authorization": 'Bearer '+token});
+        return this.http.get(uRL, {headers,observe:'body'});
+      }),
+      map(choicemenu=>  this.ConvertCoiceMenu(choicemenu))
+    )
+  }
+
+
+  GetCreated() {
+
+    this.db.database.ref('choiceorders').orderByChild('data/_id').equalTo("6273dab238f43f74464d6a1e").once('value').then(
+      res => {res.forEach(el => {
+        console.log(el.val())
+      })}
+    )
   }
 }
 

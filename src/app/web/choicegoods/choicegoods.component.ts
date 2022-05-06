@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { timeStamp } from 'console';
+
 
 @Component({
   selector: 'app-choicegoods',
@@ -10,6 +12,10 @@ export class ChoicegoodsComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+
   }
+
+
+
 
 }

@@ -60,6 +60,7 @@ export interface IOrderWithDirty extends IBaseElement, IOrderHeader, IOrderOnecD
 
 export interface IOrder extends IBaseElement, IOrderHeader, IOrderOnecData {
   cutlery?:string,
+  integrationid?:string,
   goods: IOrderGoodsRecord[]
 }
 
