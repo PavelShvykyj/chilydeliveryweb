@@ -8,7 +8,8 @@ import { AppState } from 'src/app/reducers';
 import { EditingOrder } from '../editorder.selectors';
 import { CreateOrder } from '../editorder.actions';
 import { IOrder } from 'src/app/models/order';
-import { YndialogComponent } from 'src/app/baseelements/yndialog/yndialog.component';
+import { DialogstringinputComponent } from 'src/app/baseelements/dialogstringinput/dialogstringinput.component';
+import { ChoiceService } from 'src/app/web/choiceservise.service';
 
 @Component({
   selector: 'order-toolbar',
@@ -21,7 +22,8 @@ export class OrderToolbarComponent implements OnInit {
 
   constructor(private snackBar: MatSnackBar,
               private store: Store<AppState>,
-              public dialog: MatDialog
+              public dialog: MatDialog,
+              private chServise: ChoiceService
     ) { }
 
   ngOnInit() {
@@ -31,7 +33,7 @@ export class OrderToolbarComponent implements OnInit {
     if (cutleryStr == undefined) {
       return 0
     }
-    
+
     if (cutleryStr.length == 0) {
       return 0
     }
@@ -48,7 +50,7 @@ export class OrderToolbarComponent implements OnInit {
   OrderValid(EditingOrder ) {
 
     console.log("On OrderValid ",EditingOrder);
-    
+
 
     if (EditingOrder.addres.length>1
        && EditingOrder.phone.length==10
@@ -92,6 +94,31 @@ export class OrderToolbarComponent implements OnInit {
 
 
       );
+  }
+
+  AskForChoiseID() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.minHeight = "25wh"
+    dialogConfig.minWidth = "25wv"
+
+    dialogConfig.data = { title: "Введити номер заказа Choice", answer: "" }
+
+    const DialogRef: MatDialogRef<DialogstringinputComponent> = this.dialog.open(
+      DialogstringinputComponent,
+      dialogConfig);
+    DialogRef.afterClosed().pipe(first()).subscribe(res => {
+      if(res.answer.lenth != 0 ) {
+         this.FillSelectedOrderByChoiceID(res.answer);
+      }
+    });
+  }
+
+  FillSelectedOrderByChoiceID(id:string) {
+    this.chServise.GetOrderByID(id).pipe(first()).subscribe(orderData=>{
+
+    }) ;
   }
 
   //this.snackBar.open("Login successful", "OK",{duration: 2000});

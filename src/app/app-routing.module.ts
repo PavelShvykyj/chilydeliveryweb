@@ -27,7 +27,7 @@ const routes: Routes = [
   {
     path: 'choicegoods',
     component: ChoicegoodsComponent,
-    resolve : {goods : ChoiceGoodsResolver},
+    resolve : {goods : GoodsResolver, chgoods : ChoiceGoodsResolver},
     canActivate:[IsLoggedInGuard]
   },
 

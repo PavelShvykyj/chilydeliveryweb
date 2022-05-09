@@ -38,13 +38,14 @@ import { StreetsModule } from './streets/streets.module';
 
 
 
+
 @NgModule({
   declarations: [
     AppComponent
-    
+
   ],
   imports: [
-    
+
     BrowserModule,
     AppRoutingModule,
     MaterialsModule,
@@ -67,7 +68,7 @@ import { StreetsModule } from './streets/streets.module';
     NgxIndexedDBModule.forRoot(dbConfig),
     NgxMaskModule.forRoot(),
     /////////////////   OWN CREATED
-    
+
     WebModule,
     AuthModule,
     ExchangeModule,
@@ -76,10 +77,10 @@ import { StreetsModule } from './streets/streets.module';
     StreetsModule,
     MobileModule,
     OrdersModule
-    
-    
 
-  ], 
+
+
+  ],
   providers: [FireService,IsLoggedInGuard],
   bootstrap: [AppComponent]
 })

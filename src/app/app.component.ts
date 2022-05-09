@@ -5,18 +5,18 @@ import { selectIsLoggedIn, selectUserData } from './auth/auth.selectors';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { LoadOptions } from './option.reducer';
 import { Store, select } from '@ngrx/store';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { AppState } from './reducers';
 import { AuthService } from './auth/auth.service';
-import { map, first, take, tap, filter } from 'rxjs/operators';
+import { map, first, take, tap, filter, concatMap } from 'rxjs/operators';
 import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
 import { LocalDBService } from './idb/local-db.service';
 import { WebGoodsDatasourseService } from './web/web.goods.datasourse.service';
 import { updateWebgoodByExternalData, updateDirtyWebgoodByExternalData } from './web/web.actions';
-import { element } from 'protractor';
 import { OrdersDatasourseService } from './orders/orders.datasourse.service';
 import { OrdersUpdated, OrdersDeleted, loadAllOrders, loadAllOrdersOnAppInit } from './orders/order.actions';
 import { AreOrdesLoaded } from './orders/order.selectors';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 
 @Component({
@@ -24,10 +24,11 @@ import { AreOrdesLoaded } from './orders/order.selectors';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   title = 'deliveryonec';
   isLoggedIn$: Observable<boolean>;
   pictureUrl$: Observable<string>;
+
   private destroySubs: Subject<boolean> = new Subject<boolean>();
 
   fbgoodschangessubs: Subscription;
@@ -38,14 +39,27 @@ export class AppComponent implements OnInit, OnDestroy {
   orderssubs: Subscription;
   loading: boolean = true;
 
+
+  @ViewChild('DownloadLink', { static: false }) DownloadLink: ElementRef;
+
+
   constructor(private store: Store<AppState>,
     private fdb: WebGoodsDatasourseService,
     private fdborders: OrdersDatasourseService,
     private chservise: ChoiceService,
     private auth: AuthService,
     private router: Router,
+    private storage: AngularFireStorage,
     public idb: LocalDBService) {
-    this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn));
+    this.isLoggedIn$ = this.store.pipe(select(selectIsLoggedIn),
+
+    tap(IsLoggedIn=>{
+      if(IsLoggedIn) {
+        setTimeout(() => {
+          this.SetDownLoadURL();
+        }, 10);
+      }
+    }));
     this.pictureUrl$ = this.store.pipe(select(selectUserData), map(userdata => userdata.avatar));
 
   }
@@ -117,17 +131,51 @@ export class AppComponent implements OnInit, OnDestroy {
     })
   }
 
+  ngAfterViewInit(): void {
+
+  }
+
   ngOnInit() {
     this.store.dispatch(LoadOptions());
     /// напрямую включаем прослушку изменений они затянут начальное значение
     /// поетому УДАЛИТЬ actions LoadAllOrders, LoadAllOrdersOnAppInit, и все что с ними связано ефект переменную состояния и акшн OrdersLoaded
     this.fdborders.OdrdersChangesStart();
+    this.chservise.OdrdersChangesStart();
+
     //this.UpdateChangesAsync();
     this.idb.UpdateErrorIdsCount();
     this.ListenLoading();
 
+
   }
 
+
+  SetDownLoadURL() {
+    console.log("this.DownloadLink",this.DownloadLink);
+    this.storage.ref("choise_proxy/index-win.exe").getDownloadURL()
+    .pipe(take(1)).subscribe(url => {
+      this.DownloadLink.nativeElement.href = url;
+
+    })
+
+
+  }
+
+  DownloadProxy(link) {
+    this.storage.ref("choise_proxy/index-win.exe").getDownloadURL()
+    .pipe(take(1),
+    concatMap(URL => {
+
+      return this.chservise.GetProxyBlob(URL)
+    })
+    ).subscribe(res => {
+      let newBlob = new Blob([res], {type: 'application/x-msdownload'});
+      var downloadURL = window.URL.createObjectURL(newBlob);
+      link.href = downloadURL;
+      link.download = "index-win.exe";
+      link.click()
+    })
+  }
 
   AuditOn() {
     //   this.auditgoodsubs = this.fdb.Audit('web.goods').subscribe(res=>console.log("auditgood", res))
@@ -163,6 +211,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     this.fdborders.OdrdersChangesStop();
+    this.chservise.OdrdersChangesStop();
   }
 
 

@@ -1,19 +1,8 @@
 <mat-sidenav-container fullscreen>
-  <mat-sidenav
-    #drawer
-    fixedInViewport
-    attr.role="navigation"
-    mode="side"
-    [opened]="false"
-  >
+  <mat-sidenav #drawer fixedInViewport attr.role="navigation" mode="side" [opened]="false">
     <mat-toolbar color="primary">
 
-      <button
-        color="accent"
-        class="secondary mx-2 my-2 height-70"
-        mat-raised-button
-        (click)="UpdateChangesAsync()"
-      >
+      <button color="accent" class="secondary mx-2 my-2 height-70" mat-raised-button (click)="UpdateChangesAsync()">
         <mat-list-item class="title-small lentacontainer">
           <p class="title-small my-2">
             {{ idb.lastupdate$ | async | date: "dd/MM/yyyy" }}
@@ -28,24 +17,15 @@
       </button>
 
       <mat-chip-list>
-        <mat-chip
-        color="accent"
-        class="secondary"
-        selected
-        (click)="DeleteChoiseLog()">
+        <mat-chip color="accent" class="secondary" selected (click)="DeleteChoiseLog()">
           <mat-icon>delete</mat-icon>
           choice логг
         </mat-chip>
       </mat-chip-list>
 
 
-      <button
-        *ngIf="(idb.errorIdCount$ | async) > 0"
-        color="warn"
-        class="secondary"
-        mat-stroked-button
-        (click)="UpdateErrors()"
-      >
+      <button *ngIf="(idb.errorIdCount$ | async) > 0" color="warn" class="secondary" mat-stroked-button
+        (click)="UpdateErrors()">
         <mat-list-item class="title-small lentacontainer">
           <p class="title-small my-2">{{ idb.errorIdCount$ | async }}</p>
           <p class="my-2">
@@ -56,43 +36,37 @@
       </button>
     </mat-toolbar>
 
-    <mat-nav-list>
-      <mat-list-item *ngIf="isLoggedIn$ | async">
-        <a
-          matLine
-          routerLink="/goods"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          ><mat-icon>fastfood</mat-icon> Наши товары
-        </a>
-      </mat-list-item>
+    <ng-container *ngIf="isLoggedIn$ | async">
+      <mat-nav-list>
+        <mat-list-item>
+          <a matLine routerLink="/goods" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon>fastfood</mat-icon> Наши товары
+          </a>
+        </mat-list-item>
 
-      <mat-list-item *ngIf="isLoggedIn$ | async">
-        <a
-          matLine
-          routerLink="/choicegoods"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          ><mat-icon>fastfood</mat-icon> Choice товары
-        </a>
-      </mat-list-item>
+        <mat-list-item >
+          <a matLine routerLink="/choicegoods" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon>fastfood</mat-icon> Choice товары
+          </a>
+        </mat-list-item>
+
+        <mat-list-item >
+          <a #DownloadLink matLine >
+            <mat-icon>cloud_download</mat-icon> Скачать Choice proxy
+          </a>
 
 
+        </mat-list-item>
 
-    </mat-nav-list>
 
+      </mat-nav-list>
+    </ng-container>
 
   </mat-sidenav>
 
   <mat-sidenav-content class="foolheight">
     <mat-toolbar color="primary">
-      <button
-        class="no-outline"
-        type="button"
-        aria-label="Toggle sidenav"
-        mat-icon-button
-        (click)="drawer.toggle()"
-      >
+      <button class="no-outline" type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
 
@@ -112,43 +86,26 @@
         </mat-list-item>
 
         <mat-list-item fxFlex="1 1 auto" *ngIf="!(isLoggedIn$ | async)">
-          <a
-            matLine
-            routerLink="/login"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            ><mat-icon>info</mat-icon> Login
+          <a matLine routerLink="/login" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon>info</mat-icon> Login
           </a>
         </mat-list-item>
 
         <mat-list-item *ngIf="isLoggedIn$ | async" fxFlex="1 1 auto">
-          <a
-            matLine
-            routerLink="/order"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            ><mat-icon>shopping_cart</mat-icon> Новый заказ
+          <a matLine routerLink="/order" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon>shopping_cart</mat-icon> Новый заказ
           </a>
         </mat-list-item>
 
 
         <mat-list-item *ngIf="isLoggedIn$ | async" fxFlex="1 1 auto">
-          <a
-            matLine
-            routerLink="/orders"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            ><mat-icon>subject</mat-icon> Заказы список
+          <a matLine routerLink="/orders" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon>subject</mat-icon> Заказы список
           </a>
         </mat-list-item>
       </mat-nav-list>
 
-      <button
-        *ngIf="isLoggedIn$ | async"
-        color="accent"
-        mat-raised-button
-        (click)="LogOut()"
-      >
+      <button *ngIf="isLoggedIn$ | async" color="accent" mat-raised-button (click)="LogOut()">
         Logout
       </button>
 

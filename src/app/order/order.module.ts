@@ -20,6 +20,7 @@ import { NgxMaskModule } from 'ngx-mask'
 
 
 
+
 @NgModule({
   declarations: [OrderEditComponent, OrderHeaderComponent, OrderGoodsListComponent, OrderMenuComponent, OrderToolbarComponent],
   exports:[OrderEditComponent],
@@ -36,5 +37,6 @@ import { NgxMaskModule } from 'ngx-mask'
     NgxMaskModule
   ],
   providers:[TelegramService]
+
 })
 export class OrderModule { }
