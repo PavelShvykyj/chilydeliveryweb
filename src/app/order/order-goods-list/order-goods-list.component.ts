@@ -82,7 +82,7 @@ export class OrderGoodsListComponent implements OnInit {
 
     this.cutlerysubs = this.store.pipe(select(selectOrderCutlery))
       .subscribe(data => {
-        let OrderCutlery: IOrderCutlery[] = JSON.parse(data);
+        let OrderCutlery: IOrderCutlery[] = data.length == 0 ? [] : JSON.parse(data);
         let OrderWievCutlery: IOrderWievCutlery[] = [];
         OrderCutlery.forEach(element => {
           OrderWievCutlery.push({ ...element, EditCellName: "", NextCellEdit: "" })

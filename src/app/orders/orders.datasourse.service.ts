@@ -192,24 +192,20 @@ export class OrdersDatasourseService {
           else {
             return this.SaveOrder(neworder);
           }
-
-
       }))
-
-
     }
-
   }
 
   async RemoveOrder(id:string) : Promise<void> {
-
-
-
     return this.db.database.ref('orders/'+id).remove();
   }
 
   OnOrdersChanged(data: firebase.database.DataSnapshot) {
-    this.store.dispatch(OrderActions.OrdersUpdated({ orders: [{ ...data.val(), id: data.key }] }));
+    let orderdata = { ...data.val(), id: data.key };
+    if (Object.keys(orderdata).indexOf('goods') === -1) {
+      orderdata   = {...orderdata, goods: [] };
+    }
+    this.store.dispatch(OrderActions.OrdersUpdated({ orders: [orderdata] }));
   }
 
   OnOrdersRemoved(data: firebase.database.DataSnapshot) {

@@ -1,21 +1,21 @@
 <ng-container *ngIf="Queue$ | async as Queue">
     <button *ngIf="Queue.length>0" [matBadge]="Queue.length" matBadgePosition="above after" matBadgeColor="warn" mat-raised-button [matMenuTriggerFor]="mobileorders" color='warn'>
         <mat-icon>settings_phone</mat-icon>
-        Люди ждут !!!
+        Choice заказы !!!
       </button>
       <mat-menu #mobileorders="matMenu" color='accent'>
-        
-        <div *ngFor="let order of Queue" mat-menu-item (click)="OnMobileOrderClick(order)">
-           
-          <mat-icon>dialpad</mat-icon>
-          
-          <span  >{{order.phone }} <small class="ml-2">{{order.creation | date : 'shortTime' }} </small></span>
-          
-           
-          
 
+        <ng-container *ngFor="let order of Queue">
+        <div  mat-menu-item (click)="OnMobileOrderClick(order)">
+          <mat-icon>dialpad</mat-icon>
+          <span  >{{order.phone }} <small class="ml-2">{{order.creation | date : 'shortTime' }} </small></span>
         </div>
-        
+
+        <div  mat-menu-item (click)="OnMobileOrderClick(order)">
+          <small class="ml-2"> {{order.addres }} </small>
+        </div>
+
+      </ng-container>
       </mat-menu>
 
 

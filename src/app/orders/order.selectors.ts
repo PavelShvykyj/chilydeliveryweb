@@ -26,7 +26,7 @@ function SortByCreation(el1:IOrder,el2:IOrder) {
 
 }
 
-/// ОБЩИЕ 
+/// ОБЩИЕ
 
 export const selectOrderState = createFeatureSelector<OrdersState>(fromOrder.ordersFeatureKey);
 
@@ -34,17 +34,16 @@ export const selectOrderState = createFeatureSelector<OrdersState>(fromOrder.ord
 
 export const selectAllOrders = createSelector(
     selectOrderState,
-    fromOrder.selectAll // встроеный в адаптер селектор мы его експортировали в файле reducers/index 
+    fromOrder.selectAll // встроеный в адаптер селектор мы его експортировали в файле reducers/index
 )
 
 export const selectAllOrdersWithEntities = createSelector(
     selectAllOrders,
     selectAllWebEntities,
     (orders,goods) => {
-        const orderswithgoods  = orders.map(order => {return {...order, goods: order.goods.map(el =>{return {...el,good:goods[el.id]}})}})    
-        
-        return orderswithgoods 
-    }  
+        const orderswithgoods  = orders.map(order => {return {...order, goods: order.goods.map(el =>{return {...el,good:goods[el.id]}})}})
+        return orderswithgoods
+    }
 )
 
 export const selectMobileOrders = createSelector(
@@ -53,7 +52,7 @@ export const selectMobileOrders = createSelector(
 
 export const selectAllOrdersEntities = createSelector(
     selectOrderState,
-    fromOrder.selectEntities // встроеный в адаптер селектор мы его експортировали в файле reducers/index 
+    fromOrder.selectEntities // встроеный в адаптер селектор мы его експортировали в файле reducers/index
 )
 
 export const AreOrdesLoaded = createSelector(selectOrderState,

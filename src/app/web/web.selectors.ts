@@ -153,6 +153,42 @@ export const selectDirtyGoodsByParent = createSelector(
         }
     )
 
+export const selectDirtyGoodsByIDS = createSelector(
+    selectAllWebGoods,
+    ( webgoods:IWEBGood[] ,props) =>
+        {
+          let fgoods : Array<Partial<IONECGoodWithOwner>> = [];
+          props.ids.forEach(did => {
+            webgoods.forEach(wg => {
+              console.log("filials.length",wg.name, wg.filials.length)
+              if (wg.filials.indexOf(did) != -1) {
+                fgoods.push({id:did, owner:[wg]})
+              }
+            })
+          });
+          return fgoods;
+        }
+)
+
+export const selectGoodsByIDS = createSelector(
+
+  selectAllWebGoods,
+  ( webgoods:IWEBGood[] ,props) =>
+      {
+
+        let goods = webgoods.filter(element =>
+          {let finde = false
+            element.filials.forEach(fid => {
+              finde = finde || (props.ids.indexOf(element.id) != -1);
+            })
+            return finde;
+          }
+          );
+         return goods;
+      }
+)
+
+
 
 export const selectGoodByName = createSelector(
     selectAllDirtyWebEntities,

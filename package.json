@@ -35,6 +35,7 @@
     "core-js": "^2.5.4",
     "fireauth": "^1.0.4",
     "firebase": "^7.0.0",
+    "firebase-tools": "^10.8.0",
     "firebaseui": "^4.4.0",
     "hammerjs": "^2.0.8",
     "ngx-indexed-db": "^4.0.10",

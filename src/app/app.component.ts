@@ -12,7 +12,7 @@ import { map, first, take, tap, filter, concatMap } from 'rxjs/operators';
 import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
 import { LocalDBService } from './idb/local-db.service';
 import { WebGoodsDatasourseService } from './web/web.goods.datasourse.service';
-import { updateWebgoodByExternalData, updateDirtyWebgoodByExternalData } from './web/web.actions';
+import { updateWebgoodByExternalData, updateDirtyWebgoodByExternalData, loadAllWebGoods } from './web/web.actions';
 import { OrdersDatasourseService } from './orders/orders.datasourse.service';
 import { OrdersUpdated, OrdersDeleted, loadAllOrders, loadAllOrdersOnAppInit } from './orders/order.actions';
 import { AreOrdesLoaded } from './orders/order.selectors';
@@ -140,12 +140,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     /// напрямую включаем прослушку изменений они затянут начальное значение
     /// поетому УДАЛИТЬ actions LoadAllOrders, LoadAllOrdersOnAppInit, и все что с ними связано ефект переменную состояния и акшн OrdersLoaded
     this.fdborders.OdrdersChangesStart();
-    this.chservise.OdrdersChangesStart();
+    //this.chservise.OdrdersChangesStart();
 
     //this.UpdateChangesAsync();
     this.idb.UpdateErrorIdsCount();
     this.ListenLoading();
-
+    this.store.dispatch(loadAllWebGoods());
 
   }
 
