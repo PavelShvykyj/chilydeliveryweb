@@ -43,7 +43,7 @@ export const selectAllWebEntities = createSelector(
 export const selectWebGoodByID = createSelector(
     selectAllWebEntities,
     (WebEntities: Dictionary<IWEBGood>,id:string) => {
-        console.log('selectWebGoodByID', id, WebEntities[id])
+        //console.log('selectWebGoodByID', id, WebEntities[id])
         return WebEntities[id]})
 
 export const selectAllDirtyWebEntities = createSelector(
@@ -79,8 +79,8 @@ function DirtyGoodsWithOwner(goods,webgoods) : IONECGoodWithOwner[] {
 
 function GoodsWithFilials(goods , dirtygoods) : IWEBGoodWithFilials[] {
     return goods.map(el  => {return {...el,
-        filialNames:el.filials.map(felement => {return dirtygoods[felement].filial}),
-        filialElements:el.filials.map(felement => {return dirtygoods[felement]})}
+        filialNames:el.filials.map(felement => {let dEl = dirtygoods[felement] ; return dEl == undefined ? 'неизвестно' : dEl.filial}),
+        filialElements:el.filials.map(felement => {let dEl = dirtygoods[felement] ; return dEl == undefined ? {name : 'неизвестно'} : dEl })}
        })
 }
 
@@ -160,7 +160,6 @@ export const selectDirtyGoodsByIDS = createSelector(
           let fgoods : Array<Partial<IONECGoodWithOwner>> = [];
           props.ids.forEach(did => {
             webgoods.forEach(wg => {
-              console.log("filials.length",wg.name, wg.filials.length)
               if (wg.filials.indexOf(did) != -1) {
                 fgoods.push({id:did, owner:[wg]})
               }

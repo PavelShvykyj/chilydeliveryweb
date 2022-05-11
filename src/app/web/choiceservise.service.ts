@@ -110,8 +110,8 @@ export class ChoiceService {
     orderdata.items.forEach(dish => {
       if (dish.menuOptions!=null && dish.menuOptions.length !=0) {
         dish.menuOptions.forEach(opt=>{
-          ids.push(opt._id);
-          idsData[opt._id]= opt.count;
+          ids.push(opt.item);
+          idsData[opt.item]= opt.count;
           });
 
 
@@ -122,6 +122,7 @@ export class ChoiceService {
       }
     });
 
+    console.log("idsData",idsData);
 
     let allelements$ = this.store
     .pipe(select(selectDirtyGoodsByIDS,{ids,filialname:'choice'}),
@@ -131,7 +132,7 @@ export class ChoiceService {
           id:dirtygood.owner[0].id,
           comment:"",
           dirtyid:dirtygood.owner[0].filials,
-          quantity:idsData.idwithq[dirtygood.id]
+          quantity:idsData[dirtygood.id]
         })
       })
       let delta = internalOrder.goods.length - ids.length;
@@ -182,11 +183,12 @@ export class ChoiceService {
 
     return this.GetToken().pipe(
       concatMap((token) => {
+
         const uRL = "http://localhost:3000/menu/ua/full/list";
         const headers = new HttpHeaders({ Authorization: "Bearer " + token });
         return this.http.get(uRL, { headers, observe: "body" });
       }),
-      map((choicemenu) => this.ConvertCoiceMenu(choicemenu))
+      map((choicemenu) => { return this.ConvertCoiceMenu(choicemenu)} )
     );
   }
 
@@ -224,18 +226,17 @@ export class ChoiceService {
 
   OnOrdersCreated(data: firebase.database.DataSnapshot) {
     /// сначала проверку на присутсвие потом конвертация
-
     from(
       this.db.database
       .ref("orders")
       .orderByChild('integrationid')
       .equalTo(data.val().data._id).once('value')
     ).pipe(
-      map(res=> {return res.exists()}),
-      filter(resexist=> !resexist),
-      concatMap(()=>{return this.ConvertCoiceOrder(data.val())}),
+      map(res=> { return res.exists()}),
+      filter(resexist=> {return !resexist} ),
+      concatMap(()=>{ return this.ConvertCoiceOrder(data.val())}),
       first()
-    ).subscribe(orderdata=>{this.db.database.ref("orders").push(orderdata)});
+    ).subscribe(orderdata=>{ this.db.database.ref(`orders/${orderdata.integrationid}`).set(orderdata)});
   }
 
   OdrdersChangesStart() {
