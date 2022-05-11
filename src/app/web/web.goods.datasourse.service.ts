@@ -82,8 +82,8 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
 
   constructor(private db: AngularFirestore,
     private store: Store<AppState>,
-    private idb: LocalDBService) { 
-      
+    private idb: LocalDBService) {
+
 
     }
 
@@ -101,7 +101,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
             ...(element.data() as object),
             isSelected: false,
             id: element.id,
-            price: element.data().price==undefined ? 0 : element.data().price==undefined
+            price: element.data().price==undefined ? 0 : element.data().price
           }
         }) as IWEBGood[];
       }), take(1), share());
@@ -410,7 +410,7 @@ export class WebGoodsDatasourseService implements IGoodsListDatasourse {
     });
     // if (data.externalid == "" || data.externalid == undefined) {
 
-    //   /// внешний код для фиребасе = внутренний от 1С  
+    //   /// внешний код для фиребасе = внутренний от 1С
     //   const dataToUpdate: IFireBaseDirtyGood = {
     //     externalid: data.id,
     //     parentid: data.parentid == undefined ? "" : data.parentid,
