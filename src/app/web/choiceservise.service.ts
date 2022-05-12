@@ -29,11 +29,23 @@ export class ChoiceService {
     return firebase.database.ServerValue.TIMESTAMP;
   }
 
+  addID(controlDouble : IDictionary<Array<string>>, element:any, name : string) {
+    if (!(element._id in controlDouble) ) {
+      controlDouble[element._id] = []
+    }
+
+    controlDouble[element._id].push(name.concat(" ").concat(element.name));
+  }
+
   ConvertCoiceMenu(choicemenu): Array<IONECGood> {
     let choicegoods: Array<IONECGood> = [];
+    let controlDouble : IDictionary<Array<string>> = {};
+
 
     /// folders
     choicemenu.categories.forEach((element) => {
+
+
       choicegoods.push({
         id: element._id,
         externalid: element._id,
@@ -48,6 +60,7 @@ export class ChoiceService {
     /// items
     choicemenu.menu.forEach((element) => {
       if (element.menuOptions.length === 0) {
+        this.addID(controlDouble, element, element.name);
         choicegoods.push({
           id: element._id,
           externalid: element._id,
@@ -63,6 +76,7 @@ export class ChoiceService {
       } else {
         element.menuOptions.forEach((optelement) => {
           optelement.list.forEach((listelement) => {
+            this.addID(controlDouble, listelement, element.name);
             choicegoods.push({
               id: listelement._id,
               externalid: listelement._id,
@@ -81,6 +95,19 @@ export class ChoiceService {
         });
       }
     });
+
+    for (let key in controlDouble) {
+      let names = controlDouble[key];
+      if (names.length > 1) {
+        console.log('key',key,names.length);
+        names.forEach(name => {
+          console.log('name',name);
+        });
+      }
+
+    }
+
+
     return choicegoods;
   }
 
